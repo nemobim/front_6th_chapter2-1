@@ -237,10 +237,6 @@ function main() {
   root.appendChild(gridContainer);
   root.appendChild(manualToggle);
   root.appendChild(manualOverlay);
-  let initStock = 0;
-  for (let i = 0; i < prodList.length; i++) {
-    initStock += prodList[i].q;
-  }
   onUpdateSelectOptions();
   handleCalculateCartStuff();
   lightningDelay = Math.random() * 10000;
@@ -259,8 +255,6 @@ function main() {
   }, lightningDelay);
   setTimeout(function () {
     setInterval(function () {
-      if (cartDisp.children.length === 0) {
-      }
       if (lastSel) {
         let suggest = null;
         for (let k = 0; k < prodList.length; k++) {
@@ -338,7 +332,6 @@ function handleCalculateCartStuff() {
   let idx;
   var originalTotal;
   let bulkDisc;
-  let itemDisc;
   let savedAmount;
   let summaryDetails;
   let totalDiv;
@@ -348,10 +341,6 @@ function handleCalculateCartStuff() {
   let itemCountElement;
   let previousCount;
   let stockMsg;
-  let pts;
-  let hasP1;
-  let hasP2;
-  let loyaltyDiv;
   totalAmt = 0;
   itemCnt = 0;
   originalTotal = totalAmt;
@@ -654,7 +643,6 @@ function onGetStockTotal() {
 var handleStockInfoUpdate = function () {
   let infoMsg;
   let totalStock;
-  let messageOptimizer;
   infoMsg = '';
   totalStock = onGetStockTotal();
   if (totalStock < 30) {
@@ -876,8 +864,7 @@ cartDisp.addEventListener('click', function (event) {
       prod.q += remQty;
       itemElem.remove();
     }
-    if (prod && prod.q < 5) {
-    }
+
     handleCalculateCartStuff();
     onUpdateSelectOptions();
   }
