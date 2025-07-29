@@ -18,6 +18,7 @@ import { createManualOverlay } from './components/ManualOverlay';
 import { createProductSelector, updateProductOptions } from './components/ProductSelector';
 import { createRightColumn } from './components/RightColumn';
 import { createStockInfo, updateStockInfo } from './components/StockInfo';
+import { updateSummaryDetails } from './components/SummaryDetails';
 import { PRODUCT_IDS, PRODUCT_LIST } from './data/products';
 
 let prodList;
@@ -156,7 +157,7 @@ let sum;
 // 계산 및 비즈니스 로직 함수들
 // ========================================
 
-// 카트 계산 메인 함수
+// 카트 계산 메인 함수에서 SummaryDetails 컴포넌트 사용
 function handleCalculateCartStuff() {
   let subTot;
   // let idx;
@@ -273,66 +274,8 @@ function handleCalculateCartStuff() {
 
   // 주문 요약 업데이트
   const summaryDetails = document.getElementById('summary-details');
-  summaryDetails.innerHTML = '';
-  if (subTot > 0) {
-    for (let i = 0; i < cartItems.length; i++) {
-      let curItem;
-      for (let j = 0; j < prodList.length; j++) {
-        if (prodList[j].id === cartItems[i].id) {
-          curItem = prodList[j];
-          break;
-        }
-      }
-      const qtyElem = cartItems[i].querySelector('.quantity-number');
-      const q = parseInt(qtyElem.textContent);
-      const itemTotal = curItem.val * q;
-      summaryDetails.innerHTML += /* HTML */ `
-        <div class="flex justify-between text-xs tracking-wide text-gray-400">
-          <span>${curItem.name} x ${q}</span>
-          <span>₩${itemTotal.toLocaleString()}</span>
-        </div>
-      `;
-    }
-    summaryDetails.innerHTML += /* HTML */ `
-      <div class="border-t border-white/10 my-3"></div>
-      <div class="flex justify-between text-sm tracking-wide">
-        <span>Subtotal</span>
-        <span>₩${subTot.toLocaleString()}</span>
-      </div>
-    `;
-    if (itemCnt >= 30) {
-      summaryDetails.innerHTML += /* HTML */ `
-        <div class="flex justify-between text-sm tracking-wide text-green-400">
-          <span class="text-xs">🎉 대량구매 할인 (30개 이상)</span>
-          <span class="text-xs">-25%</span>
-        </div>
-      `;
-    } else if (itemDiscounts.length > 0) {
-      itemDiscounts.forEach(function (item) {
-        summaryDetails.innerHTML += /* HTML */ `
-          <div class="flex justify-between text-sm tracking-wide text-green-400">
-            <span class="text-xs">${item.name} (10개↑)</span>
-            <span class="text-xs">-${item.discount}%</span>
-          </div>
-        `;
-      });
-    }
-    if (isTuesday) {
-      if (totalAmt > 0) {
-        summaryDetails.innerHTML += /* HTML */ `
-          <div class="flex justify-between text-sm tracking-wide text-purple-400">
-            <span class="text-xs">🌟 화요일 추가 할인</span>
-            <span class="text-xs">-10%</span>
-          </div>
-        `;
-      }
-    }
-    summaryDetails.innerHTML += /* HTML */ `
-      <div class="flex justify-between text-sm tracking-wide text-gray-400">
-        <span>Shipping</span>
-        <span>Free</span>
-      </div>
-    `;
+  if (summaryDetails) {
+    updateSummaryDetails(summaryDetails, getCartItems(cartDisp), prodList, subTot, itemCnt, itemDiscounts, isTuesday);
   }
 
   // 총 금액 업데이트

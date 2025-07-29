@@ -1,10 +1,11 @@
+import { createSummaryDetails } from './SummaryDetails.js';
+
 export const createRightColumn = () => {
   const rightColumn = document.createElement('div');
   rightColumn.className = 'bg-black text-white p-8 flex flex-col';
   rightColumn.innerHTML = /* HTML */ `
     <h2 class="text-xs font-medium mb-5 tracking-extra-wide uppercase">Order Summary</h2>
     <div class="flex-1 flex flex-col">
-      <div id="summary-details" class="space-y-3"></div>
       <div class="mt-auto">
         <div id="discount-info" class="mb-4"></div>
         <div id="cart-total" class="pt-5 border-t border-white/10">
@@ -16,7 +17,7 @@ export const createRightColumn = () => {
         </div>
         <div id="tuesday-special" class="mt-4 p-3 bg-white/10 rounded-lg hidden">
           <div class="flex items-center gap-2">
-            <span class="text-2xs">��</span>
+            <span class="text-2xs"></span>
             <span class="text-xs uppercase tracking-wide">Tuesday Special 10% Applied</span>
           </div>
         </div>
@@ -32,6 +33,11 @@ export const createRightColumn = () => {
       <span id="points-notice">Earn loyalty points with purchase.</span>
     </p>
   `;
+
+  // SummaryDetails 컴포넌트 생성 및 추가
+  const summaryDetails = createSummaryDetails();
+  const flexContainer = rightColumn.querySelector('.flex-1.flex.flex-col');
+  flexContainer.insertBefore(summaryDetails, flexContainer.querySelector('.mt-auto'));
 
   return rightColumn;
 };
