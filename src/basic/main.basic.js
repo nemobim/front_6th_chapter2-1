@@ -5,6 +5,7 @@
 import { createAddToCartButton } from './components/AddToCartButton';
 import { addItemToCart, createCartDisplay, getCartItems, removeItemFromCart } from './components/CartDisplay';
 import { updateCartItemPrice } from './components/CartItem';
+import { updateCartTotal } from './components/CartTotal';
 import { updateDiscountInfo } from './components/DiscountInfo';
 import { createGridContainer } from './components/GridContainer';
 import { createHeader } from './components/header';
@@ -65,8 +66,6 @@ function main() {
 
   // 오른쪽 컬럼 (주문 요약) 생성
   const rightColumn = createRightColumn();
-
-  sum = rightColumn.querySelector('#cart-total');
 
   // ----------------------------------------
   // 매뉴얼 오버레이 생성
@@ -152,7 +151,7 @@ let sum;
 // 계산 및 비즈니스 로직 함수들
 // ========================================
 
-// 카트 계산 메인 함수에서 LoyaltyPoints 컴포넌트 사용
+// 카트 계산 메인 함수에서 CartTotal 컴포넌트 사용
 function handleCalculateCartStuff() {
   let subTot;
   let previousCount;
@@ -271,9 +270,9 @@ function handleCalculateCartStuff() {
   }
 
   // 총 금액 업데이트
-  const totalDiv = sum.querySelector('.text-2xl');
-  if (totalDiv) {
-    totalDiv.textContent = '₩' + Math.round(totalAmt).toLocaleString();
+  const cartTotal = document.getElementById('cart-total');
+  if (cartTotal) {
+    updateCartTotal(cartTotal, totalAmt);
   }
 
   // 적립 포인트 업데이트
