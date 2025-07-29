@@ -19,7 +19,6 @@ import { TimerService } from './services/TimerService';
 let prodList;
 let stockInfo;
 let itemCnt;
-let lastSel;
 let sel;
 let addBtn;
 let totalAmt = 0;
@@ -33,7 +32,6 @@ function main() {
   // 상태 초기화
   totalAmt = 0;
   itemCnt = 0;
-  lastSel = null;
 
   // 상품 데이터 초기화
   prodList = PRODUCT_LIST;
@@ -331,7 +329,6 @@ addBtn.addEventListener('click', function () {
       itemToAdd.q--;
     }
     handleCalculateCartStuff();
-    lastSel = selItem;
     timerService.setLastSelectedProduct(selItem); // 타이머 서비스에 선택된 상품 알림
   }
 });
