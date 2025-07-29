@@ -1,7 +1,3 @@
-// ========================================
-// GLOBAL STATE & CONSTANTS
-// ========================================
-
 import { createAddToCartButton } from './components/AddToCartButton';
 import { addItemToCart, createCartDisplay, getCartItems, removeItemFromCart } from './components/CartDisplay';
 import { updateCartItemPrice } from './components/CartItem';
@@ -139,18 +135,6 @@ function main() {
   }, Math.random() * 20000);
 }
 
-// ========================================
-// UI 렌더링 함수들
-// ========================================
-let sum;
-
-// 상품 선택 옵션 업데이트 (기존 함수 제거하고 import된 함수 사용)
-// function onUpdateSelectOptions() { ... } // 이 함수 제거
-
-// ========================================
-// 계산 및 비즈니스 로직 함수들
-// ========================================
-
 // 카트 계산 메인 함수에서 CartTotal 컴포넌트 사용
 function handleCalculateCartStuff() {
   let subTot;
@@ -165,14 +149,6 @@ function handleCalculateCartStuff() {
   subTot = 0;
 
   const itemDiscounts = [];
-  // const lowStockItems = [];
-
-  // // 저재고 상품 확인
-  // for (idx = 0; idx < prodList.length; idx++) {
-  //   if (prodList[idx].q < 5 && prodList[idx].q > 0) {
-  //     lowStockItems.push(prodList[idx].name);
-  //   }
-  // }
 
   // 카트 아이템별 계산
   for (let i = 0; i < cartItems.length; i++) {
@@ -316,17 +292,6 @@ function handleCalculateCartStuff() {
   handleStockInfoUpdate();
   // doRenderBonusPoints(); // 기존 doRenderBonusPoints 함수 제거
 }
-
-// ========================================
-// 포인트 관련 함수들
-// ========================================
-
-// 보너스 포인트 렌더링
-// const doRenderBonusPoints = function () { ... } // 이 함수 제거
-
-// ========================================
-// 재고 관련 함수들
-// ========================================
 
 // 재고 정보 업데이트 함수에서 컴포넌트 함수 사용
 const handleStockInfoUpdate = function () {
