@@ -1,3 +1,4 @@
+import { createDiscountInfo } from './DiscountInfo.js';
 import { createLoyaltyPoints } from './LoyaltyPoints.js';
 import { createSummaryDetails } from './SummaryDetails.js';
 
@@ -8,7 +9,6 @@ export const createRightColumn = () => {
     <h2 class="text-xs font-medium mb-5 tracking-extra-wide uppercase">Order Summary</h2>
     <div class="flex-1 flex flex-col">
       <div class="mt-auto">
-        <div id="discount-info" class="mb-4"></div>
         <div id="cart-total" class="pt-5 border-t border-white/10">
           <div class="flex justify-between items-baseline">
             <span class="text-sm uppercase tracking-wider">Total</span>
@@ -38,6 +38,11 @@ export const createRightColumn = () => {
   const summaryDetails = createSummaryDetails();
   const flexContainer = rightColumn.querySelector('.flex-1.flex.flex-col');
   flexContainer.insertBefore(summaryDetails, flexContainer.querySelector('.mt-auto'));
+
+  // DiscountInfo 컴포넌트 생성 및 추가
+  const discountInfo = createDiscountInfo();
+  const mtAuto = rightColumn.querySelector('.mt-auto');
+  mtAuto.insertBefore(discountInfo, mtAuto.querySelector('#cart-total'));
 
   // LoyaltyPoints 컴포넌트 생성 및 추가
   const loyaltyPoints = createLoyaltyPoints();
