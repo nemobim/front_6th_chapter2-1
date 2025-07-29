@@ -7,7 +7,7 @@ import { updateCartItemPrice } from './components/CartItem';
 import { updateCartTotal } from './components/CartTotal';
 import { updateDiscountInfo } from './components/DiscountInfo';
 import { createGridContainer } from './components/GridContainer';
-import { createHeader } from './components/header';
+import { createHeader } from './components/Header';
 import { updateItemCount } from './components/ItemCount';
 import { createLeftColumn } from './components/LeftColumn';
 import { updateLoyaltyPoints } from './components/LoyaltyPoints';
