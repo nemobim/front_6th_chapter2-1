@@ -13,15 +13,15 @@ import { CartPriceUpdater } from './services/CartPriceUpdater';
 import { DiscountCalculator } from './services/DiscountCalculator';
 import { TimerService } from './services/TimerService';
 import { UIUpdater } from './services/UIUpdater';
+import { CartState, ProductState } from './types/state.js';
+import { createState } from './utils/stateManager.js';
 
+// 기존 전역 변수들
 /** 상품 카탈로그 데이터 */
 let prodList;
 
 /** 재고 정보 표시 컴포넌트 */
 let stockInfo;
-
-/** 현재 카트의 총 아이템 수 */
-let itemCnt;
 
 /** 상품 선택 드롭다운 */
 let sel;
@@ -37,6 +37,14 @@ let discountCalculator;
 
 /** 모든 컴포넌트의 UI 업데이트 관리 */
 let uiUpdater;
+
+// 카트 상태 관리 (정의된 타입 사용)
+const [getCartState, setCartState, subscribeCart] = createState(CartState);
+
+// 실제 사용하는 함수만 추가
+function updateCartItemCount(newCount) {
+  setCartState((prev) => ({ ...prev, totalItemCount: newCount }));
+}
 
 /**
  * 할인 계산과 UI 업데이트를 조율하는 메인 카트 계산 함수
@@ -55,8 +63,8 @@ function handleCalculateCartStuff() {
   // 할인, 총액, 아이템 수 계산
   const calculationResult = discountCalculator.calculateTotalDiscount(cartItems, prodList);
 
-  // 헤더 표시를 위한 전역 아이템 수 업데이트
-  itemCnt = calculationResult.itemCount;
+  // 정의된 타입의 필드명 사용
+  updateCartItemCount(calculationResult.itemCount);
 
   // 모든 컴포넌트에서 UI 업데이트 트리거
   uiUpdater.updateAllUI(calculationResult);
@@ -114,7 +122,7 @@ function createCoreComponents() {
  * 레이아웃 컴포넌트들을 생성하고 조립
  */
 function createLayoutComponents() {
-  const header = createHeader({ cartItemCount: itemCnt });
+  const header = createHeader({ cartItemCount: getCartState('totalItemCount') });
 
   const leftColumn = createLeftColumn({
     productSelector: sel,
@@ -160,7 +168,9 @@ function setupEventHandlers(cartEventHandler) {
 
 function main() {
   // 1. 애플리케이션 상태 초기화
-  itemCnt = 0;
+  // 기존: itemCnt = 0;
+  // 새로운: 상태 초기화
+  updateCartItemCount(0);
   prodList = PRODUCT_LIST;
 
   // 2. 핵심 서비스 초기화 (DOM 생성 전)
@@ -183,6 +193,17 @@ function main() {
 
   // 8. 이벤트 핸들러 등록
   setupEventHandlers(cartEventHandler);
+
+  // 카트 상태 변경 시 UI 업데이트
+  subscribeCart((newCartState) => {
+    const header = document.querySelector('header');
+    if (header) {
+      const itemCountElement = header.querySelector('.cart-item-count');
+      if (itemCountElement) {
+        itemCountElement.textContent = newCartState.totalItemCount;
+      }
+    }
+  });
 }
 
 main();
