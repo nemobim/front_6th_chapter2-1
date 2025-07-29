@@ -2,6 +2,7 @@
 // GLOBAL STATE & CONSTANTS
 // ========================================
 
+import { createHeader } from './components/header';
 import { PRODUCT_IDS, PRODUCT_LIST } from './data/products';
 
 let prodList;
@@ -31,14 +32,8 @@ function main() {
   // ----------------------------------------
   const root = document.getElementById('app');
 
-  // 헤더 생성
-  const header = document.createElement('div');
-  header.className = 'mb-8';
-  header.innerHTML = /* HTML */ `
-    <h1 class="text-xs font-medium tracking-extra-wide uppercase mb-2">🛒 Hanghae Online Store</h1>
-    <div class="text-5xl tracking-tight leading-none">Shopping Cart</div>
-    <p id="item-count" class="text-sm text-gray-500 font-normal mt-3">🛍️ 0 items in cart</p>
-  `;
+  // 헤더 생성 (컴포넌트 사용)
+  const header = createHeader({ cartItemCount: itemCnt });
 
   // 상품 선택기 생성
   sel = document.createElement('select');
