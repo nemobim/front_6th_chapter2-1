@@ -3,6 +3,13 @@
 // ========================================
 
 import { createAddToCartButton } from './components/AddToCartButton';
+import {
+  addItemToCart,
+  createCartDisplay,
+  getCartItems,
+  hasCartItems,
+  removeItemFromCart,
+} from './components/CartDisplay';
 import { createCartItem, updateCartItemPrice } from './components/CartItem';
 import { createGridContainer } from './components/GridContainer';
 import { createHeader } from './components/header';
@@ -59,8 +66,7 @@ function main() {
   selectorContainer.appendChild(stockInfo);
 
   // 카트 디스플레이 생성
-  cartDisp = document.createElement('div');
-  cartDisp.id = 'cart-items';
+  cartDisp = createCartDisplay();
 
   // 왼쪽 컬럼 생성
   const leftColumn = createLeftColumn({
@@ -172,7 +178,7 @@ function handleCalculateCartStuff() {
   totalAmt = 0;
   itemCnt = 0;
 
-  const cartItems = cartDisp.children;
+  const cartItems = getCartItems(cartDisp);
   subTot = 0;
 
   const itemDiscounts = [];
@@ -413,7 +419,7 @@ const doRenderBonusPoints = function () {
   let hasMouse;
   let hasMonitorArm;
 
-  if (cartDisp.children.length === 0) {
+  if (!hasCartItems(cartDisp)) {
     document.getElementById('loyalty-points').style.display = 'none';
     return;
   }
@@ -439,7 +445,7 @@ const doRenderBonusPoints = function () {
   hasKeyboard = false;
   hasMouse = false;
   hasMonitorArm = false;
-  const nodes = cartDisp.children;
+  const nodes = getCartItems(cartDisp);
   for (const node of nodes) {
     let product = null;
     for (let pIdx = 0; pIdx < prodList.length; pIdx++) {
@@ -520,7 +526,7 @@ const handleStockInfoUpdate = function () {
 // 카트 내 가격 업데이트 (세일 상품 반영)
 function doUpdatePricesInCart() {
   // 카트 아이템별 가격 업데이트
-  const cartItems = cartDisp.children;
+  const cartItems = getCartItems(cartDisp);
   for (let i = 0; i < cartItems.length; i++) {
     const itemId = cartItems[i].id;
     let product = null;
@@ -584,9 +590,8 @@ addBtn.addEventListener('click', function () {
         alert('재고가 부족합니다.');
       }
     } else {
-      // 새 아이템 추가 (CartItem 컴포넌트 사용)
-      const newItem = createCartItem(itemToAdd);
-      cartDisp.appendChild(newItem);
+      // 새 아이템 추가 (CartDisplay 컴포넌트 함수만 사용)
+      addItemToCart(cartDisp, itemToAdd);
       itemToAdd.q--;
     }
     handleCalculateCartStuff();
@@ -623,7 +628,7 @@ cartDisp.addEventListener('click', function (event) {
         prod.q -= qtyChange;
       } else if (newQty <= 0) {
         prod.q += currentQty;
-        itemElem.remove();
+        removeItemFromCart(cartDisp, prodId);
       } else {
         alert('재고가 부족합니다.');
       }
@@ -632,7 +637,7 @@ cartDisp.addEventListener('click', function (event) {
       const qtyElem = itemElem.querySelector('.quantity-number');
       const remQty = parseInt(qtyElem.textContent);
       prod.q += remQty;
-      itemElem.remove();
+      removeItemFromCart(cartDisp, prodId);
     }
 
     handleCalculateCartStuff();
