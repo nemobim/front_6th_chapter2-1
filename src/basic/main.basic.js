@@ -1,6 +1,5 @@
 import { createAddToCartButton } from './components/AddToCartButton';
 import { addItemToCart, createCartDisplay, getCartItems, removeItemFromCart } from './components/CartDisplay';
-import { updateCartItemPrice } from './components/CartItem';
 import { updateCartTotal } from './components/CartTotal';
 import { updateDiscountInfo } from './components/DiscountInfo';
 import { createGridContainer } from './components/GridContainer';
@@ -14,6 +13,7 @@ import { createRightColumn } from './components/RightColumn';
 import { createStockInfo, updateStockInfo } from './components/StockInfo';
 import { updateSummaryDetails } from './components/SummaryDetails';
 import { PRODUCT_IDS, PRODUCT_LIST } from './data/products';
+import { CartPriceUpdater } from './services/CartPriceUpdater';
 import { TimerService } from './services/TimerService';
 
 let prodList;
@@ -259,21 +259,8 @@ const handleStockInfoUpdate = function () {
 
 // 카트 내 가격 업데이트 (세일 상품 반영)
 function doUpdatePricesInCart() {
-  // 카트 아이템별 가격 업데이트
   const cartItems = getCartItems(cartDisp);
-  for (let i = 0; i < cartItems.length; i++) {
-    const itemId = cartItems[i].id;
-    let product = null;
-    for (let productIdx = 0; productIdx < prodList.length; productIdx++) {
-      if (prodList[productIdx].id === itemId) {
-        product = prodList[productIdx];
-        break;
-      }
-    }
-    if (product) {
-      updateCartItemPrice(cartItems[i], product);
-    }
-  }
+  CartPriceUpdater.updateCartItemPrices(cartItems);
   handleCalculateCartStuff();
 }
 
