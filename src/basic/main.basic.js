@@ -2,6 +2,7 @@
 // GLOBAL STATE & CONSTANTS
 // ========================================
 
+import { createGridContainer } from './components/GridContainer';
 import { createHeader } from './components/header';
 import { PRODUCT_IDS, PRODUCT_LIST } from './data/products';
 
@@ -32,15 +33,9 @@ function main() {
   // ----------------------------------------
   const root = document.getElementById('app');
 
-  // 헤더 생성 (컴포넌트 사용)
-  const header = createHeader({ cartItemCount: itemCnt });
-
   // 상품 선택기 생성
   sel = document.createElement('select');
   sel.id = 'product-select';
-
-  // 그리드 컨테이너 생성
-  const gridContainer = document.createElement('div');
 
   // 왼쪽 컬럼 생성
   const leftColumn = document.createElement('div');
@@ -52,7 +47,6 @@ function main() {
 
   // CSS 클래스 설정
   sel.className = 'w-full p-3 border border-gray-300 rounded-lg text-base mb-3';
-  gridContainer.className = 'grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6 flex-1 overflow-hidden';
 
   // 추가 버튼 생성
   addBtn = document.createElement('button');
@@ -214,8 +208,13 @@ function main() {
   // ----------------------------------------
   // DOM 최종 조립
   // ----------------------------------------
-  gridContainer.appendChild(leftColumn);
-  gridContainer.appendChild(rightColumn);
+
+  // 헤더 생성
+  const header = createHeader({ cartItemCount: itemCnt });
+  // 그리드 컨테이너 생성
+  const gridContainer = createGridContainer({ leftColumn, rightColumn });
+
+  // append
   manualOverlay.appendChild(manualColumn);
   root.appendChild(header);
   root.appendChild(gridContainer);
