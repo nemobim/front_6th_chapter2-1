@@ -2,6 +2,7 @@
 // GLOBAL STATE & CONSTANTS
 // ========================================
 
+import { createAddToCartButton } from './components/AddToCartButton';
 import { createCartItem, updateCartItemPrice } from './components/CartItem';
 import { createGridContainer } from './components/GridContainer';
 import { createHeader } from './components/header';
@@ -9,6 +10,7 @@ import { createLeftColumn } from './components/LeftColumn';
 import { createManualOverlay } from './components/ManualOverlay';
 import { createProductSelector, updateProductOptions } from './components/ProductSelector';
 import { createRightColumn } from './components/RightColumn';
+import { createStockInfo, updateStockInfo } from './components/StockInfo';
 import { PRODUCT_IDS, PRODUCT_LIST } from './data/products';
 
 let prodList;
@@ -46,16 +48,10 @@ function main() {
   selectorContainer.className = 'mb-6 pb-6 border-b border-gray-200';
 
   // 추가 버튼 생성
-  addBtn = document.createElement('button');
+  addBtn = createAddToCartButton();
 
   // 재고 정보 생성
-  stockInfo = document.createElement('div');
-  addBtn.id = 'add-to-cart';
-  stockInfo.id = 'stock-status';
-  stockInfo.className = 'text-xs text-red-500 mt-3 whitespace-pre-line';
-  addBtn.innerHTML = 'Add to Cart';
-  addBtn.className =
-    'w-full py-3 bg-black text-white text-sm font-medium uppercase tracking-wider hover:bg-gray-800 transition-all';
+  stockInfo = createStockInfo();
 
   // DOM 구조 조립
   selectorContainer.appendChild(sel);
@@ -512,22 +508,9 @@ const doRenderBonusPoints = function () {
 // 재고 관련 함수들
 // ========================================
 
-// 재고 정보 업데이트
+// 재고 정보 업데이트 함수에서 컴포넌트 함수 사용
 const handleStockInfoUpdate = function () {
-  let infoMsg;
-
-  infoMsg = '';
-
-  prodList.forEach(function (item) {
-    if (item.q < 5) {
-      if (item.q > 0) {
-        infoMsg = infoMsg + item.name + ': 재고 부족 (' + item.q + '개 남음)\n';
-      } else {
-        infoMsg = infoMsg + item.name + ': 품절\n';
-      }
-    }
-  });
-  stockInfo.textContent = infoMsg;
+  updateStockInfo(stockInfo, prodList);
 };
 
 // ========================================
