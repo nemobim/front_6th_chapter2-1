@@ -1,3 +1,6 @@
+// ========================================
+// IMPORTS
+// ========================================
 import { createAddToCartButton } from './components/AddToCartButton';
 import { addItemToCart, createCartDisplay, getCartItems, removeItemFromCart } from './components/CartDisplay';
 import { updateCartItemPrice } from './components/CartItem';
@@ -5,6 +8,7 @@ import { updateCartTotal } from './components/CartTotal';
 import { updateDiscountInfo } from './components/DiscountInfo';
 import { createGridContainer } from './components/GridContainer';
 import { createHeader } from './components/header';
+import { updateItemCount } from './components/ItemCount';
 import { createLeftColumn } from './components/LeftColumn';
 import { updateLoyaltyPoints } from './components/LoyaltyPoints';
 import { createManualOverlay } from './components/ManualOverlay';
@@ -135,10 +139,9 @@ function main() {
   }, Math.random() * 20000);
 }
 
-// 카트 계산 메인 함수에서 CartTotal 컴포넌트 사용
+// 카트 계산 메인 함수에서 ItemCount 컴포넌트 사용
 function handleCalculateCartStuff() {
   let subTot;
-  let previousCount;
   let stockMsg;
 
   // 초기 값 설정
@@ -237,7 +240,11 @@ function handleCalculateCartStuff() {
   // ----------------------------------------
 
   // 아이템 카운트 업데이트
-  document.getElementById('item-count').textContent = '🛍️ ' + itemCnt + ' items in cart';
+  const itemCountElement = document.getElementById('item-count');
+  if (itemCountElement) {
+    const previousCount = parseInt(itemCountElement.textContent.match(/\d+/) || 0);
+    updateItemCount(itemCountElement, itemCnt, previousCount);
+  }
 
   // 주문 요약 업데이트
   const summaryDetails = document.getElementById('summary-details');
@@ -262,16 +269,6 @@ function handleCalculateCartStuff() {
   const discountInfoDiv = document.getElementById('discount-info');
   if (discountInfoDiv) {
     updateDiscountInfo(discountInfoDiv, discRate, totalAmt, originalTotal);
-  }
-
-  // 아이템 카운트 변경 추적
-  const itemCountElement = document.getElementById('item-count');
-  if (itemCountElement) {
-    previousCount = parseInt(itemCountElement.textContent.match(/\d+/) || 0);
-    itemCountElement.textContent = '🛍️ ' + itemCnt + ' items in cart';
-    if (previousCount !== itemCnt) {
-      itemCountElement.setAttribute('data-changed', 'true');
-    }
   }
 
   // 재고 메시지 업데이트
