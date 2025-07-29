@@ -4,6 +4,7 @@
 
 import { createGridContainer } from './components/GridContainer';
 import { createHeader } from './components/header';
+import { createLeftColumn } from './components/LeftColumn';
 import { PRODUCT_IDS, PRODUCT_LIST } from './data/products';
 
 let prodList;
@@ -36,17 +37,11 @@ function main() {
   // 상품 선택기 생성
   sel = document.createElement('select');
   sel.id = 'product-select';
-
-  // 왼쪽 컬럼 생성
-  const leftColumn = document.createElement('div');
-  leftColumn['className'] = 'bg-white border border-gray-200 p-8 overflow-y-auto';
+  sel.className = 'w-full p-3 border border-gray-300 rounded-lg text-base mb-3';
 
   // 상품 선택 컨테이너 생성
   const selectorContainer = document.createElement('div');
   selectorContainer.className = 'mb-6 pb-6 border-b border-gray-200';
-
-  // CSS 클래스 설정
-  sel.className = 'w-full p-3 border border-gray-300 rounded-lg text-base mb-3';
 
   // 추가 버튼 생성
   addBtn = document.createElement('button');
@@ -64,12 +59,18 @@ function main() {
   selectorContainer.appendChild(sel);
   selectorContainer.appendChild(addBtn);
   selectorContainer.appendChild(stockInfo);
-  leftColumn.appendChild(selectorContainer);
 
   // 카트 디스플레이 생성
   cartDisp = document.createElement('div');
-  leftColumn.appendChild(cartDisp);
   cartDisp.id = 'cart-items';
+
+  // 왼쪽 컬럼 생성
+  const leftColumn = createLeftColumn({
+    productSelector: sel,
+    addToCartButton: addBtn,
+    stockStatusElement: stockInfo,
+    cartDisplay: cartDisp,
+  });
 
   // 오른쪽 컬럼 (주문 요약) 생성
   const rightColumn = document.createElement('div');
