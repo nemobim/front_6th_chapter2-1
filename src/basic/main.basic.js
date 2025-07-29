@@ -14,6 +14,7 @@ import { updateCartItemPrice } from './components/CartItem';
 import { createGridContainer } from './components/GridContainer';
 import { createHeader } from './components/header';
 import { createLeftColumn } from './components/LeftColumn';
+import { updateLoyaltyPoints } from './components/LoyaltyPoints';
 import { createManualOverlay } from './components/ManualOverlay';
 import { createProductSelector, updateProductOptions } from './components/ProductSelector';
 import { createRightColumn } from './components/RightColumn';
@@ -157,7 +158,7 @@ let sum;
 // 계산 및 비즈니스 로직 함수들
 // ========================================
 
-// 카트 계산 메인 함수에서 SummaryDetails 컴포넌트 사용
+// 카트 계산 메인 함수에서 LoyaltyPoints 컴포넌트 사용
 function handleCalculateCartStuff() {
   let subTot;
   // let idx;
@@ -287,14 +288,8 @@ function handleCalculateCartStuff() {
   // 적립 포인트 업데이트
   const loyaltyPointsDiv = document.getElementById('loyalty-points');
   if (loyaltyPointsDiv) {
-    points = Math.floor(totalAmt / 1000);
-    if (points > 0) {
-      loyaltyPointsDiv.textContent = '적립 포인트: ' + points + 'p';
-      loyaltyPointsDiv.style.display = 'block';
-    } else {
-      loyaltyPointsDiv.textContent = '적립 포인트: 0p';
-      loyaltyPointsDiv.style.display = 'block';
-    }
+    const finalPoints = updateLoyaltyPoints(loyaltyPointsDiv, getCartItems(cartDisp), prodList, totalAmt, itemCnt);
+    bonusPts = finalPoints;
   }
 
   // 할인 정보 업데이트
@@ -339,7 +334,7 @@ function handleCalculateCartStuff() {
 
   // 추가 함수 호출
   handleStockInfoUpdate();
-  doRenderBonusPoints();
+  // doRenderBonusPoints(); // 기존 doRenderBonusPoints 함수 제거
 }
 
 // ========================================
@@ -347,102 +342,7 @@ function handleCalculateCartStuff() {
 // ========================================
 
 // 보너스 포인트 렌더링
-const doRenderBonusPoints = function () {
-  let finalPoints;
-  let hasKeyboard;
-  let hasMouse;
-  let hasMonitorArm;
-
-  if (!hasCartItems(cartDisp)) {
-    document.getElementById('loyalty-points').style.display = 'none';
-    return;
-  }
-
-  // 기본 포인트 계산
-  const basePoints = Math.floor(totalAmt / 1000);
-  finalPoints = 0;
-  const pointsDetail = [];
-  if (basePoints > 0) {
-    finalPoints = basePoints;
-    pointsDetail.push('기본: ' + basePoints + 'p');
-  }
-
-  // 화요일 2배 포인트
-  if (new Date().getDay() === 2) {
-    if (basePoints > 0) {
-      finalPoints = basePoints * 2;
-      pointsDetail.push('화요일 2배');
-    }
-  }
-
-  // 상품 조합 확인
-  hasKeyboard = false;
-  hasMouse = false;
-  hasMonitorArm = false;
-  const nodes = getCartItems(cartDisp);
-  for (const node of nodes) {
-    let product = null;
-    for (let pIdx = 0; pIdx < prodList.length; pIdx++) {
-      if (prodList[pIdx].id === node.id) {
-        product = prodList[pIdx];
-        break;
-      }
-    }
-    if (!product) continue;
-    if (product.id === PRODUCT_IDS.KEYBOARD) {
-      hasKeyboard = true;
-    } else if (product.id === PRODUCT_IDS.MOUSE) {
-      hasMouse = true;
-    } else if (product.id === PRODUCT_IDS.MONITOR_ARM) {
-      hasMonitorArm = true;
-    }
-  }
-
-  // 세트 구매 보너스 계산
-  if (hasKeyboard && hasMouse) {
-    finalPoints = finalPoints + 50;
-    pointsDetail.push('키보드+마우스 세트 +50p');
-  }
-  if (hasKeyboard && hasMouse && hasMonitorArm) {
-    finalPoints = finalPoints + 100;
-    pointsDetail.push('풀세트 구매 +100p');
-  }
-
-  // 대량구매 보너스 계산
-  if (itemCnt >= 30) {
-    finalPoints = finalPoints + 100;
-    pointsDetail.push('대량구매(30개+) +100p');
-  } else {
-    if (itemCnt >= 20) {
-      finalPoints = finalPoints + 50;
-      pointsDetail.push('대량구매(20개+) +50p');
-    } else {
-      if (itemCnt >= 10) {
-        finalPoints = finalPoints + 20;
-        pointsDetail.push('대량구매(10개+) +20p');
-      }
-    }
-  }
-
-  // 포인트 UI 업데이트
-  bonusPts = finalPoints;
-  const ptsTag = document.getElementById('loyalty-points');
-  if (ptsTag) {
-    if (bonusPts > 0) {
-      ptsTag.innerHTML =
-        '<div>적립 포인트: <span class="font-bold">' +
-        bonusPts +
-        'p</span></div>' +
-        '<div class="text-2xs opacity-70 mt-1">' +
-        pointsDetail.join(', ') +
-        '</div>';
-      ptsTag.style.display = 'block';
-    } else {
-      ptsTag.textContent = '적립 포인트: 0p';
-      ptsTag.style.display = 'block';
-    }
-  }
-};
+// const doRenderBonusPoints = function () { ... } // 이 함수 제거
 
 // ========================================
 // 재고 관련 함수들

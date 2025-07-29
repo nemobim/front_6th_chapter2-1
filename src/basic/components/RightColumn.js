@@ -1,3 +1,4 @@
+import { createLoyaltyPoints } from './LoyaltyPoints.js';
 import { createSummaryDetails } from './SummaryDetails.js';
 
 export const createRightColumn = () => {
@@ -13,7 +14,6 @@ export const createRightColumn = () => {
             <span class="text-sm uppercase tracking-wider">Total</span>
             <div class="text-2xl tracking-tight">₩0</div>
           </div>
-          <div id="loyalty-points" class="text-xs text-blue-400 mt-2 text-right">적립 포인트: 0p</div>
         </div>
         <div id="tuesday-special" class="mt-4 p-3 bg-white/10 rounded-lg hidden">
           <div class="flex items-center gap-2">
@@ -38,6 +38,11 @@ export const createRightColumn = () => {
   const summaryDetails = createSummaryDetails();
   const flexContainer = rightColumn.querySelector('.flex-1.flex.flex-col');
   flexContainer.insertBefore(summaryDetails, flexContainer.querySelector('.mt-auto'));
+
+  // LoyaltyPoints 컴포넌트 생성 및 추가
+  const loyaltyPoints = createLoyaltyPoints();
+  const cartTotal = rightColumn.querySelector('#cart-total');
+  cartTotal.appendChild(loyaltyPoints);
 
   return rightColumn;
 };
