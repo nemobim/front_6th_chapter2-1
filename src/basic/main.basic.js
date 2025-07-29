@@ -3,13 +3,7 @@
 // ========================================
 
 import { createAddToCartButton } from './components/AddToCartButton';
-import {
-  addItemToCart,
-  createCartDisplay,
-  getCartItems,
-  hasCartItems,
-  removeItemFromCart,
-} from './components/CartDisplay';
+import { addItemToCart, createCartDisplay, getCartItems, removeItemFromCart } from './components/CartDisplay';
 import { updateCartItemPrice } from './components/CartItem';
 import { updateDiscountInfo } from './components/DiscountInfo';
 import { createGridContainer } from './components/GridContainer';
@@ -24,7 +18,6 @@ import { updateSummaryDetails } from './components/SummaryDetails';
 import { PRODUCT_IDS, PRODUCT_LIST } from './data/products';
 
 let prodList;
-let bonusPts = 0;
 let stockInfo;
 let itemCnt;
 let lastSel;
@@ -162,9 +155,6 @@ let sum;
 // 카트 계산 메인 함수에서 LoyaltyPoints 컴포넌트 사용
 function handleCalculateCartStuff() {
   let subTot;
-  // let idx;
-  let savedAmount;
-  let points;
   let previousCount;
   let stockMsg;
 
@@ -289,8 +279,8 @@ function handleCalculateCartStuff() {
   // 적립 포인트 업데이트
   const loyaltyPointsDiv = document.getElementById('loyalty-points');
   if (loyaltyPointsDiv) {
-    const finalPoints = updateLoyaltyPoints(loyaltyPointsDiv, getCartItems(cartDisp), prodList, totalAmt, itemCnt);
-    bonusPts = finalPoints;
+    updateLoyaltyPoints(loyaltyPointsDiv, getCartItems(cartDisp), prodList, totalAmt, itemCnt);
+    // bonusPts = finalPoints; // 제거 - 컴포넌트 내부에서 상태 관리
   }
 
   // 할인 정보 업데이트
