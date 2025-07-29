@@ -13,7 +13,7 @@ import { CartPriceUpdater } from './services/CartPriceUpdater';
 import { DiscountCalculator } from './services/DiscountCalculator';
 import { TimerService } from './services/TimerService';
 import { UIUpdater } from './services/UIUpdater';
-import { CartState, ProductState } from './types/state.js';
+import { CartState } from './types/state.js';
 import { createState } from './utils/stateManager.js';
 
 // 기존 전역 변수들
@@ -46,6 +46,21 @@ function updateCartItemCount(newCount) {
   setCartState((prev) => ({ ...prev, totalItemCount: newCount }));
 }
 
+// 카트 아이템 업데이트 함수 추가
+function updateCartItems(newItems) {
+  setCartState((prev) => ({ ...prev, items: newItems }));
+}
+
+// 카트 총액 업데이트 함수 추가
+function updateCartTotal(newTotal) {
+  setCartState((prev) => ({ ...prev, totalAmount: newTotal }));
+}
+
+// 할인 금액 업데이트 함수 추가
+function updateCartDiscount(newDiscount) {
+  setCartState((prev) => ({ ...prev, discountAmount: newDiscount }));
+}
+
 /**
  * 할인 계산과 UI 업데이트를 조율하는 메인 카트 계산 함수
  *
@@ -63,8 +78,11 @@ function handleCalculateCartStuff() {
   // 할인, 총액, 아이템 수 계산
   const calculationResult = discountCalculator.calculateTotalDiscount(cartItems, prodList);
 
-  // 정의된 타입의 필드명 사용
+  // 카트 아이템, 아이템 수, 총액 모두 상태로 업데이트
+  updateCartItems(cartItems);
   updateCartItemCount(calculationResult.itemCount);
+  updateCartTotal(calculationResult.totalAmount);
+  updateCartDiscount(calculationResult.discountAmount);
 
   // 모든 컴포넌트에서 UI 업데이트 트리거
   uiUpdater.updateAllUI(calculationResult);
