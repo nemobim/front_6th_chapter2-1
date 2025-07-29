@@ -2,12 +2,7 @@
 // GLOBAL STATE & CONSTANTS
 // ========================================
 
-// 상품 ID 상수 (통일된 명명 규칙 적용)
-const PRODUCT_KEYBOARD = 'p1';
-const PRODUCT_MOUSE = 'p2';
-const PRODUCT_MONITOR_ARM = 'p3';
-const PRODUCT_POUCH = 'p4';
-const PRODUCT_SPEAKER = 'p5';
+import { PRODUCT_IDS, PRODUCT_LIST } from './data/products';
 
 let prodList;
 let bonusPts = 0;
@@ -29,53 +24,7 @@ function main() {
   lastSel = null;
 
   // 상품 데이터 초기화
-  prodList = [
-    {
-      id: 'p1',
-      name: '버그 없애는 키보드',
-      val: 10000,
-      originalVal: 10000,
-      q: 50,
-      onSale: false,
-      suggestSale: false,
-    },
-    {
-      id: 'p2',
-      name: '생산성 폭발 마우스',
-      val: 20000,
-      originalVal: 20000,
-      q: 30,
-      onSale: false,
-      suggestSale: false,
-    },
-    {
-      id: 'p3',
-      name: '거북목 탈출 모니터암',
-      val: 30000,
-      originalVal: 30000,
-      q: 20,
-      onSale: false,
-      suggestSale: false,
-    },
-    {
-      id: 'p4',
-      name: '에러 방지 노트북 파우치',
-      val: 15000,
-      originalVal: 15000,
-      q: 0,
-      onSale: false,
-      suggestSale: false,
-    },
-    {
-      id: 'p5',
-      name: `코딩할 때 듣는 Lo-Fi 스피커`,
-      val: 25000,
-      originalVal: 25000,
-      q: 10,
-      onSale: false,
-      suggestSale: false,
-    },
-  ];
+  prodList = PRODUCT_LIST;
 
   // ----------------------------------------
   // DOM 요소 생성
@@ -389,7 +338,7 @@ function onUpdateSelectOptions() {
 // 카트 계산 메인 함수
 function handleCalculateCartStuff() {
   let subTot;
-  let idx;
+  // let idx;
   let savedAmount;
   let points;
   let previousCount;
@@ -403,14 +352,14 @@ function handleCalculateCartStuff() {
   subTot = 0;
 
   const itemDiscounts = [];
-  const lowStockItems = [];
+  // const lowStockItems = [];
 
-  // 저재고 상품 확인
-  for (idx = 0; idx < prodList.length; idx++) {
-    if (prodList[idx].q < 5 && prodList[idx].q > 0) {
-      lowStockItems.push(prodList[idx].name);
-    }
-  }
+  // // 저재고 상품 확인
+  // for (idx = 0; idx < prodList.length; idx++) {
+  //   if (prodList[idx].q < 5 && prodList[idx].q > 0) {
+  //     lowStockItems.push(prodList[idx].name);
+  //   }
+  // }
 
   // 카트 아이템별 계산
   for (let i = 0; i < cartItems.length; i++) {
@@ -441,19 +390,19 @@ function handleCalculateCartStuff() {
 
       // 개별 상품 할인 계산
       if (q >= 10) {
-        if (curItem.id === PRODUCT_KEYBOARD) {
+        if (curItem.id === PRODUCT_IDS.KEYBOARD) {
           disc = 10 / 100;
         } else {
-          if (curItem.id === PRODUCT_MOUSE) {
+          if (curItem.id === PRODUCT_IDS.MOUSE) {
             disc = 15 / 100;
           } else {
-            if (curItem.id === PRODUCT_MONITOR_ARM) {
+            if (curItem.id === PRODUCT_IDS.MONITOR_ARM) {
               disc = 20 / 100;
             } else {
-              if (curItem.id === PRODUCT_POUCH) {
+              if (curItem.id === PRODUCT_IDS.POUCH) {
                 disc = 5 / 100;
               } else {
-                if (curItem.id === PRODUCT_SPEAKER) {
+                if (curItem.id === PRODUCT_IDS.SPEAKER) {
                   disc = 25 / 100;
                 }
               }
@@ -676,11 +625,11 @@ const doRenderBonusPoints = function () {
       }
     }
     if (!product) continue;
-    if (product.id === PRODUCT_KEYBOARD) {
+    if (product.id === PRODUCT_IDS.KEYBOARD) {
       hasKeyboard = true;
-    } else if (product.id === PRODUCT_MOUSE) {
+    } else if (product.id === PRODUCT_IDS.MOUSE) {
       hasMouse = true;
-    } else if (product.id === PRODUCT_MONITOR_ARM) {
+    } else if (product.id === PRODUCT_IDS.MONITOR_ARM) {
       hasMonitorArm = true;
     }
   }
