@@ -10,7 +10,7 @@ import {
   hasCartItems,
   removeItemFromCart,
 } from './components/CartDisplay';
-import { createCartItem, updateCartItemPrice } from './components/CartItem';
+import { updateCartItemPrice } from './components/CartItem';
 import { createGridContainer } from './components/GridContainer';
 import { createHeader } from './components/header';
 import { createLeftColumn } from './components/LeftColumn';
@@ -50,20 +50,11 @@ function main() {
   // 상품 선택기 생성
   sel = createProductSelector();
 
-  // 상품 선택 컨테이너 생성
-  const selectorContainer = document.createElement('div');
-  selectorContainer.className = 'mb-6 pb-6 border-b border-gray-200';
-
   // 추가 버튼 생성
   addBtn = createAddToCartButton();
 
   // 재고 정보 생성
   stockInfo = createStockInfo();
-
-  // DOM 구조 조립
-  selectorContainer.appendChild(sel);
-  selectorContainer.appendChild(addBtn);
-  selectorContainer.appendChild(stockInfo);
 
   // 카트 디스플레이 생성
   cartDisp = createCartDisplay();
