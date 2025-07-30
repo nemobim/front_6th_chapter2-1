@@ -20,9 +20,6 @@ import { createState } from './utils/stateManager.js';
 const [getAppState, setAppState, subscribeApp] = createState(AppState);
 
 // 기존 전역 변수들
-/** 상품 선택 드롭다운 */
-let sel;
-
 /** 카트 추가 버튼 컴포넌트 */
 let addBtn;
 
@@ -133,7 +130,7 @@ function initializeCoreServices() {
  * DOM 의존 서비스들을 초기화
  * DOM 컴포넌트 생성 후에 호출되어야 함
  */
-function initializeDOMDependentServices() {
+function initializeDOMDependentServices(sel) {
   uiUpdater = new UIUpdater(cartDisp, getProductList());
 
   const timerService = new TimerService(getProductList(), () => updateProductOptions(sel, getProductList()), doUpdatePricesInCart);
@@ -147,17 +144,17 @@ function initializeDOMDependentServices() {
  * 핵심 상호작용 컴포넌트들을 생성
  */
 function createCoreComponents() {
-  sel = createProductSelector();
+  const sel = createProductSelector();
   addBtn = createAddToCartButton();
   const stockInfo = createStockInfo();
   cartDisp = createCartDisplay();
-  return { stockInfo };
+  return { sel, stockInfo };
 }
 
 /**
  * 레이아웃 컴포넌트들을 생성하고 조립
  */
-function createLayoutComponents(stockInfo) {
+function createLayoutComponents(sel, stockInfo) {
   const header = createHeader({ cartItemCount: getCartState().totalItemCount });
 
   const leftColumn = createLeftColumn({
@@ -190,7 +187,7 @@ function mountComponentsToDOM(components) {
 /**
  * 초기 UI 상태를 설정
  */
-function performInitialRendering() {
+function performInitialRendering(sel) {
   updateProductOptions(sel, getProductList());
   handleCalculateCartStuff();
 }
@@ -213,19 +210,19 @@ function main() {
   initializeCoreServices();
 
   // 3. 핵심 컴포넌트 생성
-  const { stockInfo } = createCoreComponents();
+  const { sel, stockInfo } = createCoreComponents();
 
   // 4. 레이아웃 컴포넌트 생성 및 조립
-  const layoutComponents = createLayoutComponents(stockInfo);
+  const layoutComponents = createLayoutComponents(sel, stockInfo);
 
   // 5. DOM에 컴포넌트 마운트
   mountComponentsToDOM(layoutComponents);
 
   // 6. DOM 의존 서비스 초기화
-  const { cartEventHandler } = initializeDOMDependentServices();
+  const { cartEventHandler } = initializeDOMDependentServices(sel);
 
   // 7. 초기 렌더링 수행
-  performInitialRendering();
+  performInitialRendering(sel);
 
   // 8. 이벤트 핸들러 등록
   setupEventHandlers(cartEventHandler);
