@@ -1,49 +1,13 @@
-import { getCartItems } from './components/CartDisplay';
-import { updateProductOptions } from './components/ProductSelector';
-import { 
-  getProductList, 
-  updateCartItems, 
-  updateCartItemCount, 
-  updateCartTotal, 
-  updateCartDiscount
-} from './state/appState.js';
 import { useAppInitialization } from './hooks/useAppInitialization.js';
 import { useComponentCreation } from './hooks/useComponentCreation.js';
 import { useServiceInitialization } from './hooks/useServiceInitialization.js';
-
-/**
- * 초기 UI 상태를 설정
- */
-function performInitialRendering(sel, cartDisp, discountCalculator, uiUpdater) {
-  updateProductOptions(sel, getProductList());
-  
-  // 초기 렌더링 시에는 UI 업데이트 없이 상태만 계산
-  const cartItems = getCartItems(cartDisp);
-  const calculationResult = discountCalculator.calculateTotalDiscount(cartItems, getProductList());
-  
-  // 카트 상태만 업데이트 (UI 업데이트는 나중에)
-  updateCartItems(cartItems);
-  updateCartItemCount(calculationResult.itemCount);
-  updateCartTotal(calculationResult.totalAmount);
-  updateCartDiscount(calculationResult.discountAmount);
-  
-  // uiUpdater가 있으면 UI 업데이트 수행
-  if (uiUpdater) {
-    uiUpdater.updateAllUI(calculationResult);
-  }
-}
-
-/**
- * 이벤트 핸들러를 등록
- */
-function setupEventHandlers(cartEventHandler, addBtn) {
-  cartEventHandler.attachEventListeners(addBtn);
-}
+import { useRendering } from './hooks/useRendering.js';
 
 function main() {
   const { initializeAppState, setupStateSubscription } = useAppInitialization();
   const { createCoreComponents, createLayoutComponents, mountComponentsToDOM } = useComponentCreation();
   const { initializeCoreServices, initializeDOMDependentServices } = useServiceInitialization();
+  const { performInitialRendering, setupEventHandlers } = useRendering();
 
   // 1. 애플리케이션 상태 초기화
   initializeAppState();
