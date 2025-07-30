@@ -23,49 +23,7 @@ import {
   updateCartDiscount, 
   subscribeApp 
 } from './state/appState.js';
-
-/**
- * 할인 계산과 UI 업데이트를 조율하는 메인 카트 계산 함수
- *
- * 카트 내용이 변경되거나 가격이 업데이트될 때 호출됨
- */
-function handleCalculateCartStuff(cartDisp, discountCalculator, uiUpdater) {
-  // 필요한 서비스가 초기화되었는지 확인
-  if (!discountCalculator || !uiUpdater) {
-    return;
-  }
-
-  // 표시 컴포넌트에서 현재 카트 상태 가져오기
-  const cartItems = getCartItems(cartDisp);
-
-  // 할인, 총액, 아이템 수 계산
-  const calculationResult = discountCalculator.calculateTotalDiscount(cartItems, getProductList());
-
-  // 카트 아이템, 아이템 수, 총액 모두 상태로 업데이트
-  updateCartItems(cartItems);
-  updateCartItemCount(calculationResult.itemCount);
-  updateCartTotal(calculationResult.totalAmount);
-  updateCartDiscount(calculationResult.discountAmount);
-
-  // 모든 컴포넌트에서 UI 업데이트 트리거
-  uiUpdater.updateAllUI(calculationResult);
-}
-
-/**
- * 세일 가격이 변경될 때 카트 아이템 가격을 업데이트
- *
- * TimerService에 의해 세일 가격 업데이트 시 호출됨
- * 카트 아이템이 현재 세일 가격을 반영하도록 보장
- */
-function doUpdatePricesInCart(cartDisp, discountCalculator, uiUpdater) {
-  const cartItems = getCartItems(cartDisp);
-
-  // 모든 카트 아이템의 가격을 현재 세일 반영하여 업데이트
-  CartPriceUpdater.updateCartItemPrices(cartItems);
-
-  // 업데이트된 가격으로 총액 재계산
-  handleCalculateCartStuff(cartDisp, discountCalculator, uiUpdater);
-}
+import { useCartCalculation, useCartPriceUpdate } from './hooks/useCart.js';
 
 /**
  * 핵심 서비스들을 초기화
@@ -82,10 +40,13 @@ function initializeCoreServices() {
  */
 function initializeDOMDependentServices(sel, cartDisp, discountCalculator) {
   const uiUpdater = new UIUpdater(cartDisp, getProductList());
+  
+  const { handleCalculateCartStuff } = useCartCalculation(cartDisp, discountCalculator, uiUpdater);
+  const { doUpdatePricesInCart } = useCartPriceUpdate(cartDisp, discountCalculator, uiUpdater);
 
-  const timerService = new TimerService(getProductList(), () => updateProductOptions(sel, getProductList()), () => doUpdatePricesInCart(cartDisp, discountCalculator, uiUpdater));
+  const timerService = new TimerService(getProductList(), () => updateProductOptions(sel, getProductList()), doUpdatePricesInCart);
 
-  const cartEventHandler = new CartEventHandler(getProductList(), cartDisp, sel, timerService, () => handleCalculateCartStuff(cartDisp, discountCalculator, uiUpdater));
+  const cartEventHandler = new CartEventHandler(getProductList(), cartDisp, sel, timerService, handleCalculateCartStuff);
 
   return { timerService, cartEventHandler, uiUpdater };
 }
