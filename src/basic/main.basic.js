@@ -1,7 +1,7 @@
 import { useAppInitialization } from './hooks/useAppInitialization.js';
 import { useComponentCreation } from './hooks/useComponentCreation.js';
-import { useServiceInitialization } from './hooks/useServiceInitialization.js';
 import { useRendering } from './hooks/useRendering.js';
+import { useServiceInitialization } from './hooks/useServiceInitialization.js';
 
 function main() {
   const { initializeAppState, setupStateSubscription } = useAppInitialization();

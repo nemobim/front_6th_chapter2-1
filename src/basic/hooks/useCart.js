@@ -2,10 +2,10 @@ import { getCartItems } from '../components/CartDisplay.js';
 import { CartPriceUpdater } from '../services/CartPriceUpdater.js';
 import {
   getProductList,
-  updateCartItems,
-  updateCartItemCount,
-  updateCartTotal,
   updateCartDiscount,
+  updateCartItemCount,
+  updateCartItems,
+  updateCartTotal,
 } from '../state/appState.js';
 
 /**

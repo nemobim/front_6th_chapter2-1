@@ -25,21 +25,21 @@ export function useServiceInitialization() {
    */
   function initializeDOMDependentServices(sel, cartDisp, discountCalculator) {
     const uiUpdater = new UIUpdater(cartDisp, getProductList());
-    
+
     const { handleCalculateCartStuff } = useCartCalculation(cartDisp, discountCalculator, uiUpdater);
     const { doUpdatePricesInCart } = useCartPriceUpdate(cartDisp, discountCalculator, uiUpdater);
 
     const timerService = new TimerService(
-      getProductList(), 
-      () => updateProductOptions(sel, getProductList()), 
+      getProductList(),
+      () => updateProductOptions(sel, getProductList()),
       doUpdatePricesInCart
     );
 
     const cartEventHandler = new CartEventHandler(
-      getProductList(), 
-      cartDisp, 
-      sel, 
-      timerService, 
+      getProductList(),
+      cartDisp,
+      sel,
+      timerService,
       handleCalculateCartStuff
     );
 
@@ -47,4 +47,4 @@ export function useServiceInitialization() {
   }
 
   return { initializeCoreServices, initializeDOMDependentServices };
-} 
+}

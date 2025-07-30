@@ -1,9 +1,5 @@
 import { PRODUCT_LIST } from '../data/products';
-import { 
-  setProductList, 
-  updateCartItemCount, 
-  subscribeApp 
-} from '../state/appState.js';
+import { setProductList, subscribeApp, updateCartItemCount } from '../state/appState.js';
 
 /**
  * 앱 초기화 로직을 관리하는 커스텀 훅 스타일 함수
@@ -33,4 +29,4 @@ export function useAppInitialization() {
   }
 
   return { initializeAppState, setupStateSubscription };
-} 
+}

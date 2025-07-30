@@ -12,7 +12,7 @@ export function getProductList() {
 export function setProductList(productList) {
   setAppState((prev) => ({
     ...prev,
-    product: { ...prev.product, list: productList }
+    product: { ...prev.product, list: productList },
   }));
 }
 
@@ -23,7 +23,7 @@ export function getCartState() {
 export function setCartState(newCartState) {
   setAppState((prev) => ({
     ...prev,
-    cart: { ...prev.cart, ...newCartState }
+    cart: { ...prev.cart, ...newCartState },
   }));
 }
 
@@ -44,4 +44,4 @@ export function updateCartDiscount(newDiscount) {
   setCartState((prev) => ({ ...prev, discountAmount: newDiscount }));
 }
 
-export { subscribeApp }; 
+export { subscribeApp };

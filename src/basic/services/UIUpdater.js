@@ -1,9 +1,9 @@
-import { updateItemCount } from '../components/ItemCount.js';
-import { updateSummaryDetails } from '../components/SummaryDetails.js';
 import { updateCartTotal } from '../components/CartTotal.js';
-import { updateLoyaltyPoints } from '../components/LoyaltyPoints.js';
 import { updateDiscountInfo } from '../components/DiscountInfo.js';
+import { updateItemCount } from '../components/ItemCount.js';
+import { updateLoyaltyPoints } from '../components/LoyaltyPoints.js';
 import { updateStockInfo } from '../components/StockInfo.js';
+import { updateSummaryDetails } from '../components/SummaryDetails.js';
 
 export class UIUpdater {
   constructor(cartDisplay, productList) {
