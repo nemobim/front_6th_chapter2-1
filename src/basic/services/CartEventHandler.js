@@ -1,5 +1,7 @@
 import { addItemToCart, removeItemFromCart } from '../components/CartDisplay.js';
 import { updateProductOptions } from '../components/ProductSelector.js';
+import { CartError, ERROR_TYPES, ProductError, ValidationError } from '../types/errors.js';
+import { validateProduct, validateQuantity } from '../utils/validation.js';
 
 export class CartEventHandler {
   constructor(productList, cartDisplay, productSelector, timerService, onCartUpdate) {
@@ -39,38 +41,62 @@ export class CartEventHandler {
 
   // 새 아이템 추가 처리
   addNewItemToCart(productToAdd) {
-    addItemToCart(this.cartDisplay, productToAdd);
-    productToAdd.q--;
+    try {
+      validateProduct(productToAdd, productToAdd.id);
+      addItemToCart(this.cartDisplay, productToAdd);
+      productToAdd.q--;
+    } catch (error) {
+      console.error('상품 추가 중 오류 발생:', error.message);
+      throw new CartError('상품을 카트에 추가할 수 없습니다.', ERROR_TYPES.PRODUCT_NOT_FOUND);
+    }
   }
 
   // 카트에 상품 추가 처리
   handleAddToCart() {
-    const productToAdd = this.getSelectedProduct();
-    if (!productToAdd || productToAdd.q <= 0) return;
+    try {
+      const productToAdd = this.getSelectedProduct();
+      if (!productToAdd) {
+        throw new ProductError('유효한 상품을 선택해주세요.');
+      }
 
-    const existingItem = this.findExistingCartItem(productToAdd.id);
+      if (productToAdd.q <= 0) {
+        throw new CartError('품절된 상품입니다.', ERROR_TYPES.INSUFFICIENT_STOCK);
+      }
 
-    if (existingItem) {
-      this.increaseItemQuantity(existingItem, productToAdd);
-    } else {
-      this.addNewItemToCart(productToAdd);
+      const existingItem = this.findExistingCartItem(productToAdd.id);
+
+      if (existingItem) {
+        this.increaseItemQuantity(existingItem, productToAdd);
+      } else {
+        this.addNewItemToCart(productToAdd);
+      }
+
+      this.onCartUpdate();
+      this.timerService.setLastSelectedProduct(this.productSelector.value);
+    } catch (error) {
+      console.error('카트 추가 중 오류:', error.message);
+      alert(error.message);
     }
-
-    this.onCartUpdate();
-    this.timerService.setLastSelectedProduct(this.productSelector.value);
   }
 
   // 아이템 수량 증가
   increaseItemQuantity(itemElement, product) {
-    const qtyElem = itemElement.querySelector('.quantity-number');
-    const currentQty = parseInt(qtyElem.textContent);
-    const newQty = currentQty + 1;
+    try {
+      const qtyElem = itemElement.querySelector('.quantity-number');
+      if (!qtyElem) {
+        throw new ValidationError('수량 요소를 찾을 수 없습니다.', 'quantity-element');
+      }
 
-    if (newQty <= product.q + currentQty) {
+      const currentQty = parseInt(qtyElem.textContent);
+      const newQty = currentQty + 1;
+
+      validateQuantity(newQty, product, currentQty);
+
       qtyElem.textContent = newQty;
       product.q--;
-    } else {
-      alert('재고가 부족합니다.');
+    } catch (error) {
+      console.error('수량 증가 중 오류:', error.message);
+      alert(error.message);
     }
   }
 
@@ -88,19 +114,31 @@ export class CartEventHandler {
 
   // 카트 아이템 클릭 처리
   handleCartItemClick(event) {
-    const target = event.target;
-    if (!this.isValidClickTarget(target)) return;
+    try {
+      const target = event.target;
+      if (!this.isValidClickTarget(target)) return;
 
-    const productId = target.dataset.productId;
-    const itemElement = document.getElementById(productId);
-    const product = this.findProductById(productId);
-    if (!product) return;
+      const productId = target.dataset.productId;
+      if (!productId) {
+        throw new ValidationError('상품 ID가 없습니다.', 'product-id');
+      }
 
-    const eventType = this.getClickEventType(target);
-    this.processCartItemAction(eventType, target, itemElement, product);
+      const itemElement = document.getElementById(productId);
+      const product = this.findProductById(productId);
 
-    this.onCartUpdate();
-    updateProductOptions(this.productSelector, this.productList);
+      if (!product) {
+        throw new ProductError('상품을 찾을 수 없습니다.', productId);
+      }
+
+      const eventType = this.getClickEventType(target);
+      this.processCartItemAction(eventType, target, itemElement, product);
+
+      this.onCartUpdate();
+      updateProductOptions(this.productSelector, this.productList);
+    } catch (error) {
+      console.error('카트 아이템 클릭 처리 중 오류:', error.message);
+      alert(error.message);
+    }
   }
 
   // 카트 아이템 액션 처리
@@ -114,28 +152,46 @@ export class CartEventHandler {
 
   // 수량 변경 처리
   handleQuantityChange(target, itemElement, product) {
-    const qtyChange = parseInt(target.dataset.change);
-    const qtyElem = itemElement.querySelector('.quantity-number');
-    const currentQty = parseInt(qtyElem.textContent);
-    const newQty = currentQty + qtyChange;
+    try {
+      const qtyChange = parseInt(target.dataset.change);
+      const qtyElem = itemElement.querySelector('.quantity-number');
 
-    if (newQty > 0 && newQty <= product.q + currentQty) {
-      qtyElem.textContent = newQty;
-      product.q -= qtyChange;
-    } else if (newQty <= 0) {
-      product.q += currentQty;
-      removeItemFromCart(this.cartDisplay, product.id);
-    } else {
-      alert('재고가 부족합니다.');
+      if (!qtyElem) {
+        throw new ValidationError('수량 요소를 찾을 수 없습니다.', 'quantity-element');
+      }
+
+      const currentQty = parseInt(qtyElem.textContent);
+      const newQty = currentQty + qtyChange;
+
+      if (newQty > 0) {
+        validateQuantity(newQty, product, currentQty);
+        qtyElem.textContent = newQty;
+        product.q -= qtyChange;
+      } else if (newQty <= 0) {
+        product.q += currentQty;
+        removeItemFromCart(this.cartDisplay, product.id);
+      }
+    } catch (error) {
+      console.error('수량 변경 중 오류:', error.message);
+      alert(error.message);
     }
   }
 
   // 아이템 삭제 처리
   handleItemRemove(itemElement, product, productId) {
-    const qtyElem = itemElement.querySelector('.quantity-number');
-    const quantity = parseInt(qtyElem.textContent);
-    product.q += quantity;
-    removeItemFromCart(this.cartDisplay, productId);
+    try {
+      const qtyElem = itemElement.querySelector('.quantity-number');
+      if (!qtyElem) {
+        throw new ValidationError('수량 요소를 찾을 수 없습니다.', 'quantity-element');
+      }
+
+      const quantity = parseInt(qtyElem.textContent);
+      product.q += quantity;
+      removeItemFromCart(this.cartDisplay, productId);
+    } catch (error) {
+      console.error('아이템 삭제 중 오류:', error.message);
+      alert(error.message);
+    }
   }
 
   // 이벤트 리스너 등록
