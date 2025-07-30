@@ -3,11 +3,11 @@ import { useComponentCreation } from './hooks/useComponentCreation.js';
 import { useRendering } from './hooks/useRendering.js';
 import { useServiceInitialization } from './hooks/useServiceInitialization.js';
 
-function main() {
-  const { initializeAppState, setupStateSubscription } = useAppInitialization();
+function initializeApp() {
+  const { initializeAppState, subscribeToState } = useAppInitialization();
   const { createCoreComponents, createLayoutComponents, mountComponentsToDOM } = useComponentCreation();
   const { initializeCoreServices, initializeDOMDependentServices } = useServiceInitialization();
-  const { performInitialRendering, setupEventHandlers } = useRendering();
+  const { initializeRendering, attachEventHandlers } = useRendering();
 
   // 1. 애플리케이션 상태 초기화
   initializeAppState();
@@ -32,13 +32,13 @@ function main() {
   );
 
   // 7. 초기 렌더링 수행
-  performInitialRendering(productSelector, cartDisplay, discountCalculator, uiUpdater);
+  initializeRendering(productSelector, cartDisplay, discountCalculator, uiUpdater);
 
   // 8. 이벤트 핸들러 등록
-  setupEventHandlers(cartEventHandler, addToCartButton);
+  attachEventHandlers(cartEventHandler, addToCartButton);
 
   // 9. 상태 구독 설정
-  setupStateSubscription();
+  subscribeToState();
 }
 
-main();
+initializeApp();

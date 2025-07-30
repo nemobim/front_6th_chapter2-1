@@ -16,7 +16,7 @@ export function useAppInitialization() {
   /**
    * 앱 상태 변경 시 UI 업데이트 구독 설정
    */
-  function setupStateSubscription() {
+  function subscribeToState() {
     subscribeApp((newAppState) => {
       const header = document.querySelector('header');
       if (header) {
@@ -28,5 +28,5 @@ export function useAppInitialization() {
     });
   }
 
-  return { initializeAppState, setupStateSubscription };
+  return { initializeAppState, subscribeToState };
 }

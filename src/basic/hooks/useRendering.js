@@ -9,7 +9,7 @@ export function useRendering() {
   /**
    * 초기 UI 상태를 설정
    */
-  function performInitialRendering(productSelector, cartDisplay, discountCalculator, uiUpdater) {
+  function initializeRendering(productSelector, cartDisplay, discountCalculator, uiUpdater) {
     updateProductOptions(productSelector, getProductList());
 
     // useCart의 공통 로직 사용
@@ -20,9 +20,9 @@ export function useRendering() {
   /**
    * 이벤트 핸들러를 등록
    */
-  function setupEventHandlers(cartEventHandler, addToCartButton) {
+  function attachEventHandlers(cartEventHandler, addToCartButton) {
     cartEventHandler.attachEventListeners(addToCartButton);
   }
 
-  return { performInitialRendering, setupEventHandlers };
+  return { initializeRendering, attachEventHandlers };
 }
