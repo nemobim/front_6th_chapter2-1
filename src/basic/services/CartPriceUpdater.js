@@ -27,7 +27,7 @@ export class CartPriceUpdater {
     }
   }
 
-  // 전체 카트 가격 업데이트 (기존 doUpdatePricesInCart 로직)
+  // 전체 카트 가격 업데이트
   updateAllCartPrices(cartDisplay, onComplete) {
     const cartItems = cartDisplay.children ? Array.from(cartDisplay.children) : [];
     this.updateCartItemPrices(cartItems);

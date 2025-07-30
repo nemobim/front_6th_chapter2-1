@@ -29,7 +29,7 @@ export class CartEventHandler {
   }
 
   // 선택된 상품 가져오기
-  getSelectedProduct() {
+  findSelectedProduct() {
     const selectedProductId = this.productSelector.value;
     return this.validateProduct(selectedProductId) ? this.findProductById(selectedProductId) : null;
   }
@@ -54,7 +54,7 @@ export class CartEventHandler {
   // 카트에 상품 추가 처리
   handleAddToCart() {
     try {
-      const productToAdd = this.getSelectedProduct();
+      const productToAdd = this.findSelectedProduct();
       if (!productToAdd) {
         throw new ProductError('유효한 상품을 선택해주세요.');
       }

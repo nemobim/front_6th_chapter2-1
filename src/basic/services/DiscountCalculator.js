@@ -44,7 +44,7 @@ export class DiscountCalculator {
   }
 
   // 카트 아이템에서 상품 정보 추출
-  extractProductFromCartItem(cartItem, productList) {
+  findProductFromCartItem(cartItem, productList) {
     const product = productList.find((p) => p.id === cartItem.id);
     if (!product) return null;
 
@@ -57,7 +57,7 @@ export class DiscountCalculator {
 
   // 개별 아이템 할인 계산 및 적용
   calculateItemDiscountAndApply(cartItem, productList) {
-    const itemData = this.extractProductFromCartItem(cartItem, productList);
+    const itemData = this.findProductFromCartItem(cartItem, productList);
     if (!itemData) return { itemCount: 0, subtotal: 0, totalAmount: 0, itemDiscounts: [] };
 
     const { product, quantity, itemTotal } = itemData;
