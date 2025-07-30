@@ -20,9 +20,6 @@ import { createState } from './utils/stateManager.js';
 const [getAppState, setAppState, subscribeApp] = createState(AppState);
 
 // 기존 전역 변수들
-/** 카트 표시 컴포넌트 */
-let cartDisp;
-
 /** 할인 계산 및 가격 로직 처리 */
 let discountCalculator;
 
@@ -77,7 +74,7 @@ function updateCartDiscount(newDiscount) {
  *
  * 카트 내용이 변경되거나 가격이 업데이트될 때 호출됨
  */
-function handleCalculateCartStuff() {
+function handleCalculateCartStuff(cartDisp) {
   // 필요한 서비스가 초기화되었는지 확인
   if (!discountCalculator || !uiUpdater) {
     return;
@@ -105,14 +102,14 @@ function handleCalculateCartStuff() {
  * TimerService에 의해 세일 가격 업데이트 시 호출됨
  * 카트 아이템이 현재 세일 가격을 반영하도록 보장
  */
-function doUpdatePricesInCart() {
+function doUpdatePricesInCart(cartDisp) {
   const cartItems = getCartItems(cartDisp);
 
   // 모든 카트 아이템의 가격을 현재 세일 반영하여 업데이트
   CartPriceUpdater.updateCartItemPrices(cartItems);
 
   // 업데이트된 가격으로 총액 재계산
-  handleCalculateCartStuff();
+  handleCalculateCartStuff(cartDisp);
 }
 
 /**
@@ -127,12 +124,12 @@ function initializeCoreServices() {
  * DOM 의존 서비스들을 초기화
  * DOM 컴포넌트 생성 후에 호출되어야 함
  */
-function initializeDOMDependentServices(sel) {
+function initializeDOMDependentServices(sel, cartDisp) {
   uiUpdater = new UIUpdater(cartDisp, getProductList());
 
-  const timerService = new TimerService(getProductList(), () => updateProductOptions(sel, getProductList()), doUpdatePricesInCart);
+  const timerService = new TimerService(getProductList(), () => updateProductOptions(sel, getProductList()), () => doUpdatePricesInCart(cartDisp));
 
-  const cartEventHandler = new CartEventHandler(getProductList(), cartDisp, sel, timerService, handleCalculateCartStuff);
+  const cartEventHandler = new CartEventHandler(getProductList(), cartDisp, sel, timerService, () => handleCalculateCartStuff(cartDisp));
 
   return { timerService, cartEventHandler };
 }
@@ -144,14 +141,14 @@ function createCoreComponents() {
   const sel = createProductSelector();
   const addBtn = createAddToCartButton();
   const stockInfo = createStockInfo();
-  cartDisp = createCartDisplay();
-  return { sel, addBtn, stockInfo };
+  const cartDisp = createCartDisplay();
+  return { sel, addBtn, stockInfo, cartDisp };
 }
 
 /**
  * 레이아웃 컴포넌트들을 생성하고 조립
  */
-function createLayoutComponents(sel, addBtn, stockInfo) {
+function createLayoutComponents(sel, addBtn, stockInfo, cartDisp) {
   const header = createHeader({ cartItemCount: getCartState().totalItemCount });
 
   const leftColumn = createLeftColumn({
@@ -184,9 +181,9 @@ function mountComponentsToDOM(components) {
 /**
  * 초기 UI 상태를 설정
  */
-function performInitialRendering(sel) {
+function performInitialRendering(sel, cartDisp) {
   updateProductOptions(sel, getProductList());
-  handleCalculateCartStuff();
+  handleCalculateCartStuff(cartDisp);
 }
 
 /**
@@ -207,19 +204,19 @@ function main() {
   initializeCoreServices();
 
   // 3. 핵심 컴포넌트 생성
-  const { sel, addBtn, stockInfo } = createCoreComponents();
+  const { sel, addBtn, stockInfo, cartDisp } = createCoreComponents();
 
   // 4. 레이아웃 컴포넌트 생성 및 조립
-  const layoutComponents = createLayoutComponents(sel, addBtn, stockInfo);
+  const layoutComponents = createLayoutComponents(sel, addBtn, stockInfo, cartDisp);
 
   // 5. DOM에 컴포넌트 마운트
   mountComponentsToDOM(layoutComponents);
 
   // 6. DOM 의존 서비스 초기화
-  const { cartEventHandler } = initializeDOMDependentServices(sel);
+  const { cartEventHandler } = initializeDOMDependentServices(sel, cartDisp);
 
   // 7. 초기 렌더링 수행
-  performInitialRendering(sel);
+  performInitialRendering(sel, cartDisp);
 
   // 8. 이벤트 핸들러 등록
   setupEventHandlers(cartEventHandler, addBtn);
