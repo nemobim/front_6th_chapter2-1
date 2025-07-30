@@ -17,24 +17,24 @@ export function useComponentCreation() {
    * 핵심 상호작용 컴포넌트들을 생성
    */
   function createCoreComponents() {
-    const sel = createProductSelector();
-    const addBtn = createAddToCartButton();
+    const productSelector = createProductSelector();
+    const addToCartButton = createAddToCartButton();
     const stockInfo = createStockInfo();
-    const cartDisp = createCartDisplay();
-    return { sel, addBtn, stockInfo, cartDisp };
+    const cartDisplay = createCartDisplay();
+    return { productSelector, addToCartButton, stockInfo, cartDisplay };
   }
 
   /**
    * 레이아웃 컴포넌트들을 생성하고 조립
    */
-  function createLayoutComponents(sel, addBtn, stockInfo, cartDisp) {
+  function createLayoutComponents(productSelector, addToCartButton, stockInfo, cartDisplay) {
     const header = createHeader({ cartItemCount: getCartState().totalItemCount });
 
     const leftColumn = createLeftColumn({
-      productSelector: sel,
-      addToCartButton: addBtn,
+      productSelector: productSelector,
+      addToCartButton: addToCartButton,
       stockStatusElement: stockInfo,
-      cartDisplay: cartDisp,
+      cartDisplay: cartDisplay,
     });
 
     const rightColumn = createRightColumn();

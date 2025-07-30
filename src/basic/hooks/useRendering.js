@@ -9,19 +9,19 @@ export function useRendering() {
   /**
    * 초기 UI 상태를 설정
    */
-  function performInitialRendering(sel, cartDisp, discountCalculator, uiUpdater) {
-    updateProductOptions(sel, getProductList());
+  function performInitialRendering(productSelector, cartDisplay, discountCalculator, uiUpdater) {
+    updateProductOptions(productSelector, getProductList());
 
     // useCart의 공통 로직 사용
-    const { handleCalculateCartStuff } = useCartCalculation(cartDisp, discountCalculator, uiUpdater);
-    handleCalculateCartStuff();
+    const { handleCalculateCart } = useCartCalculation(cartDisplay, discountCalculator, uiUpdater);
+    handleCalculateCart();
   }
 
   /**
    * 이벤트 핸들러를 등록
    */
-  function setupEventHandlers(cartEventHandler, addBtn) {
-    cartEventHandler.attachEventListeners(addBtn);
+  function setupEventHandlers(cartEventHandler, addToCartButton) {
+    cartEventHandler.attachEventListeners(addToCartButton);
   }
 
   return { performInitialRendering, setupEventHandlers };

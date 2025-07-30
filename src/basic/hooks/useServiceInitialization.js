@@ -23,24 +23,24 @@ export function useServiceInitialization() {
    * DOM 의존 서비스들을 초기화
    * DOM 컴포넌트 생성 후에 호출되어야 함
    */
-  function initializeDOMDependentServices(sel, cartDisp, discountCalculator) {
-    const uiUpdater = new UIUpdater(cartDisp, getProductList());
+  function initializeDOMDependentServices(productSelector, cartDisplay, discountCalculator) {
+    const uiUpdater = new UIUpdater(cartDisplay, getProductList());
 
-    const { handleCalculateCartStuff } = useCartCalculation(cartDisp, discountCalculator, uiUpdater);
-    const { doUpdatePricesInCart } = useCartPriceUpdate(cartDisp, discountCalculator, uiUpdater);
+    const { handleCalculateCart } = useCartCalculation(cartDisplay, discountCalculator, uiUpdater);
+    const { handleUpdateCartPrices } = useCartPriceUpdate(cartDisplay, discountCalculator, uiUpdater);
 
     const timerService = new TimerService(
       getProductList(),
-      () => updateProductOptions(sel, getProductList()),
-      doUpdatePricesInCart
+      () => updateProductOptions(productSelector, getProductList()),
+      handleUpdateCartPrices
     );
 
     const cartEventHandler = new CartEventHandler(
       getProductList(),
-      cartDisp,
-      sel,
+      cartDisplay,
+      productSelector,
       timerService,
-      handleCalculateCartStuff
+      handleCalculateCart
     );
 
     return { timerService, cartEventHandler, uiUpdater };

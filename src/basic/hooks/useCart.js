@@ -11,14 +11,14 @@ import {
 /**
  * 공통 카트 계산 로직
  */
-function calculateCartAndUpdateState(cartDisp, discountCalculator, uiUpdater) {
+function calculateCartAndUpdateState(cartDisplay, discountCalculator, uiUpdater) {
   // 필요한 서비스가 초기화되었는지 확인
   if (!discountCalculator || !uiUpdater) {
     return;
   }
 
   // 표시 컴포넌트에서 현재 카트 상태 가져오기
-  const cartItems = getCartItems(cartDisp);
+  const cartItems = getCartItems(cartDisplay);
 
   // 할인, 총액, 아이템 수 계산
   const calculationResult = discountCalculator.calculateTotalDiscount(cartItems, getProductList());
@@ -36,27 +36,27 @@ function calculateCartAndUpdateState(cartDisp, discountCalculator, uiUpdater) {
 /**
  * 카트 계산 로직을 관리하는 커스텀 훅 스타일 함수
  */
-export function useCartCalculation(cartDisp, discountCalculator, uiUpdater) {
-  function handleCalculateCartStuff() {
-    calculateCartAndUpdateState(cartDisp, discountCalculator, uiUpdater);
+export function useCartCalculation(cartDisplay, discountCalculator, uiUpdater) {
+  function handleCalculateCart() {
+    calculateCartAndUpdateState(cartDisplay, discountCalculator, uiUpdater);
   }
 
-  return { handleCalculateCartStuff };
+  return { handleCalculateCart };
 }
 
 /**
  * 카트 가격 업데이트 로직을 관리하는 커스텀 훅 스타일 함수
  */
-export function useCartPriceUpdate(cartDisp, discountCalculator, uiUpdater) {
-  function doUpdatePricesInCart() {
-    const cartItems = getCartItems(cartDisp);
+export function useCartPriceUpdate(cartDisplay, discountCalculator, uiUpdater) {
+  function handleUpdateCartPrices() {
+    const cartItems = getCartItems(cartDisplay);
 
     // 모든 카트 아이템의 가격을 현재 세일 반영하여 업데이트
     CartPriceUpdater.updateCartItemPrices(cartItems);
 
     // 업데이트된 가격으로 총액 재계산
-    calculateCartAndUpdateState(cartDisp, discountCalculator, uiUpdater);
+    calculateCartAndUpdateState(cartDisplay, discountCalculator, uiUpdater);
   }
 
-  return { doUpdatePricesInCart };
+  return { handleUpdateCartPrices };
 }
