@@ -20,13 +20,13 @@ export class UIUpdater {
   // 카트 아이템 UI 스타일 업데이트
   updateCartItemStyles(cartItems) {
     for (const cartItem of cartItems) {
-      const qtyElem = cartItem.querySelector('.quantity-number');
-      const quantity = parseInt(qtyElem.textContent);
+      const quantityElement = cartItem.querySelector('.quantity-number');
+      const quantity = parseInt(quantityElement.textContent);
 
-      const priceElems = cartItem.querySelectorAll('.text-lg, .text-xs');
-      priceElems.forEach((elem) => {
-        if (elem.classList.contains('text-lg')) {
-          elem.style.fontWeight = quantity >= UI_THRESHOLDS.BOLD_QUANTITY ? 'bold' : 'normal';
+      const priceElements = cartItem.querySelectorAll('.text-lg, .text-xs');
+      priceElements.forEach((element) => {
+        if (element.classList.contains('text-lg')) {
+          element.style.fontWeight = quantity >= UI_THRESHOLDS.BOLD_QUANTITY ? 'bold' : 'normal';
         }
       });
     }

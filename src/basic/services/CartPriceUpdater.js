@@ -7,9 +7,9 @@ export class CartPriceUpdater {
 
   // 상품 ID로 상품 찾기
   findProductById(productId) {
-    for (let i = 0; i < this.productList.length; i++) {
-      if (this.productList[i].id === productId) {
-        return this.productList[i];
+    for (let index = 0; index < this.productList.length; index++) {
+      if (this.productList[index].id === productId) {
+        return this.productList[index];
       }
     }
     return null;
@@ -17,12 +17,12 @@ export class CartPriceUpdater {
 
   // 카트 아이템들의 가격 업데이트
   updateCartItemPrices(cartItems) {
-    for (let i = 0; i < cartItems.length; i++) {
-      const itemId = cartItems[i].id;
+    for (let index = 0; index < cartItems.length; index++) {
+      const itemId = cartItems[index].id;
       const product = this.findProductById(itemId);
 
       if (product) {
-        updateCartItemPrice(cartItems[i], product);
+        updateCartItemPrice(cartItems[index], product);
       }
     }
   }

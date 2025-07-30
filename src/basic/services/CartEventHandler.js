@@ -82,17 +82,17 @@ export class CartEventHandler {
   // 아이템 수량 증가
   increaseItemQuantity(itemElement, product) {
     try {
-      const qtyElem = itemElement.querySelector('.quantity-number');
-      if (!qtyElem) {
+      const quantityElement = itemElement.querySelector('.quantity-number');
+      if (!quantityElement) {
         throw new ValidationError('수량 요소를 찾을 수 없습니다.', 'quantity-element');
       }
 
-      const currentQty = parseInt(qtyElem.textContent);
-      const newQty = currentQty + 1;
+      const currentQuantity = parseInt(quantityElement.textContent);
+      const newQuantity = currentQuantity + 1;
 
-      validateQuantity(newQty, product, currentQty);
+      validateQuantity(newQuantity, product, currentQuantity);
 
-      qtyElem.textContent = newQty;
+      quantityElement.textContent = newQuantity;
       product.q--;
     } catch (error) {
       console.error('수량 증가 중 오류:', error.message);
@@ -153,22 +153,22 @@ export class CartEventHandler {
   // 수량 변경 처리
   handleQuantityChange(target, itemElement, product) {
     try {
-      const qtyChange = parseInt(target.dataset.change);
-      const qtyElem = itemElement.querySelector('.quantity-number');
+      const quantityChange = parseInt(target.dataset.change);
+      const quantityElement = itemElement.querySelector('.quantity-number');
 
-      if (!qtyElem) {
+      if (!quantityElement) {
         throw new ValidationError('수량 요소를 찾을 수 없습니다.', 'quantity-element');
       }
 
-      const currentQty = parseInt(qtyElem.textContent);
-      const newQty = currentQty + qtyChange;
+      const currentQuantity = parseInt(quantityElement.textContent);
+      const newQuantity = currentQuantity + quantityChange;
 
-      if (newQty > 0) {
-        validateQuantity(newQty, product, currentQty);
-        qtyElem.textContent = newQty;
-        product.q -= qtyChange;
-      } else if (newQty <= 0) {
-        product.q += currentQty;
+      if (newQuantity > 0) {
+        validateQuantity(newQuantity, product, currentQuantity);
+        quantityElement.textContent = newQuantity;
+        product.q -= quantityChange;
+      } else if (newQuantity <= 0) {
+        product.q += currentQuantity;
         removeItemFromCart(this.cartDisplay, product.id);
       }
     } catch (error) {
@@ -180,12 +180,12 @@ export class CartEventHandler {
   // 아이템 삭제 처리
   handleItemRemove(itemElement, product, productId) {
     try {
-      const qtyElem = itemElement.querySelector('.quantity-number');
-      if (!qtyElem) {
+      const quantityElement = itemElement.querySelector('.quantity-number');
+      if (!quantityElement) {
         throw new ValidationError('수량 요소를 찾을 수 없습니다.', 'quantity-element');
       }
 
-      const quantity = parseInt(qtyElem.textContent);
+      const quantity = parseInt(quantityElement.textContent);
       product.q += quantity;
       removeItemFromCart(this.cartDisplay, productId);
     } catch (error) {

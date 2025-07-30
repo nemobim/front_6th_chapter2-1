@@ -48,8 +48,8 @@ export class DiscountCalculator {
     const product = productList.find((p) => p.id === cartItem.id);
     if (!product) return null;
 
-    const qtyElem = cartItem.querySelector('.quantity-number');
-    const quantity = parseInt(qtyElem.textContent);
+    const quantityElement = cartItem.querySelector('.quantity-number');
+    const quantity = parseInt(quantityElement.textContent);
     const itemTotal = product.val * quantity;
 
     return { product, quantity, itemTotal };
@@ -57,10 +57,10 @@ export class DiscountCalculator {
 
   // 개별 아이템 할인 계산 및 적용
   calculateAndApplyItemDiscount(cartItem, productList) {
-    const itemData = this.findProductFromCartItem(cartItem, productList);
-    if (!itemData) return { itemCount: 0, subtotal: 0, totalAmount: 0, itemDiscounts: [] };
+    const productData = this.findProductFromCartItem(cartItem, productList);
+    if (!productData) return { itemCount: 0, subtotal: 0, totalAmount: 0, itemDiscounts: [] };
 
-    const { product, quantity, itemTotal } = itemData;
+    const { product, quantity, itemTotal } = productData;
     const discount = this.calculateItemDiscount(product.id, quantity);
     const discountedTotal = itemTotal * (1 - discount);
 
@@ -82,11 +82,11 @@ export class DiscountCalculator {
     const allItemDiscounts = [];
 
     for (const cartItem of cartItems) {
-      const result = this.calculateAndApplyItemDiscount(cartItem, productList);
-      totalItemCount += result.itemCount;
-      totalSubtotal += result.subtotal;
-      totalAmount += result.totalAmount;
-      allItemDiscounts.push(...result.itemDiscounts);
+      const calculationResult = this.calculateAndApplyItemDiscount(cartItem, productList);
+      totalItemCount += calculationResult.itemCount;
+      totalSubtotal += calculationResult.subtotal;
+      totalAmount += calculationResult.totalAmount;
+      allItemDiscounts.push(...calculationResult.itemDiscounts);
     }
 
     return { totalItemCount, totalSubtotal, totalAmount, allItemDiscounts };
