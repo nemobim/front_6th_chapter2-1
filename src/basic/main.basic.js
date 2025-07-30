@@ -13,13 +13,13 @@ import { CartPriceUpdater } from './services/CartPriceUpdater';
 import { DiscountCalculator } from './services/DiscountCalculator';
 import { TimerService } from './services/TimerService';
 import { UIUpdater } from './services/UIUpdater';
-import { CartState } from './types/state.js';
+import { CartState, AppState } from './types/state.js';
 import { createState } from './utils/stateManager.js';
 
-// 기존 전역 변수들
-/** 상품 카탈로그 데이터 */
-let prodList;
+// 앱 전체 상태 관리
+const [getAppState, setAppState, subscribeApp] = createState(AppState);
 
+// 기존 전역 변수들
 /** 재고 정보 표시 컴포넌트 */
 let stockInfo;
 
@@ -38,10 +38,30 @@ let discountCalculator;
 /** 모든 컴포넌트의 UI 업데이트 관리 */
 let uiUpdater;
 
-// 카트 상태 관리 (정의된 타입 사용)
-const [getCartState, setCartState, subscribeCart] = createState(CartState);
+// 앱 상태 접근 함수들
+function getProductList() {
+  return getAppState().product.list;
+}
 
-// 실제 사용하는 함수만 추가
+function setProductList(productList) {
+  setAppState((prev) => ({
+    ...prev,
+    product: { ...prev.product, list: productList }
+  }));
+}
+
+function getCartState() {
+  return getAppState().cart;
+}
+
+function setCartState(newCartState) {
+  setAppState((prev) => ({
+    ...prev,
+    cart: { ...prev.cart, ...newCartState }
+  }));
+}
+
+// 카트 상태 업데이트 함수들
 function updateCartItemCount(newCount) {
   setCartState((prev) => ({ ...prev, totalItemCount: newCount }));
 }
@@ -76,7 +96,7 @@ function handleCalculateCartStuff() {
   const cartItems = getCartItems(cartDisp);
 
   // 할인, 총액, 아이템 수 계산
-  const calculationResult = discountCalculator.calculateTotalDiscount(cartItems, prodList);
+  const calculationResult = discountCalculator.calculateTotalDiscount(cartItems, getProductList());
 
   // 카트 아이템, 아이템 수, 총액 모두 상태로 업데이트
   updateCartItems(cartItems);
@@ -117,11 +137,11 @@ function initializeCoreServices() {
  * DOM 컴포넌트 생성 후에 호출되어야 함
  */
 function initializeDOMDependentServices() {
-  uiUpdater = new UIUpdater(cartDisp, prodList);
+  uiUpdater = new UIUpdater(cartDisp, getProductList());
 
-  const timerService = new TimerService(prodList, () => updateProductOptions(sel, prodList), doUpdatePricesInCart);
+  const timerService = new TimerService(getProductList(), () => updateProductOptions(sel, getProductList()), doUpdatePricesInCart);
 
-  const cartEventHandler = new CartEventHandler(prodList, cartDisp, sel, timerService, handleCalculateCartStuff);
+  const cartEventHandler = new CartEventHandler(getProductList(), cartDisp, sel, timerService, handleCalculateCartStuff);
 
   return { timerService, cartEventHandler };
 }
@@ -140,7 +160,7 @@ function createCoreComponents() {
  * 레이아웃 컴포넌트들을 생성하고 조립
  */
 function createLayoutComponents() {
-  const header = createHeader({ cartItemCount: getCartState('totalItemCount') });
+  const header = createHeader({ cartItemCount: getCartState().totalItemCount });
 
   const leftColumn = createLeftColumn({
     productSelector: sel,
@@ -173,7 +193,7 @@ function mountComponentsToDOM(components) {
  * 초기 UI 상태를 설정
  */
 function performInitialRendering() {
-  updateProductOptions(sel, prodList);
+  updateProductOptions(sel, getProductList());
   handleCalculateCartStuff();
 }
 
@@ -189,7 +209,7 @@ function main() {
   // 기존: itemCnt = 0;
   // 새로운: 상태 초기화
   updateCartItemCount(0);
-  prodList = PRODUCT_LIST;
+  setProductList(PRODUCT_LIST);
 
   // 2. 핵심 서비스 초기화 (DOM 생성 전)
   initializeCoreServices();
@@ -213,12 +233,12 @@ function main() {
   setupEventHandlers(cartEventHandler);
 
   // 카트 상태 변경 시 UI 업데이트
-  subscribeCart((newCartState) => {
+  subscribeApp((newAppState) => {
     const header = document.querySelector('header');
     if (header) {
       const itemCountElement = header.querySelector('.cart-item-count');
       if (itemCountElement) {
-        itemCountElement.textContent = newCartState.totalItemCount;
+        itemCountElement.textContent = newAppState.cart.totalItemCount;
       }
     }
   });
