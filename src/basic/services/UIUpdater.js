@@ -1,14 +1,14 @@
 import { updateCartTotal } from '../components/CartTotal.js';
 import { updateDiscountInfo } from '../components/DiscountInfo.js';
 import { updateItemCount } from '../components/ItemCount.js';
-import { updateLoyaltyPoints } from '../components/LoyaltyPoints.js';
+import { updateRewardPoints } from '../components/RewardPoints.js'; // 변경
 import { updateStockInfo } from '../components/StockInfo.js';
 import { updateSummaryDetails } from '../components/SummaryDetails.js';
 
 // UI 관련 상수
 const UI_THRESHOLDS = {
-  BOLD_QUANTITY: 10,
   LOW_STOCK_THRESHOLD: 5,
+  QUANTITY_THRESHOLD: 10,
 };
 
 export class UIUpdater {
@@ -19,16 +19,18 @@ export class UIUpdater {
 
   // 카트 아이템 UI 스타일 업데이트
   updateCartItemStyles(cartItems) {
-    for (const cartItem of cartItems) {
-      const quantityElement = cartItem.querySelector('.quantity-number');
+    for (const item of cartItems) {
+      const quantityElement = item.querySelector('.quantity-number');
       const quantity = parseInt(quantityElement.textContent);
 
-      const priceElements = cartItem.querySelectorAll('.text-lg, .text-xs');
-      priceElements.forEach((element) => {
-        if (element.classList.contains('text-lg')) {
-          element.style.fontWeight = quantity >= UI_THRESHOLDS.BOLD_QUANTITY ? 'bold' : 'normal';
-        }
-      });
+      const elem = item.querySelector('.product-name');
+      if (elem) {
+        elem.style.fontWeight = quantity >= UI_THRESHOLDS.QUANTITY_THRESHOLD ? 'bold' : 'normal';
+      }
+
+      if (item.q < UI_THRESHOLDS.LOW_STOCK_THRESHOLD) {
+        item.style.color = 'red';
+      }
     }
   }
 
@@ -87,10 +89,11 @@ export class UIUpdater {
   }
 
   // 적립 포인트 업데이트
-  updateLoyaltyPointsDisplay(cartItems, totalAmount, itemCount) {
-    const loyaltyPointsDiv = document.getElementById('loyalty-points');
-    if (loyaltyPointsDiv) {
-      updateLoyaltyPoints(loyaltyPointsDiv, cartItems, this.productList, totalAmount, itemCount);
+  updateRewardPointsDisplay(cartItems, totalAmount, itemCount) {
+    // 변경
+    const rewardPointsDiv = document.getElementById('loyalty-points'); // ID는 호환성 유지
+    if (rewardPointsDiv) {
+      updateRewardPoints(rewardPointsDiv, cartItems, this.productList, totalAmount, itemCount); // 변경
     }
   }
 
@@ -124,7 +127,7 @@ export class UIUpdater {
     this.updateItemCountDisplay(itemCount);
     this.updateSummaryDisplay(cartItems, subtotal, itemCount, itemDiscounts, isTuesday);
     this.updateTotalDisplay(totalAmount);
-    this.updateLoyaltyPointsDisplay(cartItems, totalAmount, itemCount);
+    this.updateRewardPointsDisplay(cartItems, totalAmount, itemCount); // 변경
     this.updateDiscountDisplay(discountRate, totalAmount, originalTotal);
     this.updateStockDisplay();
   }
