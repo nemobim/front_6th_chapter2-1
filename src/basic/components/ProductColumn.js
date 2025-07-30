@@ -30,9 +30,9 @@ export const createSummaryColumn = () => {
   `;
 
   // SummaryDetails 컴포넌트 생성 및 추가
-  const summaryDetails = createSummaryDetails();
+  const orderSummary = createSummaryDetails();
   const flexContainer = summaryColumn.querySelector('.flex-1.flex.flex-col');
-  flexContainer.insertBefore(summaryDetails, flexContainer.querySelector('.mt-auto'));
+  flexContainer.insertBefore(orderSummary, flexContainer.querySelector('.mt-auto'));
 
   // DiscountInfo 컴포넌트 생성 및 추가
   const discountInfo = createDiscountInfo();

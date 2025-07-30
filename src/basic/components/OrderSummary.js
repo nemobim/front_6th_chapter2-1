@@ -1,14 +1,14 @@
-export const createSummaryDetails = () => {
-  const summaryDetails = document.createElement('div');
-  summaryDetails.id = 'summary-details';
-  summaryDetails.className = 'space-y-3';
+export const createOrderSummary = () => {
+  const orderSummary = document.createElement('div');
+  orderSummary.id = 'summary-details'; // ID는 테스트 호환성 위해 유지
+  orderSummary.className = 'space-y-3';
 
-  return summaryDetails;
+  return orderSummary;
 };
 
 // 주문 요약 상세 정보 업데이트
-export const updateSummaryDetails = (
-  summaryDetailsElement,
+export const updateOrderSummary = (
+  orderSummaryElement,
   cartItems,
   productList,
   subtotal,
@@ -16,7 +16,7 @@ export const updateSummaryDetails = (
   itemDiscounts,
   isTuesday
 ) => {
-  summaryDetailsElement.innerHTML = '';
+  orderSummaryElement.innerHTML = '';
 
   if (subtotal > 0) {
     // 각 상품별 정보 추가
@@ -31,7 +31,7 @@ export const updateSummaryDetails = (
       const qtyElem = cartItems[i].querySelector('.quantity-number');
       const q = parseInt(qtyElem.textContent);
       const itemTotal = curItem.val * q;
-      summaryDetailsElement.innerHTML += /* HTML */ `
+      orderSummaryElement.innerHTML += /* HTML */ `
         <div class="flex justify-between text-xs tracking-wide text-gray-400">
           <span>${curItem.name} x ${q}</span>
           <span>₩${itemTotal.toLocaleString()}</span>
@@ -40,7 +40,7 @@ export const updateSummaryDetails = (
     }
 
     // 구분선 추가
-    summaryDetailsElement.innerHTML += /* HTML */ `
+    orderSummaryElement.innerHTML += /* HTML */ `
       <div class="border-t border-white/10 my-3"></div>
       <div class="flex justify-between text-sm tracking-wide">
         <span>Subtotal</span>
@@ -50,7 +50,7 @@ export const updateSummaryDetails = (
 
     // 대량구매 할인 정보
     if (itemCount >= 30) {
-      summaryDetailsElement.innerHTML += /* HTML */ `
+      orderSummaryElement.innerHTML += /* HTML */ `
         <div class="flex justify-between text-sm tracking-wide text-green-400">
           <span class="text-xs">👍 대량구매 할인 (30개 이상)</span>
           <span class="text-xs">-25%</span>
@@ -58,7 +58,7 @@ export const updateSummaryDetails = (
       `;
     } else if (itemDiscounts.length > 0) {
       itemDiscounts.forEach(function (item) {
-        summaryDetailsElement.innerHTML += /* HTML */ `
+        orderSummaryElement.innerHTML += /* HTML */ `
           <div class="flex justify-between text-sm tracking-wide text-green-400">
             <span class="text-xs">${item.name} (10개↑)</span>
             <span class="text-xs">-${item.discount}%</span>
@@ -69,7 +69,7 @@ export const updateSummaryDetails = (
 
     // 화요일 할인 정보
     if (isTuesday) {
-      summaryDetailsElement.innerHTML += /* HTML */ `
+      orderSummaryElement.innerHTML += /* HTML */ `
         <div class="flex justify-between text-sm tracking-wide text-purple-400">
           <span class="text-xs">🌟 화요일 추가 할인</span>
           <span class="text-xs">-10%</span>
@@ -78,7 +78,7 @@ export const updateSummaryDetails = (
     }
 
     // 배송 정보
-    summaryDetailsElement.innerHTML += /* HTML */ `
+    orderSummaryElement.innerHTML += /* HTML */ `
       <div class="flex justify-between text-sm tracking-wide text-gray-400">
         <span>Shipping</span>
         <span>Free</span>

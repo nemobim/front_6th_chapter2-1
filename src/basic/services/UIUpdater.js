@@ -1,9 +1,9 @@
 import { updateCartTotal } from '../components/CartTotal.js';
 import { updateDiscountInfo } from '../components/DiscountInfo.js';
 import { updateItemCount } from '../components/ItemCount.js';
-import { updateRewardPoints } from '../components/RewardPoints.js'; // 변경
+import { updateOrderSummary } from '../components/OrderSummary.js'; // 변경
+import { updateRewardPoints } from '../components/RewardPoints.js';
 import { updateStockInfo } from '../components/StockInfo.js';
-import { updateSummaryDetails } from '../components/SummaryDetails.js';
 
 // UI 관련 상수
 const UI_THRESHOLDS = {
@@ -73,10 +73,19 @@ export class UIUpdater {
   }
 
   // 주문 요약 업데이트
-  updateSummaryDisplay(cartItems, subtotal, itemCount, itemDiscounts, isTuesday) {
-    const summaryDetails = document.getElementById('summary-details');
-    if (summaryDetails) {
-      updateSummaryDetails(summaryDetails, cartItems, this.productList, subtotal, itemCount, itemDiscounts, isTuesday);
+  updateOrderSummaryDisplay(cartItems, subtotal, itemCount, itemDiscounts, isTuesday) {
+    // 변경
+    const orderSummaryElement = document.getElementById('summary-details'); // ID는 호환성 유지
+    if (orderSummaryElement) {
+      updateOrderSummary(
+        orderSummaryElement,
+        cartItems,
+        this.productList,
+        subtotal,
+        itemCount,
+        itemDiscounts,
+        isTuesday
+      ); // 변경
     }
   }
 
@@ -90,10 +99,9 @@ export class UIUpdater {
 
   // 적립 포인트 업데이트
   updateRewardPointsDisplay(cartItems, totalAmount, itemCount) {
-    // 변경
     const rewardPointsDiv = document.getElementById('loyalty-points'); // ID는 호환성 유지
     if (rewardPointsDiv) {
-      updateRewardPoints(rewardPointsDiv, cartItems, this.productList, totalAmount, itemCount); // 변경
+      updateRewardPoints(rewardPointsDiv, cartItems, this.productList, totalAmount, itemCount);
     }
   }
 
@@ -125,9 +133,9 @@ export class UIUpdater {
     this.updateCartItemStyles(cartItems);
     this.updateTuesdaySpecial(isTuesday, totalAmount > 0);
     this.updateItemCountDisplay(itemCount);
-    this.updateSummaryDisplay(cartItems, subtotal, itemCount, itemDiscounts, isTuesday);
+    this.updateOrderSummaryDisplay(cartItems, subtotal, itemCount, itemDiscounts, isTuesday); // 변경
     this.updateTotalDisplay(totalAmount);
-    this.updateRewardPointsDisplay(cartItems, totalAmount, itemCount); // 변경
+    this.updateRewardPointsDisplay(cartItems, totalAmount, itemCount);
     this.updateDiscountDisplay(discountRate, totalAmount, originalTotal);
     this.updateStockDisplay();
   }
