@@ -1,4 +1,4 @@
-import { createAddToCartButton } from '../components/AddToCartButton';
+import { createCartAddButton } from '../components/CartAddButton';
 import { createCartDisplay } from '../components/CartDisplay';
 import { createGridContainer } from '../components/GridContainer';
 import { createHeader } from '../components/Header';
@@ -18,21 +18,21 @@ export function useComponentCreation() {
    */
   function createCoreComponents() {
     const productSelector = createProductSelector();
-    const addToCartButton = createAddToCartButton();
+    const cartAddButton = createCartAddButton();
     const stockInfo = createStockInfo();
     const cartDisplay = createCartDisplay();
-    return { productSelector, addToCartButton, stockInfo, cartDisplay };
+    return { productSelector, cartAddButton, stockInfo, cartDisplay };
   }
 
   /**
    * 레이아웃 컴포넌트들을 생성하고 조립
    */
-  function createLayoutComponents(productSelector, addToCartButton, stockInfo, cartDisplay) {
+  function createLayoutComponents(productSelector, cartAddButton, stockInfo, cartDisplay) {
     const header = createHeader({ cartItemCount: getCartState().totalItemCount });
 
     const leftColumn = createLeftColumn({
       productSelector: productSelector,
-      addToCartButton: addToCartButton,
+      cartAddButton: cartAddButton,
       stockStatusElement: stockInfo,
       cartDisplay: cartDisplay,
     });

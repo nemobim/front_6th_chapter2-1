@@ -16,10 +16,10 @@ function initializeApp() {
   const { discountCalculator } = initializeCoreServices();
 
   // 3. 핵심 컴포넌트 생성
-  const { productSelector, addToCartButton, stockInfo, cartDisplay } = createCoreComponents();
+  const { productSelector, cartAddButton, stockInfo, cartDisplay } = createCoreComponents();
 
   // 4. 레이아웃 컴포넌트 생성 및 조립
-  const layoutComponents = createLayoutComponents(productSelector, addToCartButton, stockInfo, cartDisplay);
+  const layoutComponents = createLayoutComponents(productSelector, cartAddButton, stockInfo, cartDisplay);
 
   // 5. DOM에 컴포넌트 마운트
   mountComponentsToDOM(layoutComponents);
@@ -31,7 +31,7 @@ function initializeApp() {
   initializeRendering(productSelector, cartDisplay, discountCalculator, uiUpdater);
 
   // 8. 이벤트 핸들러 등록
-  attachEventHandlers(cartEventHandler, addToCartButton);
+  attachEventHandlers(cartEventHandler, cartAddButton);
 
   // 9. 상태 구독 설정
   subscribeToState();
