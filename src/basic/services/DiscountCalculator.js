@@ -1,5 +1,20 @@
 import { PRODUCT_IDS } from '../data/products.js';
 
+// 할인 관련 상수
+const DISCOUNT_THRESHOLDS = {
+  ITEM_DISCOUNT_MIN_QUANTITY: 10,
+  BULK_DISCOUNT_MIN_QUANTITY: 30,
+};
+
+const DISCOUNT_RATES = {
+  TUESDAY_DISCOUNT: 0.1, // 10%
+  BULK_DISCOUNT: 0.25, // 25%
+};
+
+const DAYS_OF_WEEK = {
+  TUESDAY: 2,
+};
+
 export class DiscountCalculator {
   constructor() {
     this.discountRates = {
@@ -13,19 +28,19 @@ export class DiscountCalculator {
 
   // 개별 상품 할인 계산
   calculateItemDiscount(productId, quantity) {
-    if (quantity < 10) return 0;
+    if (quantity < DISCOUNT_THRESHOLDS.ITEM_DISCOUNT_MIN_QUANTITY) return 0;
     return this.discountRates[productId] || 0;
   }
 
   // 대량구매 할인 계산
   calculateBulkDiscount(totalItemCount) {
-    return totalItemCount >= 30 ? 0.25 : 0; // 25% 할인
+    return totalItemCount >= DISCOUNT_THRESHOLDS.BULK_DISCOUNT_MIN_QUANTITY ? DISCOUNT_RATES.BULK_DISCOUNT : 0;
   }
 
   // 화요일 할인 계산
   calculateTuesdayDiscount() {
     const today = new Date();
-    return today.getDay() === 2 ? 0.1 : 0; // 10% 할인
+    return today.getDay() === DAYS_OF_WEEK.TUESDAY ? DISCOUNT_RATES.TUESDAY_DISCOUNT : 0;
   }
 
   // 카트 아이템에서 상품 정보 추출
