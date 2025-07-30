@@ -13,54 +13,16 @@ import { CartPriceUpdater } from './services/CartPriceUpdater';
 import { DiscountCalculator } from './services/DiscountCalculator';
 import { TimerService } from './services/TimerService';
 import { UIUpdater } from './services/UIUpdater';
-import { CartState, AppState } from './types/state.js';
-import { createState } from './utils/stateManager.js';
-
-// 앱 전체 상태 관리
-const [getAppState, setAppState, subscribeApp] = createState(AppState);
-
-// 앱 상태 접근 함수들
-function getProductList() {
-  return getAppState().product.list;
-}
-
-function setProductList(productList) {
-  setAppState((prev) => ({
-    ...prev,
-    product: { ...prev.product, list: productList }
-  }));
-}
-
-function getCartState() {
-  return getAppState().cart;
-}
-
-function setCartState(newCartState) {
-  setAppState((prev) => ({
-    ...prev,
-    cart: { ...prev.cart, ...newCartState }
-  }));
-}
-
-// 카트 상태 업데이트 함수들
-function updateCartItemCount(newCount) {
-  setCartState((prev) => ({ ...prev, totalItemCount: newCount }));
-}
-
-// 카트 아이템 업데이트 함수 추가
-function updateCartItems(newItems) {
-  setCartState((prev) => ({ ...prev, items: newItems }));
-}
-
-// 카트 총액 업데이트 함수 추가
-function updateCartTotal(newTotal) {
-  setCartState((prev) => ({ ...prev, totalAmount: newTotal }));
-}
-
-// 할인 금액 업데이트 함수 추가
-function updateCartDiscount(newDiscount) {
-  setCartState((prev) => ({ ...prev, discountAmount: newDiscount }));
-}
+import { 
+  getProductList, 
+  setProductList, 
+  getCartState, 
+  updateCartItemCount, 
+  updateCartItems, 
+  updateCartTotal, 
+  updateCartDiscount, 
+  subscribeApp 
+} from './state/appState.js';
 
 /**
  * 할인 계산과 UI 업데이트를 조율하는 메인 카트 계산 함수
@@ -201,12 +163,32 @@ function setupEventHandlers(cartEventHandler, addBtn) {
   cartEventHandler.attachEventListeners(addBtn);
 }
 
-function main() {
-  // 1. 애플리케이션 상태 초기화
-  // 기존: itemCnt = 0;
-  // 새로운: 상태 초기화
+/**
+ * 애플리케이션 초기 상태를 설정
+ */
+function initializeAppState() {
   updateCartItemCount(0);
   setProductList(PRODUCT_LIST);
+}
+
+/**
+ * 앱 상태 변경 시 UI 업데이트 구독 설정
+ */
+function setupStateSubscription() {
+  subscribeApp((newAppState) => {
+    const header = document.querySelector('header');
+    if (header) {
+      const itemCountElement = header.querySelector('.cart-item-count');
+      if (itemCountElement) {
+        itemCountElement.textContent = newAppState.cart.totalItemCount;
+      }
+    }
+  });
+}
+
+function main() {
+  // 1. 애플리케이션 상태 초기화
+  initializeAppState();
 
   // 2. 핵심 서비스 초기화 (DOM 생성 전)
   const { discountCalculator } = initializeCoreServices();
@@ -229,16 +211,8 @@ function main() {
   // 8. 이벤트 핸들러 등록
   setupEventHandlers(cartEventHandler, addBtn);
 
-  // 카트 상태 변경 시 UI 업데이트
-  subscribeApp((newAppState) => {
-    const header = document.querySelector('header');
-    if (header) {
-      const itemCountElement = header.querySelector('.cart-item-count');
-      if (itemCountElement) {
-        itemCountElement.textContent = newAppState.cart.totalItemCount;
-      }
-    }
-  });
+  // 9. 상태 구독 설정
+  setupStateSubscription();
 }
 
 main();
