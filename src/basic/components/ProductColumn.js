@@ -3,10 +3,10 @@ import { createDiscountInfo } from './DiscountInfo.js';
 import { createLoyaltyPoints } from './LoyaltyPoints.js';
 import { createSummaryDetails } from './SummaryDetails.js';
 
-export const createRightColumn = () => {
-  const rightColumn = document.createElement('div');
-  rightColumn.className = 'bg-black text-white p-8 flex flex-col';
-  rightColumn.innerHTML = /* HTML */ `
+export const createSummaryColumn = () => {
+  const summaryColumn = document.createElement('div');
+  summaryColumn.className = 'bg-black text-white p-8 flex flex-col';
+  summaryColumn.innerHTML = /* HTML */ `
     <h2 class="text-xs font-medium mb-5 tracking-extra-wide uppercase">Order Summary</h2>
     <div class="flex-1 flex flex-col">
       <div class="mt-auto">
@@ -31,12 +31,12 @@ export const createRightColumn = () => {
 
   // SummaryDetails 컴포넌트 생성 및 추가
   const summaryDetails = createSummaryDetails();
-  const flexContainer = rightColumn.querySelector('.flex-1.flex.flex-col');
+  const flexContainer = summaryColumn.querySelector('.flex-1.flex.flex-col');
   flexContainer.insertBefore(summaryDetails, flexContainer.querySelector('.mt-auto'));
 
   // DiscountInfo 컴포넌트 생성 및 추가
   const discountInfo = createDiscountInfo();
-  const mtAuto = rightColumn.querySelector('.mt-auto');
+  const mtAuto = summaryColumn.querySelector('.mt-auto');
   mtAuto.insertBefore(discountInfo, mtAuto.querySelector('#tuesday-special'));
 
   // CartTotal 컴포넌트 생성 및 추가
@@ -47,5 +47,22 @@ export const createRightColumn = () => {
   const loyaltyPoints = createLoyaltyPoints();
   cartTotal.appendChild(loyaltyPoints);
 
-  return rightColumn;
+  return summaryColumn;
+};
+
+export const createProductColumn = ({ productSelector, cartAddButton, stockStatusElement, cartDisplay }) => {
+  const productColumn = document.createElement('div');
+  productColumn.className = 'bg-white border border-gray-200 p-8 overflow-y-auto';
+
+  const selectorContainer = document.createElement('div');
+  selectorContainer.className = 'space-y-2';
+  selectorContainer.appendChild(productSelector);
+
+  selectorContainer.appendChild(cartAddButton);
+
+  productColumn.appendChild(selectorContainer);
+  productColumn.appendChild(stockStatusElement);
+  productColumn.appendChild(cartDisplay);
+
+  return productColumn;
 };

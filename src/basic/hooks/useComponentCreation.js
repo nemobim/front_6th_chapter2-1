@@ -2,10 +2,10 @@ import { createCartAddButton } from '../components/CartAddButton';
 import { createCartDisplay } from '../components/CartDisplay';
 import { createGridContainer } from '../components/GridContainer';
 import { createHeader } from '../components/Header';
-import { createLeftColumn } from '../components/LeftColumn';
+import { createProductColumn } from '../components/ProductColumn';
 import { createProductSelector } from '../components/ProductSelector';
-import { createRightColumn } from '../components/RightColumn';
 import { createStockInfo } from '../components/StockInfo';
+import { createSummaryColumn } from '../components/SummaryColumn';
 import { createUsageInfo } from '../components/UsageInfo';
 import { getCartState } from '../state/appState.js';
 
@@ -30,16 +30,16 @@ export function useComponentCreation() {
   function createLayoutComponents(productSelector, cartAddButton, stockInfo, cartDisplay) {
     const header = createHeader({ cartItemCount: getCartState().totalItemCount });
 
-    const leftColumn = createLeftColumn({
+    const productColumn = createProductColumn({
       productSelector: productSelector,
       cartAddButton: cartAddButton,
       stockStatusElement: stockInfo,
       cartDisplay: cartDisplay,
     });
 
-    const rightColumn = createRightColumn();
+    const summaryColumn = createSummaryColumn();
     const { usageToggle, usageOverlay } = createUsageInfo();
-    const gridContainer = createGridContainer({ leftColumn, rightColumn });
+    const gridContainer = createGridContainer({ productColumn: productColumn, summaryColumn: summaryColumn });
 
     return { header, gridContainer, usageToggle, usageOverlay };
   }
