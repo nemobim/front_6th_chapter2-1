@@ -1,4 +1,4 @@
-import { updateCartItemPrice } from '../components/CartItem.js';
+import { updateCartItemPrice } from '../components/cart/CartItem.js';
 
 export class CartPriceUpdater {
   constructor(productList) {

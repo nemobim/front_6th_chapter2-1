@@ -1,4 +1,4 @@
-import { updateCartTotal } from '../components/CartTotal.js';
+import { updateCartTotal } from '../components/cart/CartTotal.js';
 import { updateDiscountInfo } from '../components/DiscountInfo.js';
 import { updateItemCount } from '../components/ItemCount.js';
 import { updateOrderSummary } from '../components/OrderSummary.js'; // 변경

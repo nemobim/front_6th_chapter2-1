@@ -1,4 +1,4 @@
-import { createCartTotal } from './CartTotal.js';
+import { createCartTotal } from './cart/CartTotal.js';
 import { createDiscountInfo } from './DiscountInfo.js';
 import { createOrderSummary } from './OrderSummary.js';
 import { createRewardPoints } from './RewardPoints.js';

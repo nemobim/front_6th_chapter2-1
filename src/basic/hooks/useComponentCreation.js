@@ -1,5 +1,5 @@
-import { createCartAddButton } from '../components/CartAddButton';
-import { createCartDisplay } from '../components/CartDisplay';
+import { createCartAddButton } from '../components/cart/CartAddButton';
+import { createCartDisplay } from '../components/cart/CartDisplay';
 import { createHeader } from '../components/Header';
 import { createMainLayout } from '../components/MainLayout';
 import { createProductColumn } from '../components/ProductColumn';

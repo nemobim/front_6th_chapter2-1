@@ -1,4 +1,4 @@
-import { addItemToCart, removeItemFromCart } from '../components/CartDisplay.js';
+import { addItemToCart, removeItemFromCart } from '../components/cart/CartDisplay.js';
 import { updateProductOptions } from '../components/ProductSelector.js';
 import { CartError, ERROR_TYPES, ProductError, ValidationError } from '../types/errors.js';
 import { validateProduct, validateQuantity } from '../utils/validation.js';
@@ -169,7 +169,7 @@ export class CartEventHandler {
         product.q -= quantityChange;
       } else if (newQuantity <= 0) {
         product.q += currentQuantity;
-        removeItemFromCart(this.cartDisplay, product.id);
+        removeItemFromCart(product.id);
       }
     } catch (error) {
       console.error('수량 변경 중 오류:', error.message);
@@ -187,7 +187,7 @@ export class CartEventHandler {
 
       const quantity = parseInt(quantityElement.textContent);
       product.q += quantity;
-      removeItemFromCart(this.cartDisplay, productId);
+      removeItemFromCart(productId);
     } catch (error) {
       console.error('아이템 삭제 중 오류:', error.message);
       alert(error.message);
