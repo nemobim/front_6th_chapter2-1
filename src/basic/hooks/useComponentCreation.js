@@ -1,7 +1,7 @@
 import { createCartAddButton } from '../components/CartAddButton';
 import { createCartDisplay } from '../components/CartDisplay';
-import { createGridContainer } from '../components/GridContainer';
 import { createHeader } from '../components/Header';
+import { createMainLayout } from '../components/MainLayout';
 import { createProductColumn } from '../components/ProductColumn';
 import { createProductSelector } from '../components/ProductSelector';
 import { createStockInfo } from '../components/StockInfo';
@@ -39,20 +39,20 @@ export function useComponentCreation() {
 
     const summaryColumn = createSummaryColumn();
     const { usageToggle, usageOverlay } = createUsageInfo();
-    const gridContainer = createGridContainer({ productColumn: productColumn, summaryColumn: summaryColumn });
+    const mainLayout = createMainLayout({ productColumn: productColumn, summaryColumn: summaryColumn });
 
-    return { header, gridContainer, usageToggle, usageOverlay };
+    return { header, mainLayout, usageToggle, usageOverlay };
   }
 
   /**
    * 생성된 컴포넌트들을 DOM에 마운트
    */
   function mountComponentsToDOM(components) {
-    const { header, gridContainer, usageToggle, usageOverlay } = components;
+    const { header, mainLayout, usageToggle, usageOverlay } = components;
     const root = document.getElementById('app');
 
     root.appendChild(header);
-    root.appendChild(gridContainer);
+    root.appendChild(mainLayout);
     root.appendChild(usageToggle);
     root.appendChild(usageOverlay);
   }
