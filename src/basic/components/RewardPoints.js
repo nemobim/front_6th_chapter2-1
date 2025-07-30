@@ -1,6 +1,6 @@
-export const createLoyaltyPoints = () => {
+export const createRewardPoints = () => {
   const rewardPoints = document.createElement('div');
-  rewardPoints.id = 'loyalty-points';
+  rewardPoints.id = 'loyalty-points'; // ID는 테스트 호환성 위해 유지
   rewardPoints.className = 'text-xs text-blue-400 mt-2 text-right';
   rewardPoints.textContent = '적립 포인트: 0p';
 
@@ -8,14 +8,14 @@ export const createLoyaltyPoints = () => {
 };
 
 // 포인트 계산 및 업데이트
-export const updateLoyaltyPoints = (loyaltyPointsElement, cartItems, productList, totalAmount, itemCount) => {
+export const updateRewardPoints = (rewardPointsElement, cartItems, productList, totalAmount, itemCount) => {
   let finalPoints;
   let hasKeyboard;
   let hasMouse;
   let hasMonitorArm;
 
   if (cartItems.length === 0) {
-    loyaltyPointsElement.style.display = 'none';
+    rewardPointsElement.style.display = 'none';
     return;
   }
 
@@ -92,17 +92,17 @@ export const updateLoyaltyPoints = (loyaltyPointsElement, cartItems, productList
 
   // 포인트 UI 업데이트
   if (finalPoints > 0) {
-    loyaltyPointsElement.innerHTML =
+    rewardPointsElement.innerHTML =
       '<div>적립 포인트: <span class="font-bold">' +
       finalPoints +
       'p</span></div>' +
       '<div class="text-2xs opacity-70 mt-1">' +
       pointsDetail.join(', ') +
       '</div>';
-    loyaltyPointsElement.style.display = 'block';
+    rewardPointsElement.style.display = 'block';
   } else {
-    loyaltyPointsElement.textContent = '적립 포인트: 0p';
-    loyaltyPointsElement.style.display = 'block';
+    rewardPointsElement.textContent = '적립 포인트: 0p';
+    rewardPointsElement.style.display = 'block';
   }
 
   return finalPoints;

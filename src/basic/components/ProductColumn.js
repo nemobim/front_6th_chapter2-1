@@ -44,8 +44,8 @@ export const createSummaryColumn = () => {
   mtAuto.insertBefore(cartTotal, mtAuto.querySelector('#tuesday-special'));
 
   // LoyaltyPoints 컴포넌트 생성 및 추가
-  const loyaltyPoints = createLoyaltyPoints();
-  cartTotal.appendChild(loyaltyPoints);
+  const rewardPoints = createLoyaltyPoints();
+  cartTotal.appendChild(rewardPoints);
 
   return summaryColumn;
 };

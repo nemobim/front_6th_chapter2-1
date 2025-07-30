@@ -1,6 +1,6 @@
 import { createCartTotal } from './CartTotal.js';
 import { createDiscountInfo } from './DiscountInfo.js';
-import { createLoyaltyPoints } from './LoyaltyPoints.js';
+import { createRewardPoints } from './RewardPoints.js'; // 변경
 import { createSummaryDetails } from './SummaryDetails.js';
 
 export const createSummaryColumn = () => {
@@ -43,9 +43,9 @@ export const createSummaryColumn = () => {
   const cartTotal = createCartTotal();
   mtAuto.insertBefore(cartTotal, mtAuto.querySelector('#tuesday-special'));
 
-  // LoyaltyPoints 컴포넌트 생성 및 추가
-  const loyaltyPoints = createLoyaltyPoints();
-  cartTotal.appendChild(loyaltyPoints);
+  // RewardPoints 컴포넌트 생성 및 추가
+  const rewardPoints = createRewardPoints(); // 변경
+  cartTotal.appendChild(rewardPoints); // 변경
 
   return summaryColumn;
 };
