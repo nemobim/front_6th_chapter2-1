@@ -1,4 +1,5 @@
 import { getCartItems } from '../components/CartDisplay.js';
+import { CartPriceUpdater } from '../services/CartPriceUpdater.js';
 import { 
   getProductList, 
   updateCartItems, 

@@ -1,10 +1,5 @@
-import { createCartDisplay, getCartItems } from './components/CartDisplay';
-import { createProductSelector, updateProductOptions } from './components/ProductSelector';
-import { CartEventHandler } from './services/CartEventHandler';
-import { CartPriceUpdater } from './services/CartPriceUpdater';
-import { DiscountCalculator } from './services/DiscountCalculator';
-import { TimerService } from './services/TimerService';
-import { UIUpdater } from './services/UIUpdater';
+import { getCartItems } from './components/CartDisplay';
+import { updateProductOptions } from './components/ProductSelector';
 import { 
   getProductList, 
   updateCartItems, 
@@ -12,35 +7,9 @@ import {
   updateCartTotal, 
   updateCartDiscount
 } from './state/appState.js';
-import { useCartCalculation, useCartPriceUpdate } from './hooks/useCart.js';
 import { useAppInitialization } from './hooks/useAppInitialization.js';
 import { useComponentCreation } from './hooks/useComponentCreation.js';
-
-/**
- * 핵심 서비스들을 초기화
- * DOM 생성 전에 호출되어야 함
- */
-function initializeCoreServices() {
-  const discountCalculator = new DiscountCalculator();
-  return { discountCalculator };
-}
-
-/**
- * DOM 의존 서비스들을 초기화
- * DOM 컴포넌트 생성 후에 호출되어야 함
- */
-function initializeDOMDependentServices(sel, cartDisp, discountCalculator) {
-  const uiUpdater = new UIUpdater(cartDisp, getProductList());
-  
-  const { handleCalculateCartStuff } = useCartCalculation(cartDisp, discountCalculator, uiUpdater);
-  const { doUpdatePricesInCart } = useCartPriceUpdate(cartDisp, discountCalculator, uiUpdater);
-
-  const timerService = new TimerService(getProductList(), () => updateProductOptions(sel, getProductList()), doUpdatePricesInCart);
-
-  const cartEventHandler = new CartEventHandler(getProductList(), cartDisp, sel, timerService, handleCalculateCartStuff);
-
-  return { timerService, cartEventHandler, uiUpdater };
-}
+import { useServiceInitialization } from './hooks/useServiceInitialization.js';
 
 /**
  * 초기 UI 상태를 설정
@@ -74,6 +43,7 @@ function setupEventHandlers(cartEventHandler, addBtn) {
 function main() {
   const { initializeAppState, setupStateSubscription } = useAppInitialization();
   const { createCoreComponents, createLayoutComponents, mountComponentsToDOM } = useComponentCreation();
+  const { initializeCoreServices, initializeDOMDependentServices } = useServiceInitialization();
 
   // 1. 애플리케이션 상태 초기화
   initializeAppState();
