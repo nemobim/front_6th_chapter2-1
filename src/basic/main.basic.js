@@ -19,13 +19,6 @@ import { createState } from './utils/stateManager.js';
 // 앱 전체 상태 관리
 const [getAppState, setAppState, subscribeApp] = createState(AppState);
 
-// 기존 전역 변수들
-/** 할인 계산 및 가격 로직 처리 */
-let discountCalculator;
-
-/** 모든 컴포넌트의 UI 업데이트 관리 */
-let uiUpdater;
-
 // 앱 상태 접근 함수들
 function getProductList() {
   return getAppState().product.list;
@@ -74,7 +67,7 @@ function updateCartDiscount(newDiscount) {
  *
  * 카트 내용이 변경되거나 가격이 업데이트될 때 호출됨
  */
-function handleCalculateCartStuff(cartDisp) {
+function handleCalculateCartStuff(cartDisp, discountCalculator, uiUpdater) {
   // 필요한 서비스가 초기화되었는지 확인
   if (!discountCalculator || !uiUpdater) {
     return;
@@ -102,14 +95,14 @@ function handleCalculateCartStuff(cartDisp) {
  * TimerService에 의해 세일 가격 업데이트 시 호출됨
  * 카트 아이템이 현재 세일 가격을 반영하도록 보장
  */
-function doUpdatePricesInCart(cartDisp) {
+function doUpdatePricesInCart(cartDisp, discountCalculator, uiUpdater) {
   const cartItems = getCartItems(cartDisp);
 
   // 모든 카트 아이템의 가격을 현재 세일 반영하여 업데이트
   CartPriceUpdater.updateCartItemPrices(cartItems);
 
   // 업데이트된 가격으로 총액 재계산
-  handleCalculateCartStuff(cartDisp);
+  handleCalculateCartStuff(cartDisp, discountCalculator, uiUpdater);
 }
 
 /**
@@ -117,21 +110,22 @@ function doUpdatePricesInCart(cartDisp) {
  * DOM 생성 전에 호출되어야 함
  */
 function initializeCoreServices() {
-  discountCalculator = new DiscountCalculator();
+  const discountCalculator = new DiscountCalculator();
+  return { discountCalculator };
 }
 
 /**
  * DOM 의존 서비스들을 초기화
  * DOM 컴포넌트 생성 후에 호출되어야 함
  */
-function initializeDOMDependentServices(sel, cartDisp) {
-  uiUpdater = new UIUpdater(cartDisp, getProductList());
+function initializeDOMDependentServices(sel, cartDisp, discountCalculator) {
+  const uiUpdater = new UIUpdater(cartDisp, getProductList());
 
-  const timerService = new TimerService(getProductList(), () => updateProductOptions(sel, getProductList()), () => doUpdatePricesInCart(cartDisp));
+  const timerService = new TimerService(getProductList(), () => updateProductOptions(sel, getProductList()), () => doUpdatePricesInCart(cartDisp, discountCalculator, uiUpdater));
 
-  const cartEventHandler = new CartEventHandler(getProductList(), cartDisp, sel, timerService, () => handleCalculateCartStuff(cartDisp));
+  const cartEventHandler = new CartEventHandler(getProductList(), cartDisp, sel, timerService, () => handleCalculateCartStuff(cartDisp, discountCalculator, uiUpdater));
 
-  return { timerService, cartEventHandler };
+  return { timerService, cartEventHandler, uiUpdater };
 }
 
 /**
@@ -181,9 +175,23 @@ function mountComponentsToDOM(components) {
 /**
  * 초기 UI 상태를 설정
  */
-function performInitialRendering(sel, cartDisp) {
+function performInitialRendering(sel, cartDisp, discountCalculator, uiUpdater) {
   updateProductOptions(sel, getProductList());
-  handleCalculateCartStuff(cartDisp);
+  
+  // 초기 렌더링 시에는 UI 업데이트 없이 상태만 계산
+  const cartItems = getCartItems(cartDisp);
+  const calculationResult = discountCalculator.calculateTotalDiscount(cartItems, getProductList());
+  
+  // 카트 상태만 업데이트 (UI 업데이트는 나중에)
+  updateCartItems(cartItems);
+  updateCartItemCount(calculationResult.itemCount);
+  updateCartTotal(calculationResult.totalAmount);
+  updateCartDiscount(calculationResult.discountAmount);
+  
+  // uiUpdater가 있으면 UI 업데이트 수행
+  if (uiUpdater) {
+    uiUpdater.updateAllUI(calculationResult);
+  }
 }
 
 /**
@@ -201,7 +209,7 @@ function main() {
   setProductList(PRODUCT_LIST);
 
   // 2. 핵심 서비스 초기화 (DOM 생성 전)
-  initializeCoreServices();
+  const { discountCalculator } = initializeCoreServices();
 
   // 3. 핵심 컴포넌트 생성
   const { sel, addBtn, stockInfo, cartDisp } = createCoreComponents();
@@ -213,10 +221,10 @@ function main() {
   mountComponentsToDOM(layoutComponents);
 
   // 6. DOM 의존 서비스 초기화
-  const { cartEventHandler } = initializeDOMDependentServices(sel, cartDisp);
+  const { cartEventHandler, uiUpdater } = initializeDOMDependentServices(sel, cartDisp, discountCalculator);
 
   // 7. 초기 렌더링 수행
-  performInitialRendering(sel, cartDisp);
+  performInitialRendering(sel, cartDisp, discountCalculator, uiUpdater);
 
   // 8. 이벤트 핸들러 등록
   setupEventHandlers(cartEventHandler, addBtn);
