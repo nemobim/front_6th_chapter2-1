@@ -3,10 +3,10 @@ import { createCartDisplay } from '../components/CartDisplay';
 import { createGridContainer } from '../components/GridContainer';
 import { createHeader } from '../components/Header';
 import { createLeftColumn } from '../components/LeftColumn';
-import { createManualOverlay } from '../components/ManualOverlay';
 import { createProductSelector } from '../components/ProductSelector';
 import { createRightColumn } from '../components/RightColumn';
 import { createStockInfo } from '../components/StockInfo';
+import { createUsageInfo } from '../components/UsageInfo';
 import { getCartState } from '../state/appState.js';
 
 /**
@@ -38,23 +38,23 @@ export function useComponentCreation() {
     });
 
     const rightColumn = createRightColumn();
-    const { manualToggle, manualOverlay } = createManualOverlay();
+    const { usageToggle, usageOverlay } = createUsageInfo();
     const gridContainer = createGridContainer({ leftColumn, rightColumn });
 
-    return { header, gridContainer, manualToggle, manualOverlay };
+    return { header, gridContainer, usageToggle, usageOverlay };
   }
 
   /**
    * 생성된 컴포넌트들을 DOM에 마운트
    */
   function mountComponentsToDOM(components) {
-    const { header, gridContainer, manualToggle, manualOverlay } = components;
+    const { header, gridContainer, usageToggle, usageOverlay } = components;
     const root = document.getElementById('app');
 
     root.appendChild(header);
     root.appendChild(gridContainer);
-    root.appendChild(manualToggle);
-    root.appendChild(manualOverlay);
+    root.appendChild(usageToggle);
+    root.appendChild(usageOverlay);
   }
 
   return { createCoreComponents, createLayoutComponents, mountComponentsToDOM };

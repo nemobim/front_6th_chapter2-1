@@ -1,13 +1,13 @@
-export const createManualOverlay = () => {
-  // 매뉴얼 토글 버튼 생성
-  const manualToggle = document.createElement('button');
-  manualToggle.onclick = function () {
-    manualOverlay.classList.toggle('hidden');
-    manualColumn.classList.toggle('translate-x-full');
+export const createUsageInfo = () => {
+  // 사용법 토글 버튼 생성
+  const usageToggle = document.createElement('button');
+  usageToggle.onclick = function () {
+    usageOverlay.classList.toggle('hidden');
+    usageColumn.classList.toggle('translate-x-full');
   };
-  manualToggle.className =
+  usageToggle.className =
     'fixed top-4 right-4 bg-black text-white p-3 rounded-full hover:bg-gray-900 transition-colors z-50';
-  manualToggle.innerHTML = /* HTML */ `
+  usageToggle.innerHTML = /* HTML */ `
     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path
         stroke-linecap="round"
@@ -18,21 +18,21 @@ export const createManualOverlay = () => {
     </svg>
   `;
 
-  // 매뉴얼 오버레이 생성
-  const manualOverlay = document.createElement('div');
-  manualOverlay.className = 'fixed inset-0 bg-black/50 z-40 hidden transition-opacity duration-300';
-  manualOverlay.onclick = function (e) {
-    if (e.target === manualOverlay) {
-      manualOverlay.classList.add('hidden');
-      manualColumn.classList.add('translate-x-full');
+  // 사용법 오버레이 생성
+  const usageOverlay = document.createElement('div');
+  usageOverlay.className = 'fixed inset-0 bg-black/50 z-40 hidden transition-opacity duration-300';
+  usageOverlay.onclick = function (e) {
+    if (e.target === usageOverlay) {
+      usageOverlay.classList.add('hidden');
+      usageColumn.classList.add('translate-x-full');
     }
   };
 
-  // 매뉴얼 컬럼 생성
-  const manualColumn = document.createElement('div');
-  manualColumn.className =
+  // 사용법 컬럼 생성
+  const usageColumn = document.createElement('div');
+  usageColumn.className =
     'fixed right-0 top-0 h-full w-80 bg-white shadow-2xl p-6 overflow-y-auto z-50 transform translate-x-full transition-transform duration-300';
-  manualColumn.innerHTML = /* HTML */ `
+  usageColumn.innerHTML = /* HTML */ `
     <button
       class="absolute top-4 right-4 text-gray-500 hover:text-black"
       onclick="document.querySelector('.fixed.inset-0').classList.add('hidden'); this.parentElement.classList.add('translate-x-full')"
@@ -97,7 +97,7 @@ export const createManualOverlay = () => {
   `;
 
   // 오버레이에 컬럼 추가
-  manualOverlay.appendChild(manualColumn);
+  usageOverlay.appendChild(usageColumn);
 
-  return { manualToggle, manualOverlay };
+  return { usageToggle, usageOverlay };
 };
