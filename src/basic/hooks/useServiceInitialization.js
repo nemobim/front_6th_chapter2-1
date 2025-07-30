@@ -23,7 +23,7 @@ export function useServiceInitialization() {
    * DOM 의존 서비스들을 초기화
    * DOM 컴포넌트 생성 후에 호출되어야 함
    */
-  function initializeDOMDependentServices(productSelector, cartDisplay, discountCalculator) {
+  function initializeServices(productSelector, cartDisplay, discountCalculator) {
     const uiUpdater = new UIUpdater(cartDisplay, getProductList());
 
     const { handleCalculateCart } = useCartCalculation(cartDisplay, discountCalculator, uiUpdater);
@@ -46,5 +46,5 @@ export function useServiceInitialization() {
     return { timerService, cartEventHandler, uiUpdater };
   }
 
-  return { initializeCoreServices, initializeDOMDependentServices };
+  return { initializeCoreServices, initializeServices };
 }

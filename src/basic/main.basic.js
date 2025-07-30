@@ -6,7 +6,7 @@ import { useServiceInitialization } from './hooks/useServiceInitialization.js';
 function initializeApp() {
   const { initializeAppState, subscribeToState } = useAppInitialization();
   const { createCoreComponents, createLayoutComponents, mountComponentsToDOM } = useComponentCreation();
-  const { initializeCoreServices, initializeDOMDependentServices } = useServiceInitialization();
+  const { initializeCoreServices, initializeServices } = useServiceInitialization();
   const { initializeRendering, attachEventHandlers } = useRendering();
 
   // 1. 애플리케이션 상태 초기화
@@ -25,11 +25,7 @@ function initializeApp() {
   mountComponentsToDOM(layoutComponents);
 
   // 6. DOM 의존 서비스 초기화
-  const { cartEventHandler, uiUpdater } = initializeDOMDependentServices(
-    productSelector,
-    cartDisplay,
-    discountCalculator
-  );
+  const { cartEventHandler, uiUpdater } = initializeServices(productSelector, cartDisplay, discountCalculator);
 
   // 7. 초기 렌더링 수행
   initializeRendering(productSelector, cartDisplay, discountCalculator, uiUpdater);

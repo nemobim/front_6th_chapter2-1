@@ -11,7 +11,7 @@ import {
 /**
  * 공통 카트 계산 로직
  */
-function calculateCartAndUpdateState(cartDisplay, discountCalculator, uiUpdater) {
+function updateCartState(cartDisplay, discountCalculator, uiUpdater) {
   // 필요한 서비스가 초기화되었는지 확인
   if (!discountCalculator || !uiUpdater) {
     return;
@@ -38,7 +38,7 @@ function calculateCartAndUpdateState(cartDisplay, discountCalculator, uiUpdater)
  */
 export function useCartCalculation(cartDisplay, discountCalculator, uiUpdater) {
   function handleCalculateCart() {
-    calculateCartAndUpdateState(cartDisplay, discountCalculator, uiUpdater);
+    updateCartState(cartDisplay, discountCalculator, uiUpdater);
   }
 
   return { handleCalculateCart };
@@ -55,7 +55,7 @@ export function useCartPriceUpdate(cartDisplay, discountCalculator, uiUpdater) {
     CartPriceUpdater.updateCartItemPrices(cartItems);
 
     // 업데이트된 가격으로 총액 재계산
-    calculateCartAndUpdateState(cartDisplay, discountCalculator, uiUpdater);
+    updateCartState(cartDisplay, discountCalculator, uiUpdater);
   }
 
   return { handleUpdateCartPrices };

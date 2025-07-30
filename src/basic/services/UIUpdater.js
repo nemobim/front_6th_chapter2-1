@@ -39,7 +39,7 @@ export class UIUpdater {
   }
 
   // 재고 메시지 생성
-  generateStockMessage() {
+  createStockMessage() {
     let stockMessage = '';
 
     for (const item of this.productList) {
@@ -100,7 +100,7 @@ export class UIUpdater {
   updateStockDisplay() {
     const stockInfo = document.getElementById('stock-status');
     if (stockInfo) {
-      const stockMessage = this.generateStockMessage();
+      const stockMessage = this.createStockMessage();
       stockInfo.textContent = stockMessage;
       updateStockInfo(stockInfo, this.productList);
     }
