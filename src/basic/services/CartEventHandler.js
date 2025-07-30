@@ -106,7 +106,7 @@ export class CartEventHandler {
   }
 
   // 클릭 이벤트 타입 확인
-  getClickEventType(target) {
+  findClickEventType(target) {
     if (target.classList.contains('quantity-change')) return 'quantity-change';
     if (target.classList.contains('remove-item')) return 'remove-item';
     return null;
@@ -130,7 +130,7 @@ export class CartEventHandler {
         throw new ProductError('상품을 찾을 수 없습니다.', productId);
       }
 
-      const eventType = this.getClickEventType(target);
+      const eventType = this.findClickEventType(target);
       this.processCartItemAction(eventType, target, itemElement, product);
 
       this.onCartUpdate();
