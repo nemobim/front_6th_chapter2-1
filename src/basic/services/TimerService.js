@@ -1,3 +1,17 @@
+// 타이머 관련 상수
+const TIMER_DELAYS = {
+  LIGHTNING_SALE_MIN: 0,
+  LIGHTNING_SALE_MAX: 10000, // 10초
+  RECOMMENDATION_MIN: 0,
+  RECOMMENDATION_MAX: 20000, // 20초
+  LIGHTNING_SALE_INTERVAL: 30000, // 30초
+};
+
+const DISCOUNT_PERCENTAGES = {
+  LIGHTNING_SALE: 80, // 80% 할인 (20% 할인)
+  RECOMMENDATION: 95, // 95% 할인 (5% 할인)
+};
+
 export class TimerService {
   constructor(productList, updateProductOptions, updatePricesInCart) {
     this.productList = productList;
@@ -16,14 +30,14 @@ export class TimerService {
   startLightningSaleTimer() {
     setTimeout(() => {
       this.startLightningSale();
-    }, Math.random() * 10000);
+    }, Math.random() * TIMER_DELAYS.LIGHTNING_SALE_MAX);
   }
 
   // 추천 상품 타이머 시작
   startRecommendationTimer() {
     setTimeout(() => {
       this.showRecommendation();
-    }, Math.random() * 20000);
+    }, Math.random() * TIMER_DELAYS.RECOMMENDATION_MAX);
   }
 
   // 번개 세일 시작
@@ -31,14 +45,14 @@ export class TimerService {
     const luckyItem = this.findRecommendationProduct();
     if (luckyItem && luckyItem.q > 0) {
       luckyItem.onSale = true;
-      luckyItem.val = Math.round((luckyItem.originalVal * 80) / 100);
+      luckyItem.val = Math.round((luckyItem.originalVal * DISCOUNT_PERCENTAGES.LIGHTNING_SALE) / 100);
       this.updateProductOptions();
       alert('⚡번개세일! ' + luckyItem.name + '이(가) 20% 할인 중입니다!');
     }
 
     setTimeout(() => {
       this.startLightningSale();
-    }, 30000);
+    }, TIMER_DELAYS.LIGHTNING_SALE_INTERVAL);
   }
 
   // 추천 상품 표시
@@ -48,12 +62,12 @@ export class TimerService {
       suggest.suggestSale = true;
       this.updateProductOptions();
       alert(' ' + suggest.name + '은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!');
-      suggest.val = Math.round((suggest.val * (100 - 5)) / 100);
+      suggest.val = Math.round((suggest.val * DISCOUNT_PERCENTAGES.RECOMMENDATION) / 100);
     }
 
     setTimeout(() => {
       this.showRecommendation();
-    }, Math.random() * 20000);
+    }, Math.random() * TIMER_DELAYS.RECOMMENDATION_MAX);
   }
 
   // 추천 상품 찾기

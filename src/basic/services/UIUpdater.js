@@ -5,6 +5,12 @@ import { updateLoyaltyPoints } from '../components/LoyaltyPoints.js';
 import { updateStockInfo } from '../components/StockInfo.js';
 import { updateSummaryDetails } from '../components/SummaryDetails.js';
 
+// UI 관련 상수
+const UI_THRESHOLDS = {
+  BOLD_QUANTITY: 10,
+  LOW_STOCK_THRESHOLD: 5,
+};
+
 export class UIUpdater {
   constructor(cartDisplay, productList) {
     this.cartDisplay = cartDisplay;
@@ -20,7 +26,7 @@ export class UIUpdater {
       const priceElems = cartItem.querySelectorAll('.text-lg, .text-xs');
       priceElems.forEach((elem) => {
         if (elem.classList.contains('text-lg')) {
-          elem.style.fontWeight = quantity >= 10 ? 'bold' : 'normal';
+          elem.style.fontWeight = quantity >= UI_THRESHOLDS.BOLD_QUANTITY ? 'bold' : 'normal';
         }
       });
     }
@@ -43,7 +49,7 @@ export class UIUpdater {
     let stockMessage = '';
 
     for (const item of this.productList) {
-      if (item.q < 5) {
+      if (item.q < UI_THRESHOLDS.LOW_STOCK_THRESHOLD) {
         if (item.q > 0) {
           stockMessage += `${item.name}: 재고 부족 (${item.q}개 남음)\n`;
         } else {
