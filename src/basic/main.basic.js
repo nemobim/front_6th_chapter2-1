@@ -7,7 +7,6 @@ import { createManualOverlay } from './components/ManualOverlay';
 import { createProductSelector, updateProductOptions } from './components/ProductSelector';
 import { createRightColumn } from './components/RightColumn';
 import { createStockInfo } from './components/StockInfo';
-import { PRODUCT_LIST } from './data/products';
 import { CartEventHandler } from './services/CartEventHandler';
 import { CartPriceUpdater } from './services/CartPriceUpdater';
 import { DiscountCalculator } from './services/DiscountCalculator';
@@ -15,15 +14,14 @@ import { TimerService } from './services/TimerService';
 import { UIUpdater } from './services/UIUpdater';
 import { 
   getProductList, 
-  setProductList, 
   getCartState, 
-  updateCartItemCount, 
   updateCartItems, 
+  updateCartItemCount, 
   updateCartTotal, 
-  updateCartDiscount, 
-  subscribeApp 
+  updateCartDiscount
 } from './state/appState.js';
 import { useCartCalculation, useCartPriceUpdate } from './hooks/useCart.js';
+import { useAppInitialization } from './hooks/useAppInitialization.js';
 
 /**
  * 핵심 서비스들을 초기화
@@ -124,30 +122,9 @@ function setupEventHandlers(cartEventHandler, addBtn) {
   cartEventHandler.attachEventListeners(addBtn);
 }
 
-/**
- * 애플리케이션 초기 상태를 설정
- */
-function initializeAppState() {
-  updateCartItemCount(0);
-  setProductList(PRODUCT_LIST);
-}
-
-/**
- * 앱 상태 변경 시 UI 업데이트 구독 설정
- */
-function setupStateSubscription() {
-  subscribeApp((newAppState) => {
-    const header = document.querySelector('header');
-    if (header) {
-      const itemCountElement = header.querySelector('.cart-item-count');
-      if (itemCountElement) {
-        itemCountElement.textContent = newAppState.cart.totalItemCount;
-      }
-    }
-  });
-}
-
 function main() {
+  const { initializeAppState, setupStateSubscription } = useAppInitialization();
+
   // 1. 애플리케이션 상태 초기화
   initializeAppState();
 
