@@ -20,9 +20,6 @@ import { createState } from './utils/stateManager.js';
 const [getAppState, setAppState, subscribeApp] = createState(AppState);
 
 // 기존 전역 변수들
-/** 카트 추가 버튼 컴포넌트 */
-let addBtn;
-
 /** 카트 표시 컴포넌트 */
 let cartDisp;
 
@@ -145,16 +142,16 @@ function initializeDOMDependentServices(sel) {
  */
 function createCoreComponents() {
   const sel = createProductSelector();
-  addBtn = createAddToCartButton();
+  const addBtn = createAddToCartButton();
   const stockInfo = createStockInfo();
   cartDisp = createCartDisplay();
-  return { sel, stockInfo };
+  return { sel, addBtn, stockInfo };
 }
 
 /**
  * 레이아웃 컴포넌트들을 생성하고 조립
  */
-function createLayoutComponents(sel, stockInfo) {
+function createLayoutComponents(sel, addBtn, stockInfo) {
   const header = createHeader({ cartItemCount: getCartState().totalItemCount });
 
   const leftColumn = createLeftColumn({
@@ -195,7 +192,7 @@ function performInitialRendering(sel) {
 /**
  * 이벤트 핸들러를 등록
  */
-function setupEventHandlers(cartEventHandler) {
+function setupEventHandlers(cartEventHandler, addBtn) {
   cartEventHandler.attachEventListeners(addBtn);
 }
 
@@ -210,10 +207,10 @@ function main() {
   initializeCoreServices();
 
   // 3. 핵심 컴포넌트 생성
-  const { sel, stockInfo } = createCoreComponents();
+  const { sel, addBtn, stockInfo } = createCoreComponents();
 
   // 4. 레이아웃 컴포넌트 생성 및 조립
-  const layoutComponents = createLayoutComponents(sel, stockInfo);
+  const layoutComponents = createLayoutComponents(sel, addBtn, stockInfo);
 
   // 5. DOM에 컴포넌트 마운트
   mountComponentsToDOM(layoutComponents);
@@ -225,7 +222,7 @@ function main() {
   performInitialRendering(sel);
 
   // 8. 이벤트 핸들러 등록
-  setupEventHandlers(cartEventHandler);
+  setupEventHandlers(cartEventHandler, addBtn);
 
   // 카트 상태 변경 시 UI 업데이트
   subscribeApp((newAppState) => {
