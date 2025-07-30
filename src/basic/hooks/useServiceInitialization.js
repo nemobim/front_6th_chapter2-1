@@ -27,12 +27,12 @@ export function useServiceInitialization() {
     const uiUpdater = new UIUpdater(cartDisplay, getProductList());
 
     const { handleCalculateCart } = useCartCalculation(cartDisplay, discountCalculator, uiUpdater);
-    const { handleUpdateCartPrices } = useCartPriceUpdate(cartDisplay, discountCalculator, uiUpdater);
+    const { handleUpdatePrices } = useCartPriceUpdate(cartDisplay, discountCalculator, uiUpdater);
 
     const timerService = new TimerService(
       getProductList(),
       () => updateProductOptions(productSelector, getProductList()),
-      handleUpdateCartPrices
+      handleUpdatePrices
     );
 
     const cartEventHandler = new CartEventHandler(

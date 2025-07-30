@@ -48,7 +48,7 @@ export function useCartCalculation(cartDisplay, discountCalculator, uiUpdater) {
  * 카트 가격 업데이트 로직을 관리하는 커스텀 훅 스타일 함수
  */
 export function useCartPriceUpdate(cartDisplay, discountCalculator, uiUpdater) {
-  function handleUpdateCartPrices() {
+  function handleUpdatePrices() {
     const cartItems = getCartItems(cartDisplay);
 
     // 모든 카트 아이템의 가격을 현재 세일 반영하여 업데이트
@@ -58,5 +58,5 @@ export function useCartPriceUpdate(cartDisplay, discountCalculator, uiUpdater) {
     updateCartState(cartDisplay, discountCalculator, uiUpdater);
   }
 
-  return { handleUpdateCartPrices };
+  return { handleUpdatePrices };
 }
