@@ -1,12 +1,5 @@
-import { createAddToCartButton } from './components/AddToCartButton';
 import { createCartDisplay, getCartItems } from './components/CartDisplay';
-import { createGridContainer } from './components/GridContainer';
-import { createHeader } from './components/Header';
-import { createLeftColumn } from './components/LeftColumn';
-import { createManualOverlay } from './components/ManualOverlay';
 import { createProductSelector, updateProductOptions } from './components/ProductSelector';
-import { createRightColumn } from './components/RightColumn';
-import { createStockInfo } from './components/StockInfo';
 import { CartEventHandler } from './services/CartEventHandler';
 import { CartPriceUpdater } from './services/CartPriceUpdater';
 import { DiscountCalculator } from './services/DiscountCalculator';
@@ -14,7 +7,6 @@ import { TimerService } from './services/TimerService';
 import { UIUpdater } from './services/UIUpdater';
 import { 
   getProductList, 
-  getCartState, 
   updateCartItems, 
   updateCartItemCount, 
   updateCartTotal, 
@@ -22,6 +14,7 @@ import {
 } from './state/appState.js';
 import { useCartCalculation, useCartPriceUpdate } from './hooks/useCart.js';
 import { useAppInitialization } from './hooks/useAppInitialization.js';
+import { useComponentCreation } from './hooks/useComponentCreation.js';
 
 /**
  * 핵심 서비스들을 초기화
@@ -47,50 +40,6 @@ function initializeDOMDependentServices(sel, cartDisp, discountCalculator) {
   const cartEventHandler = new CartEventHandler(getProductList(), cartDisp, sel, timerService, handleCalculateCartStuff);
 
   return { timerService, cartEventHandler, uiUpdater };
-}
-
-/**
- * 핵심 상호작용 컴포넌트들을 생성
- */
-function createCoreComponents() {
-  const sel = createProductSelector();
-  const addBtn = createAddToCartButton();
-  const stockInfo = createStockInfo();
-  const cartDisp = createCartDisplay();
-  return { sel, addBtn, stockInfo, cartDisp };
-}
-
-/**
- * 레이아웃 컴포넌트들을 생성하고 조립
- */
-function createLayoutComponents(sel, addBtn, stockInfo, cartDisp) {
-  const header = createHeader({ cartItemCount: getCartState().totalItemCount });
-
-  const leftColumn = createLeftColumn({
-    productSelector: sel,
-    addToCartButton: addBtn,
-    stockStatusElement: stockInfo,
-    cartDisplay: cartDisp,
-  });
-
-  const rightColumn = createRightColumn();
-  const { manualToggle, manualOverlay } = createManualOverlay();
-  const gridContainer = createGridContainer({ leftColumn, rightColumn });
-
-  return { header, gridContainer, manualToggle, manualOverlay };
-}
-
-/**
- * 생성된 컴포넌트들을 DOM에 마운트
- */
-function mountComponentsToDOM(components) {
-  const { header, gridContainer, manualToggle, manualOverlay } = components;
-  const root = document.getElementById('app');
-
-  root.appendChild(header);
-  root.appendChild(gridContainer);
-  root.appendChild(manualToggle);
-  root.appendChild(manualOverlay);
 }
 
 /**
@@ -124,6 +73,7 @@ function setupEventHandlers(cartEventHandler, addBtn) {
 
 function main() {
   const { initializeAppState, setupStateSubscription } = useAppInitialization();
+  const { createCoreComponents, createLayoutComponents, mountComponentsToDOM } = useComponentCreation();
 
   // 1. 애플리케이션 상태 초기화
   initializeAppState();
