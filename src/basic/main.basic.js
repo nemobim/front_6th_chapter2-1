@@ -20,9 +20,6 @@ import { createState } from './utils/stateManager.js';
 const [getAppState, setAppState, subscribeApp] = createState(AppState);
 
 // 기존 전역 변수들
-/** 재고 정보 표시 컴포넌트 */
-let stockInfo;
-
 /** 상품 선택 드롭다운 */
 let sel;
 
@@ -152,14 +149,15 @@ function initializeDOMDependentServices() {
 function createCoreComponents() {
   sel = createProductSelector();
   addBtn = createAddToCartButton();
-  stockInfo = createStockInfo();
+  const stockInfo = createStockInfo();
   cartDisp = createCartDisplay();
+  return { stockInfo };
 }
 
 /**
  * 레이아웃 컴포넌트들을 생성하고 조립
  */
-function createLayoutComponents() {
+function createLayoutComponents(stockInfo) {
   const header = createHeader({ cartItemCount: getCartState().totalItemCount });
 
   const leftColumn = createLeftColumn({
@@ -215,10 +213,10 @@ function main() {
   initializeCoreServices();
 
   // 3. 핵심 컴포넌트 생성
-  createCoreComponents();
+  const { stockInfo } = createCoreComponents();
 
   // 4. 레이아웃 컴포넌트 생성 및 조립
-  const layoutComponents = createLayoutComponents();
+  const layoutComponents = createLayoutComponents(stockInfo);
 
   // 5. DOM에 컴포넌트 마운트
   mountComponentsToDOM(layoutComponents);
