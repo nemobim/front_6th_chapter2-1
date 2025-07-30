@@ -1,7 +1,7 @@
 import { createCartTotal } from './CartTotal.js';
 import { createDiscountInfo } from './DiscountInfo.js';
-import { createLoyaltyPoints } from './LoyaltyPoints.js';
-import { createSummaryDetails } from './SummaryDetails.js';
+import { createOrderSummary } from './OrderSummary.js';
+import { createRewardPoints } from './RewardPoints.js';
 
 export const createSummaryColumn = () => {
   const summaryColumn = document.createElement('div');
@@ -30,7 +30,7 @@ export const createSummaryColumn = () => {
   `;
 
   // SummaryDetails 컴포넌트 생성 및 추가
-  const orderSummary = createSummaryDetails();
+  const orderSummary = createOrderSummary();
   const flexContainer = summaryColumn.querySelector('.flex-1.flex.flex-col');
   flexContainer.insertBefore(orderSummary, flexContainer.querySelector('.mt-auto'));
 
@@ -43,8 +43,8 @@ export const createSummaryColumn = () => {
   const cartTotal = createCartTotal();
   mtAuto.insertBefore(cartTotal, mtAuto.querySelector('#tuesday-special'));
 
-  // LoyaltyPoints 컴포넌트 생성 및 추가
-  const rewardPoints = createLoyaltyPoints();
+  // RewardPoints 컴포넌트 생성 및 추가
+  const rewardPoints = createRewardPoints();
   cartTotal.appendChild(rewardPoints);
 
   return summaryColumn;
