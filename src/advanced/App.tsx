@@ -24,6 +24,26 @@ const App = () => {
     startTimers();
   }, [startTimers]);
 
+  // 할인 가격 계산
+  const calculateDiscountPrice = (product: any) => {
+    let discountPrice = product.price;
+
+    // 번개세일 할인 (20%)
+    if (product.isOnSale) {
+      discountPrice = product.price * 0.8;
+    }
+    // 추천상품 할인 (5%)
+    else if (product.isRecommended) {
+      discountPrice = product.price * 0.95;
+    }
+    // 기본 할인 (24%)
+    else {
+      discountPrice = product.price * 0.76;
+    }
+
+    return Math.round(discountPrice);
+  };
+
   const handleAddToCart = () => {
     if (!selectedProductId) return;
 
@@ -55,7 +75,7 @@ const App = () => {
             productName: product.name,
             quantity: 1,
             price: product.price,
-            discountPrice: product.price * 0.76, // 24% 할인
+            discountPrice: calculateDiscountPrice(product),
           },
         ];
       }
