@@ -19,8 +19,25 @@ export function useCart() {
     });
   };
 
+  const updateQuantity = (productId: string, newQuantity: number) => {
+    if (newQuantity <= 0) {
+      removeFromCart(productId);
+      return;
+    }
+
+    setCartItems((prevItems) =>
+      prevItems.map((item) => (item.productId === productId ? { ...item, quantity: newQuantity } : item))
+    );
+  };
+
+  const removeFromCart = (productId: string) => {
+    setCartItems((prevItems) => prevItems.filter((item) => item.productId !== productId));
+  };
+
   return {
     cartItems,
     addToCart,
+    updateQuantity,
+    removeFromCart,
   };
 }
