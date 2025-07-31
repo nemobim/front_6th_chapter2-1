@@ -19,8 +19,9 @@ const ProductPicker = ({ selectedProductId = '', onProductSelect, onAddToCart }:
       >
         <option value="">Select a product</option>
         {PRODUCTS.map((product) => (
-          <option key={product.id} value={product.id}>
+          <option key={product.id} value={product.id} disabled={product.stock === 0}>
             {product.name} - ₩{product.price.toLocaleString()}
+            {product.stock === 0 ? ' (품절)' : ''}
           </option>
         ))}
       </select>
@@ -32,6 +33,11 @@ const ProductPicker = ({ selectedProductId = '', onProductSelect, onAddToCart }:
         Add to Cart
       </button>
       {isOutOfStock && selectedProduct && <div className="text-xs text-red-500 mt-3">{selectedProduct.name}: 품절</div>}
+      {selectedProduct && selectedProduct.stock > 0 && selectedProduct.stock <= 5 && (
+        <div className="text-xs text-orange-500 mt-3">
+          {selectedProduct.name}: 재고 {selectedProduct.stock}개 남음
+        </div>
+      )}
     </div>
   );
 };
