@@ -1,8 +1,21 @@
-const ShoppingGuide = () => {
+interface ShoppingGuideProps {
+  onClose: () => void;
+}
+
+const ShoppingGuide = ({ onClose }: ShoppingGuideProps) => {
+  const handleOverlayClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
   return (
-    <div className="fixed inset-0 bg-black/50 z-40 flex items-center justify-end transition-opacity duration-300">
+    <div
+      className="fixed inset-0 bg-black/50 z-40 flex items-center justify-end transition-opacity duration-300"
+      onClick={handleOverlayClick}
+    >
       <div className="fixed right-0 top-0 h-full w-80 bg-white shadow-2xl p-6 overflow-y-auto z-50 transition-transform duration-300">
-        <button className="absolute top-4 right-4 text-gray-500 hover:text-black">
+        <button className="absolute top-4 right-4 text-gray-500 hover:text-black" onClick={onClose}>
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
           </svg>

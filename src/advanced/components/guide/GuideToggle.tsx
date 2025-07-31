@@ -9,6 +9,10 @@ const GuideToggle = () => {
     setIsToggleOpen((prev) => !prev);
   };
 
+  const handleCloseGuide = () => {
+    setIsToggleOpen(false);
+  };
+
   return (
     <>
       <button
@@ -24,7 +28,7 @@ const GuideToggle = () => {
           />
         </svg>
       </button>
-      {isToggleOpen && <ShoppingGuide />}
+      {isToggleOpen && <ShoppingGuide onClose={handleCloseGuide} />}
     </>
   );
 };
