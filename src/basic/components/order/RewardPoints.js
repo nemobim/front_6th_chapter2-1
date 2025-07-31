@@ -1,3 +1,5 @@
+import { calculateTotalPoints } from '../../utils/pointUtils';
+
 export const createRewardPoints = () => {
   const rewardPoints = document.createElement('div');
   rewardPoints.id = 'loyalty-points'; // ID는 테스트 호환성 위해 유지
@@ -7,103 +9,40 @@ export const createRewardPoints = () => {
   return rewardPoints;
 };
 
-// 포인트 계산 및 업데이트
-export const updateRewardPoints = (rewardPointsElement, cartItems, productList, totalAmount, itemCount) => {
-  let finalPoints;
-  let hasKeyboard;
-  let hasMouse;
-  let hasMonitorArm;
-
+/** 포인트 계산 및 업데이트
+ * @param {Element} element - 포인트 요소
+ * @param {Array} cartItems - 카트 아이템 목록
+ * @param {Array} productList - 상품 목록
+ * @param {number} totalAmount - 총 금액
+ * @param {number} itemCount - 카트 아이템 수
+ */
+export const updateRewardPoints = (element, cartItems, productList, totalAmount, itemCount) => {
   if (cartItems.length === 0) {
-    rewardPointsElement.style.display = 'none';
-    return;
+    // 카트가 비어있으면 포인트 표시 숨기기
+    element.style.display = 'none';
+    return 0;
   }
 
-  // 기본 포인트 계산
-  const basePoints = Math.floor(totalAmount / 1000);
-  finalPoints = 0;
-  const pointsDetail = [];
+  const { totalPoints, pointsDetails } = calculateTotalPoints(cartItems, productList, totalAmount, itemCount);
 
-  if (basePoints > 0) {
-    finalPoints = basePoints;
-    pointsDetail.push('기본: ' + basePoints + 'p');
-  }
-
-  // 화요일 2배 포인트
-  if (new Date().getDay() === 2) {
-    if (basePoints > 0) {
-      finalPoints = basePoints * 2;
-      pointsDetail.push('화요일 2배');
-    }
-  }
-
-  // 상품 조합 확인
-  hasKeyboard = false;
-  hasMouse = false;
-  hasMonitorArm = false;
-
-  for (const node of cartItems) {
-    let product = null;
-    for (let pIdx = 0; pIdx < productList.length; pIdx++) {
-      if (productList[pIdx].id === node.id) {
-        product = productList[pIdx];
-        break;
-      }
-    }
-    if (!product) continue;
-
-    if (product.id === 'p1') {
-      // KEYBOARD
-      hasKeyboard = true;
-    } else if (product.id === 'p2') {
-      // MOUSE
-      hasMouse = true;
-    } else if (product.id === 'p3') {
-      // MONITOR_ARM
-      hasMonitorArm = true;
-    }
-  }
-
-  // 세트 구매 보너스 계산
-  if (hasKeyboard && hasMouse) {
-    finalPoints = finalPoints + 50;
-    pointsDetail.push('키보드+마우스 세트 +50p');
-  }
-  if (hasKeyboard && hasMouse && hasMonitorArm) {
-    finalPoints = finalPoints + 100;
-    pointsDetail.push('풀세트 구매 +100p');
-  }
-
-  // 대량구매 보너스 계산
-  if (itemCount >= 30) {
-    finalPoints = finalPoints + 100;
-    pointsDetail.push('대량구매(30개+) +100p');
+  if (totalPoints > 0) {
+    element.innerHTML = createPointsDisplayTemplate(totalPoints, pointsDetails);
+    element.style.display = 'block';
   } else {
-    if (itemCount >= 20) {
-      finalPoints = finalPoints + 50;
-      pointsDetail.push('대량구매(20개+) +50p');
-    } else {
-      if (itemCount >= 10) {
-        finalPoints = finalPoints + 20;
-        pointsDetail.push('대량구매(10개+) +20p');
-      }
-    }
+    element.textContent = '적립 포인트: 0p';
+    element.style.display = 'block';
   }
 
-  // 포인트 UI 업데이트
-  if (finalPoints > 0) {
-    rewardPointsElement.innerHTML =
-      '<div>적립 포인트: <span class="font-bold">' +
-      finalPoints +
-      'p</span></div>' +
-      '<div class="text-2xs opacity-70 mt-1">' +
-      pointsDetail.join(', ') +
-      '</div>';
-    rewardPointsElement.style.display = 'block';
-  } else {
-    rewardPointsElement.textContent = '적립 포인트: 0p';
-    rewardPointsElement.style.display = 'block';
-  }
+  return totalPoints;
+};
 
-  return finalPoints;
+/** 포인트 표시 템플릿
+ * @param {number} totalPoints - 총 포인트
+ * @param {Array} pointsDetails - 포인트 상세 목록
+ */
+const createPointsDisplayTemplate = (totalPoints, pointsDetails) => {
+  return `
+    <div>적립 포인트: <span class="font-bold">${totalPoints}p</span></div>
+    <div class="text-2xs opacity-70 mt-1">${pointsDetails.join(', ')}</div>
+  `;
 };
