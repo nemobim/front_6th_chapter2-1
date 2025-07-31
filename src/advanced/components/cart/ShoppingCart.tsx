@@ -8,6 +8,7 @@ interface ShoppingCartProps {
   cartItems?: CartItem[];
   products?: Product[];
   onQuantityChange?: (productId: string, change: number) => void;
+  onRemoveItem?: (productId: string) => void;
 }
 
 const ShoppingCart = ({
@@ -17,6 +18,7 @@ const ShoppingCart = ({
   cartItems = [],
   products = [],
   onQuantityChange,
+  onRemoveItem,
 }: ShoppingCartProps) => {
   return (
     <div className="bg-white border border-gray-200 p-8 overflow-y-auto">
@@ -63,12 +65,12 @@ const ShoppingCart = ({
                   <span className="line-through text-gray-400">₩{(item.price * item.quantity).toLocaleString()}</span>{' '}
                   <span className="text-purple-600">₩{(item.discountPrice * item.quantity).toLocaleString()}</span>
                 </div>
-                <a
+                <button
+                  onClick={() => onRemoveItem?.(item.productId)}
                   className="remove-item text-2xs text-gray-500 uppercase tracking-wider cursor-pointer transition-colors border-b border-transparent hover:text-black hover:border-black"
-                  data-product-id={item.productId}
                 >
                   Remove
-                </a>
+                </button>
               </div>
             </div>
           );

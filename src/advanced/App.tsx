@@ -51,6 +51,10 @@ const App = () => {
     );
   };
 
+  const handleRemoveItem = (productId: string) => {
+    setCartItems((prev) => prev.filter((item) => item.productId !== productId));
+  };
+
   return (
     <>
       <Header cartItemCount={totalItemCount} />
@@ -63,6 +67,7 @@ const App = () => {
           cartItems={cartItems}
           products={PRODUCTS}
           onQuantityChange={handleQuantityChange}
+          onRemoveItem={handleRemoveItem}
         />
         <OrderSummary />
       </Layout>
