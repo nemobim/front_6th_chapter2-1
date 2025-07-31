@@ -1,4 +1,5 @@
 import type { CartItem, Product } from '../../types';
+import { isTuesday } from '../../utils/dateUtils';
 
 interface OrderSummaryProps {
   cartItems?: CartItem[];
@@ -9,6 +10,10 @@ const OrderSummary = ({ cartItems = [], products = [] }: OrderSummaryProps) => {
   const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const totalDiscountPrice = cartItems.reduce((sum, item) => sum + item.discountPrice * item.quantity, 0);
   const loyaltyPoints = Math.floor(totalDiscountPrice * 0.01);
+
+  const isTuesdayDiscount = isTuesday();
+  const tuesdayDiscountRate = 0.1; // 10% 할인
+  const finalPrice = isTuesdayDiscount ? totalDiscountPrice * (1 - tuesdayDiscountRate) : totalDiscountPrice;
 
   return (
     <div className="bg-black text-white p-8 flex flex-col">
@@ -54,7 +59,7 @@ const OrderSummary = ({ cartItems = [], products = [] }: OrderSummaryProps) => {
               <div id="cart-total" className="pt-5 border-t border-white/10">
                 <div className="flex justify-between items-baseline">
                   <span className="text-sm uppercase tracking-wider">Total</span>
-                  <div className="text-2xl tracking-tight">₩{totalDiscountPrice.toLocaleString()}</div>
+                  <div className="text-2xl tracking-tight">₩{finalPrice.toLocaleString()}</div>
                 </div>
                 <div id="loyalty-points" className="text-xs text-blue-400 mt-2 text-right block">
                   <div>
@@ -63,12 +68,14 @@ const OrderSummary = ({ cartItems = [], products = [] }: OrderSummaryProps) => {
                   <div className="text-2xs opacity-70 mt-1">기본: {loyaltyPoints}p</div>
                 </div>
               </div>
-              <div id="tuesday-special" className="mt-4 p-3 bg-white/10 rounded-lg hidden">
-                <div className="flex items-center gap-2">
-                  <span className="text-2xs">🎉</span>
-                  <span className="text-xs uppercase tracking-wide">Tuesday Special 10% Applied</span>
+              {isTuesdayDiscount && (
+                <div id="tuesday-special" className="mt-4 p-3 bg-white/10 rounded-lg">
+                  <div className="flex items-center gap-2">
+                    <span className="text-2xs">🎉</span>
+                    <span className="text-xs uppercase tracking-wide">Tuesday Special 10% Applied</span>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </>
         )}
