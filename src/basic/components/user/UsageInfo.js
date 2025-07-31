@@ -43,7 +43,7 @@ export const createUsageInfo = () => {
     </button>
     <h2 class="text-xl font-bold mb-4">📖 이용 안내</h2>
     <div class="mb-6">
-      <h3 class="text-base font-bold mb-3">💰 할인 정책</h3>
+      <h3 class="text-base font-bold mb-3">�� 할인 정책</h3>
       <div class="space-y-3">
         <div class="bg-gray-100 rounded-lg p-3">
           <p class="font-semibold text-sm mb-1">개별 상품</p>

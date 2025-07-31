@@ -1,7 +1,25 @@
-import { createCartTotal } from './cart/CartTotal.js';
-import { createDiscountInfo } from './DiscountInfo.js';
-import { createOrderSummary } from './OrderSummary.js';
-import { createRewardPoints } from './RewardPoints.js';
+import { createItemCount, updateItemCount } from '../product/ItemCount.js';
+
+export const createHeader = ({ cartItemCount = 0 }) => {
+  const header = document.createElement('div');
+  header.className = 'mb-8';
+  header.innerHTML = /* HTML */ `
+    <h1 class="text-xs font-medium tracking-extra-wide uppercase mb-2">🛒 Hanghae Online Store</h1>
+    <div class="text-5xl tracking-tight leading-none">Shopping Cart</div>
+  `;
+
+  // ItemCount 컴포넌트 생성 및 추가
+  const itemCount = createItemCount();
+  updateItemCount(itemCount, cartItemCount);
+  header.appendChild(itemCount);
+
+  return header;
+};
+
+import { createCartTotal } from '../cart/CartTotal.js';
+import { createDiscountInfo } from '../order/DiscountInfo.js';
+import { createOrderSummary } from '../order/OrderSummary.js';
+import { createRewardPoints } from '../order/RewardPoints.js';
 
 export const createSummaryColumn = () => {
   const summaryColumn = document.createElement('div');
@@ -65,4 +83,15 @@ export const createProductColumn = ({ productSelector, cartAddButton, stockStatu
   productColumn.appendChild(cartDisplay);
 
   return productColumn;
+};
+
+export const createMainLayout = ({ productColumn, summaryColumn }) => {
+  const mainLayout = document.createElement('div');
+  mainLayout.className = 'grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6 flex-1 overflow-hidden';
+
+  // 자식 요소들 추가
+  mainLayout.appendChild(productColumn);
+  mainLayout.appendChild(summaryColumn);
+
+  return mainLayout;
 };

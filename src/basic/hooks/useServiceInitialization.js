@@ -1,4 +1,4 @@
-import { updateProductOptions } from '../components/ProductSelector';
+import { updateProductOptions } from '../components/product/ProductSelector';
 import { CartEventHandler } from '../services/CartEventHandler';
 import { DiscountCalculator } from '../services/DiscountCalculator';
 import { TimerService } from '../services/TimerService';

@@ -1,4 +1,4 @@
-import { updateProductOptions } from '../components/ProductSelector.js';
+import { updateProductOptions } from '../components/product/ProductSelector.js';
 import { getProductList } from '../state/appState.js';
 import { useCartCalculation } from './useCart.js';
 

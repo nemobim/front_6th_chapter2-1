@@ -1,12 +1,12 @@
 import { createCartAddButton } from '../components/cart/CartAddButton';
 import { createCartDisplay } from '../components/cart/CartDisplay';
-import { createHeader } from '../components/Header';
-import { createMainLayout } from '../components/MainLayout';
-import { createProductColumn } from '../components/ProductColumn';
-import { createProductSelector } from '../components/ProductSelector';
-import { createStockInfo } from '../components/StockInfo';
-import { createSummaryColumn } from '../components/SummaryColumn';
-import { createUsageInfo } from '../components/UsageInfo';
+import { createHeader } from '../components/layout/Header';
+import { createMainLayout } from '../components/layout/MainLayout';
+import { createProductColumn } from '../components/layout/ProductColumn';
+import { createSummaryColumn } from '../components/layout/SummaryColumn';
+import { createProductSelector } from '../components/product/ProductSelector';
+import { createStockInfo } from '../components/product/StockInfo';
+import { createUsageInfo } from '../components/user/UsageInfo';
 import { getCartState } from '../state/appState.js';
 
 /**

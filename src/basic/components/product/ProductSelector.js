@@ -1,3 +1,54 @@
+export const createStockInfo = () => {
+  const stockInfo = document.createElement('div');
+  stockInfo.id = 'stock-status';
+  stockInfo.className = 'text-xs text-red-500 mt-3 whitespace-pre-line';
+
+  return stockInfo;
+};
+
+// 재고 정보 업데이트 함수
+export const updateStockInfo = (stockInfoElement, productList) => {
+  let infoMsg = '';
+
+  productList.forEach(function (item) {
+    if (item.q < 5) {
+      if (item.q > 0) {
+        infoMsg = infoMsg + item.name + ': 재고 부족 (' + item.q + '개 남음)\n';
+      } else {
+        infoMsg = infoMsg + item.name + ': 품절\n';
+      }
+    }
+  });
+
+  stockInfoElement.textContent = infoMsg;
+};
+
+export const createItemCount = () => {
+  const itemCount = document.createElement('p');
+  itemCount.id = 'item-count';
+  itemCount.className = 'text-sm text-gray-500 font-normal mt-3';
+  itemCount.textContent = '🛍️ 0 items in cart';
+
+  return itemCount;
+};
+
+// 아이템 카운트 업데이트
+export const updateItemCount = (itemCountElement, itemCount, previousCount = null) => {
+  if (itemCountElement) {
+    if (previousCount !== null) {
+      // 이전 카운트와 비교하여 변경 추적
+      const currentCount = parseInt(itemCountElement.textContent.match(/\d+/) || 0);
+      itemCountElement.textContent = '️ ' + itemCount + ' items in cart';
+      if (currentCount !== itemCount) {
+        itemCountElement.setAttribute('data-changed', 'true');
+      }
+    } else {
+      // 단순 업데이트
+      itemCountElement.textContent = '️ ' + itemCount + ' items in cart';
+    }
+  }
+};
+
 export const createProductSelector = () => {
   // 상품 선택기 생성
   const productSelector = document.createElement('select');
@@ -39,13 +90,13 @@ export const updateProductOptions = (productSelector, productList) => {
         opt.className = 'text-gray-400';
       } else {
         if (item.onSale && item.suggestSale) {
-          opt.textContent = '⚡💝' + item.name + ' - ' + item.originalVal + '원 → ' + item.val + '원 (25% SUPER SALE!)';
+          opt.textContent = '⚡' + item.name + ' - ' + item.originalVal + '원 → ' + item.val + '원 (25% SUPER SALE!)';
           opt.className = 'text-purple-600 font-bold';
         } else if (item.onSale) {
           opt.textContent = '⚡' + item.name + ' - ' + item.originalVal + '원 → ' + item.val + '원 (20% SALE!)';
           opt.className = 'text-red-500 font-bold';
         } else if (item.suggestSale) {
-          opt.textContent = '💝' + item.name + ' - ' + item.originalVal + '원 → ' + item.val + '원 (5% 추천할인!)';
+          opt.textContent = '' + item.name + ' - ' + item.originalVal + '원 → ' + item.val + '원 (5% 추천할인!)';
           opt.className = 'text-blue-500 font-bold';
         } else {
           opt.textContent = item.name + ' - ' + item.val + '원' + discountText;

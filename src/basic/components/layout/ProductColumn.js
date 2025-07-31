@@ -1,7 +1,7 @@
-import { createCartTotal } from './cart/CartTotal.js';
-import { createDiscountInfo } from './DiscountInfo.js';
-import { createOrderSummary } from './OrderSummary.js'; // 변경
-import { createRewardPoints } from './RewardPoints.js';
+import { createCartTotal } from '../cart/CartTotal.js';
+import { createDiscountInfo } from '../order/DiscountInfo.js';
+import { createOrderSummary } from '../order/OrderSummary.js';
+import { createRewardPoints } from '../order/RewardPoints.js';
 
 export const createSummaryColumn = () => {
   const summaryColumn = document.createElement('div');
@@ -29,10 +29,10 @@ export const createSummaryColumn = () => {
     </p>
   `;
 
-  // OrderSummary 컴포넌트 생성 및 추가
-  const orderSummary = createOrderSummary(); // 변경
+  // SummaryDetails 컴포넌트 생성 및 추가
+  const orderSummary = createOrderSummary();
   const flexContainer = summaryColumn.querySelector('.flex-1.flex.flex-col');
-  flexContainer.insertBefore(orderSummary, flexContainer.querySelector('.mt-auto')); // 변경
+  flexContainer.insertBefore(orderSummary, flexContainer.querySelector('.mt-auto'));
 
   // DiscountInfo 컴포넌트 생성 및 추가
   const discountInfo = createDiscountInfo();
@@ -48,4 +48,21 @@ export const createSummaryColumn = () => {
   cartTotal.appendChild(rewardPoints);
 
   return summaryColumn;
+};
+
+export const createProductColumn = ({ productSelector, cartAddButton, stockStatusElement, cartDisplay }) => {
+  const productColumn = document.createElement('div');
+  productColumn.className = 'bg-white border border-gray-200 p-8 overflow-y-auto';
+
+  const selectorContainer = document.createElement('div');
+  selectorContainer.className = 'space-y-2';
+  selectorContainer.appendChild(productSelector);
+
+  selectorContainer.appendChild(cartAddButton);
+
+  productColumn.appendChild(selectorContainer);
+  productColumn.appendChild(stockStatusElement);
+  productColumn.appendChild(cartDisplay);
+
+  return productColumn;
 };
