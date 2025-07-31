@@ -1,9 +1,19 @@
 import ProductPicker from './ProductPicker';
 
-const ShoppingCart = () => {
+interface ShoppingCartProps {
+  selectedProductId?: string;
+  onProductSelect?: (productId: string) => void;
+  onAddToCart?: () => void;
+}
+
+const ShoppingCart = ({ selectedProductId, onProductSelect, onAddToCart }: ShoppingCartProps) => {
   return (
     <div className="bg-white border border-gray-200 p-8 overflow-y-auto">
-      <ProductPicker />
+      <ProductPicker
+        selectedProductId={selectedProductId}
+        onProductSelect={onProductSelect}
+        onAddToCart={onAddToCart}
+      />
       <div id="cart-items">
         <div className="grid grid-cols-[80px_1fr_auto] gap-5 py-5 border-b border-gray-100 first:pt-0 last:border-b-0 last:pb-0">
           <div className="w-20 h-20 bg-gradient-black relative overflow-hidden">

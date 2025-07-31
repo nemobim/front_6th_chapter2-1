@@ -8,13 +8,20 @@ import OrderSummary from './components/order/OrderSummary';
 
 const App = () => {
   const [cartItemCount, setCartItemCount] = useState(0);
+  const [selectedProductId, setSelectedProductId] = useState('');
 
   return (
     <>
       <Header cartItemCount={cartItemCount} />
       <GuideToggle />
       <Layout>
-        <ShoppingCart />
+        <ShoppingCart
+          selectedProductId={selectedProductId}
+          onProductSelect={setSelectedProductId}
+          onAddToCart={() => {
+            // 다음 작업에서 구현할 예정
+          }}
+        />
         <OrderSummary />
       </Layout>
     </>
