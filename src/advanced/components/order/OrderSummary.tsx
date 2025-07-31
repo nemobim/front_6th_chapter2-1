@@ -1,6 +1,10 @@
 import { useCartContext } from '../../hooks/CartContext';
 import { calculateDiscount } from '../utils/discountCalculator';
 import { calculatePoints } from '../utils/pointsCalculator';
+import DiscountSummary from './DiscountSummary';
+import OrderItem from './OrderItem';
+import PointsDisplay from './PointsDisplay';
+import TuesdayBanner from './TuesdayBanner';
 
 const OrderSummary = () => {
   const { cartItems, products } = useCartContext();
@@ -19,14 +23,7 @@ const OrderSummary = () => {
             const product = products.find((p) => p.productId === cartItem.productId);
             if (!product) return null;
 
-            return (
-              <div key={cartItem.productId} className="flex justify-between text-xs tracking-wide text-gray-400">
-                <span>
-                  {product.name} x {cartItem.quantity}
-                </span>
-                <span>₩{(product.price * cartItem.quantity).toLocaleString()}</span>
-              </div>
-            );
+            return <OrderItem key={cartItem.productId} cartItem={cartItem} product={product} />;
           })}
 
           {cartItems.length > 0 && (
@@ -53,21 +50,7 @@ const OrderSummary = () => {
         </div>
 
         <div className="mt-auto">
-          {discountResult.discountRate > 0 && discountResult.discountedTotal > 0 && (
-            <div className="mb-4">
-              <div className="bg-green-500/20 rounded-lg p-3">
-                <div className="flex justify-between items-center mb-1">
-                  <span className="text-xs uppercase tracking-wide text-green-400">총 할인율</span>
-                  <span className="text-sm font-medium text-green-400">
-                    {(discountResult.discountRate * 100).toFixed(1)}%
-                  </span>
-                </div>
-                <div className="text-2xs text-gray-300">
-                  ₩{Math.round(discountResult.savedAmount).toLocaleString()} 할인되었습니다
-                </div>
-              </div>
-            </div>
-          )}
+          <DiscountSummary discountResult={discountResult} />
 
           <div className="pt-5 border-t border-white/10">
             <div className="flex justify-between items-baseline">
@@ -77,24 +60,10 @@ const OrderSummary = () => {
               </div>
             </div>
 
-            {cartItems.length > 0 && pointsResult.totalPoints > 0 && (
-              <div className="text-xs text-blue-400 mt-2 text-right">
-                <div>
-                  적립 포인트: <span className="font-bold">{pointsResult.totalPoints}p</span>
-                </div>
-                <div className="text-2xs opacity-70 mt-1">{pointsResult.pointsDetails.join(', ')}</div>
-              </div>
-            )}
+            <PointsDisplay pointsResult={pointsResult} hasItems={cartItems.length > 0} />
           </div>
 
-          {isTuesday && discountResult.discountedTotal > 0 && (
-            <div className="mt-4 p-3 bg-white/10 rounded-lg">
-              <div className="flex items-center gap-2">
-                <span className="text-2xs">🎉</span>
-                <span className="text-xs uppercase tracking-wide">Tuesday Special 10% Applied</span>
-              </div>
-            </div>
-          )}
+          <TuesdayBanner isTuesday={isTuesday} hasDiscount={discountResult.discountedTotal > 0} />
         </div>
       </div>
 
