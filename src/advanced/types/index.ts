@@ -15,7 +15,6 @@ export interface CartItem {
   productName: string;
   quantity: number;
   price: number;
-  discountPrice: number;
 }
 
 // 카트 상태 타입

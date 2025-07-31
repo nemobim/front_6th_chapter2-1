@@ -84,7 +84,9 @@ const ShoppingCart = ({
           <div className="text-center py-12">
             <div className="text-gray-400 text-6xl mb-4">🛒</div>
             <h3 className="text-lg font-medium text-gray-900 mb-2">카트가 비어있습니다</h3>
-            <p className="text-sm text-gray-500 mb-4">위에서 상품을 선택하고 "Add to Cart" 버튼을 클릭해보세요</p>
+            <p className="text-sm text-gray-500 mb-4">
+              위에서 상품을 선택하고 &quot;Add to Cart&quot; 버튼을 클릭해보세요
+            </p>
             <div className="text-xs text-gray-400">현재 {products.length}개의 상품이 준비되어 있습니다</div>
           </div>
         ) : (
