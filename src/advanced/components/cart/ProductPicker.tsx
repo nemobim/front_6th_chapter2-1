@@ -1,9 +1,7 @@
-import { useCart } from '../../hooks/useCart';
-import { useProducts } from '../../hooks/useProducts';
+import { useCartContext } from '../../hooks/CartContext';
 
 const ProductPicker = () => {
-  const { products } = useProducts();
-  const { addToCart } = useCart();
+  const { products, addToCart } = useCartContext();
 
   const handleAddToCart = () => {
     const select = document.getElementById('product-select') as HTMLSelectElement;
