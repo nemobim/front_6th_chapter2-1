@@ -42,9 +42,34 @@ const ProductPicker = () => {
               key={product.productId}
               value={product.productId}
               disabled={isOutOfStock}
-              className={isOutOfStock ? 'text-gray-400' : ''}
+              className={
+                isOutOfStock
+                  ? 'text-gray-400'
+                  : product.isOnSale && product.isRecommended
+                    ? 'text-purple-600 font-bold'
+                    : product.isOnSale
+                      ? 'text-red-500 font-bold'
+                      : product.isRecommended
+                        ? 'text-blue-500 font-bold'
+                        : ''
+              }
             >
-              {product.name} - {product.price.toLocaleString()}원{isOutOfStock ? ' (품절)' : ''}
+              {product.isOnSale && product.isRecommended && '⚡💝'}
+              {product.isOnSale && !product.isRecommended && '⚡'}
+              {!product.isOnSale && product.isRecommended && '💝'}
+              {product.name} -
+              {product.isOnSale || product.isRecommended ? (
+                <>
+                  <span style={{ textDecoration: 'line-through' }}>{product.originalPrice.toLocaleString()}원</span>
+                  {' → '}
+                  {product.price.toLocaleString()}원{product.isOnSale && product.isRecommended && ' (25% SUPER SALE!)'}
+                  {product.isOnSale && !product.isRecommended && ' (20% SALE!)'}
+                  {!product.isOnSale && product.isRecommended && ' (5% 추천할인!)'}
+                </>
+              ) : (
+                `${product.price.toLocaleString()}원`
+              )}
+              {isOutOfStock ? ' (품절)' : ''}
             </option>
           );
         })}
