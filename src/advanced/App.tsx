@@ -7,12 +7,12 @@ import Layout from './components/layout/Layout';
 import OrderSummary from './components/order/OrderSummary';
 import { useTimerService } from './hooks/useTimerService';
 import { PRODUCTS } from './lib/products';
-import type { CartItem } from './types';
+import type { CartItem, Product } from './types';
 
 const App = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [selectedProductId, setSelectedProductId] = useState('');
-  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState<string>('');
+  const [showSuccessMessage, setShowSuccessMessage] = useState<boolean>(false);
   const [itemToRemove, setItemToRemove] = useState<string | null>(null);
 
   const { startTimers, setLastSelectedProduct } = useTimerService();
@@ -25,7 +25,7 @@ const App = () => {
   }, [startTimers]);
 
   // 할인 가격 계산
-  const calculateDiscountPrice = (product: any) => {
+  const calculateDiscountPrice = (product: Product): number => {
     let discountPrice = product.price;
 
     // 번개세일 할인 (20%)
@@ -44,10 +44,10 @@ const App = () => {
     return Math.round(discountPrice);
   };
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (): void => {
     if (!selectedProductId) return;
 
-    const product = PRODUCTS.find((p) => p.id === selectedProductId);
+    const product = PRODUCTS.find((p: Product) => p.id === selectedProductId);
     if (!product) return;
 
     // 재고 확인
@@ -56,15 +56,15 @@ const App = () => {
       return;
     }
 
-    setCartItems((prev) => {
-      const existingItem = prev.find((item) => item.productId === selectedProductId);
+    setCartItems((prev: CartItem[]) => {
+      const existingItem = prev.find((item: CartItem) => item.productId === selectedProductId);
       if (existingItem) {
         // 재고 초과 확인
         if (existingItem.quantity >= product.stock) {
           alert(`재고가 부족합니다. 최대 ${product.stock}개까지 구매 가능합니다.`);
           return prev;
         }
-        return prev.map((item) =>
+        return prev.map((item: CartItem) =>
           item.productId === selectedProductId ? { ...item, quantity: item.quantity + 1 } : item
         );
       } else {
@@ -89,12 +89,12 @@ const App = () => {
     setSelectedProductId('');
   };
 
-  const handleQuantityChange = (productId: string, change: number) => {
-    const product = PRODUCTS.find((p) => p.id === productId);
+  const handleQuantityChange = (productId: string, change: number): void => {
+    const product = PRODUCTS.find((p: Product) => p.id === productId);
     if (!product) return;
 
-    setCartItems((prev) => {
-      const existingItem = prev.find((item) => item.productId === productId);
+    setCartItems((prev: CartItem[]) => {
+      const existingItem = prev.find((item: CartItem) => item.productId === productId);
       if (!existingItem) return prev;
 
       const newQuantity = existingItem.quantity + change;
@@ -106,27 +106,29 @@ const App = () => {
       }
 
       return prev
-        .map((item) => (item.productId === productId ? { ...item, quantity: Math.max(0, newQuantity) } : item))
-        .filter((item) => item.quantity > 0);
+        .map((item: CartItem) =>
+          item.productId === productId ? { ...item, quantity: Math.max(0, newQuantity) } : item
+        )
+        .filter((item: CartItem) => item.quantity > 0);
     });
   };
 
-  const handleRemoveItem = (productId: string) => {
+  const handleRemoveItem = (productId: string): void => {
     setItemToRemove(productId);
   };
 
-  const confirmRemoveItem = () => {
+  const confirmRemoveItem = (): void => {
     if (itemToRemove) {
-      setCartItems((prev) => prev.filter((item) => item.productId !== itemToRemove));
+      setCartItems((prev: CartItem[]) => prev.filter((item: CartItem) => item.productId !== itemToRemove));
       setItemToRemove(null);
     }
   };
 
-  const cancelRemoveItem = () => {
+  const cancelRemoveItem = (): void => {
     setItemToRemove(null);
   };
 
-  const handleProductSelect = (productId: string) => {
+  const handleProductSelect = (productId: string): void => {
     setSelectedProductId(productId);
     setLastSelectedProduct(productId);
   };

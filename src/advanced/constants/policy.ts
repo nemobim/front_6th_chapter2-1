@@ -1,5 +1,7 @@
+import type { DiscountPolicy, PointsPolicy } from '../types';
+
 // 포인트 정책
-export const POINTS_POLICY = {
+export const POINTS_POLICY: PointsPolicy = {
   BASE_RATE: 0.001, // 1000원당 1포인트 (0.1%)
   TUESDAY_MULTIPLIER: 2,
   SET_BONUS: {
@@ -15,7 +17,9 @@ export const POINTS_POLICY = {
 };
 
 // 대량 구매 기준
-export const DISCOUNT_POLICY = { BULK_PURCHASE_MIN: 30 };
+export const DISCOUNT_POLICY: DiscountPolicy = {
+  BULK_PURCHASE_MIN: 30,
+};
 
 // 재고 부족 경고 기준
 export const TOTAL_STOCK_WARNING = 50;
