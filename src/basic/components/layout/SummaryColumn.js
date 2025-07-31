@@ -13,14 +13,12 @@ export const createSummaryColumn = () => {
     <div class="flex-1 flex flex-col"></div>
   `;
 
-  // 메인 컨텐츠 영역
   const mainContent = summaryColumn.querySelector('.flex-1');
 
   // 주문 상세 내역 추가
   const orderSummary = createOrderSummary();
   mainContent.appendChild(orderSummary);
 
-  // 하단 영역 (할인, 총계, 특가)
   const bottomSection = document.createElement('div');
   bottomSection.className = 'mt-auto';
 
@@ -39,14 +37,14 @@ export const createSummaryColumn = () => {
     </div>
   `;
 
-  // 하단 섹션 조립
+  // 하단 섹션
   cartTotal.appendChild(rewardPoints);
   bottomSection.appendChild(discountInfo);
   bottomSection.appendChild(cartTotal);
   bottomSection.appendChild(tuesdaySpecial);
   mainContent.appendChild(bottomSection);
 
-  // 푸터 (버튼, 안내문)
+  // 푸터
   summaryColumn.innerHTML += /* HTML */ `
     <button
       class="w-full py-4 bg-white text-black text-sm font-normal uppercase tracking-super-wide cursor-pointer mt-6 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/30"

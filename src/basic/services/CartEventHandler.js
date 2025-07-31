@@ -1,5 +1,5 @@
 import { addItemToCart, removeItemFromCart } from '../components/cart/CartDisplay.js';
-import { updateProductOptions } from '../components/ProductSelector.js';
+import { updateProductOptions } from '../components/product/ProductSelector.js';
 import { CartError, ERROR_TYPES, ProductError, ValidationError } from '../types/errors.js';
 import { validateProduct, validateQuantity } from '../utils/validation.js';
 
