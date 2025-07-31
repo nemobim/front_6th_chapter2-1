@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import ShoppingCart from './components/cart/ShoppingCart';
 import GuideToggle from './components/guide/GuideToggle';
 import Header from './components/layout/Header';
 import Layout from './components/layout/Layout';
 import OrderSummary from './components/order/OrderSummary';
+import { useTimerService } from './hooks/useTimerService';
 import { PRODUCTS } from './lib/products';
 import type { CartItem } from './types';
 
@@ -14,7 +15,14 @@ const App = () => {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [itemToRemove, setItemToRemove] = useState<string | null>(null);
 
+  const { startTimers, setLastSelectedProduct } = useTimerService();
+
   const totalItemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+
+  // 타이머 서비스 시작
+  useEffect(() => {
+    startTimers();
+  }, [startTimers]);
 
   const handleAddToCart = () => {
     if (!selectedProductId) return;
@@ -75,6 +83,11 @@ const App = () => {
     setItemToRemove(null);
   };
 
+  const handleProductSelect = (productId: string) => {
+    setSelectedProductId(productId);
+    setLastSelectedProduct(productId);
+  };
+
   return (
     <>
       {showSuccessMessage && (
@@ -114,7 +127,7 @@ const App = () => {
       <Layout>
         <ShoppingCart
           selectedProductId={selectedProductId}
-          onProductSelect={setSelectedProductId}
+          onProductSelect={handleProductSelect}
           onAddToCart={handleAddToCart}
           cartItems={cartItems}
           products={PRODUCTS}
