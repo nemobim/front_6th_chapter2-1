@@ -18,7 +18,14 @@ function initializeApp() {
   const { productSelector, cartAddButton, cartDisplay } = useCreateAndMountApp();
 
   /** DOM 의존 서비스 초기화 */
-  const { cartEventHandler, uiUpdater } = initializeServices(productSelector, cartDisplay, calculateTotalDiscount);
+  const { timerService, cartEventHandler, uiUpdater } = initializeServices(
+    productSelector,
+    cartDisplay,
+    calculateTotalDiscount
+  );
+
+  /** 타이머 서비스 시작 */
+  timerService.startTimers();
 
   /** 초기 렌더링 수행 */
   initializeRendering(productSelector, cartDisplay, calculateTotalDiscount, uiUpdater);
