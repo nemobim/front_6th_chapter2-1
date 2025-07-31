@@ -18,4 +18,7 @@ export const POINTS_POLICY = {
 export const DISCOUNT_POLICY = { BULK_PURCHASE_MIN: 30 };
 
 /** 재고 부족 경고 기준 */
-export const STOCK_WARNING_LIMIT = 50;
+export const TOTAL_STOCK_WARNING = 50;
+
+/** 개별 상품 재고 부족 기준 */
+export const LOW_STOCK_LIMIT = 5;

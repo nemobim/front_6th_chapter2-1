@@ -1,4 +1,4 @@
-import { STOCK_WARNING_LIMIT } from '../../data/policy';
+import { TOTAL_STOCK_WARNING } from '../../data/policy';
 
 /** 상품 옵션 텍스트 생성
  * @param {Object} product - 상품 정보
@@ -78,5 +78,5 @@ export const updateProductOptions = (productSelector, productList) => {
   });
 
   // 재고 부족 시 테두리 색상 변경
-  productSelector.style.borderColor = totalStock < STOCK_WARNING_LIMIT ? 'orange' : '';
+  productSelector.style.borderColor = totalStock < TOTAL_STOCK_WARNING ? 'orange' : '';
 };

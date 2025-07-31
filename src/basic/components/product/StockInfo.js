@@ -1,24 +1,31 @@
+import { LOW_STOCK_LIMIT } from '../../data/policy';
+
+/** 재고 상태 메시지 생성
+ * @param {Object} product - 상품 정보
+ */
+const createStockMessage = (product) => {
+  if (product.q === 0) {
+    return `${product.name}: 품절`;
+  }
+  if (product.q < LOW_STOCK_LIMIT) {
+    return `${product.name}: 재고 부족 (${product.q}개 남음)`;
+  }
+  return null; // 정상 재고는 메시지 없음
+};
+
 export const createStockInfo = () => {
   const stockInfo = document.createElement('div');
   stockInfo.id = 'stock-status';
   stockInfo.className = 'text-xs text-red-500 mt-3 whitespace-pre-line';
-
   return stockInfo;
 };
 
-// 재고 정보 업데이트 함수
 export const updateStockInfo = (stockInfoElement, productList) => {
-  let infoMsg = '';
+  if (!stockInfoElement || !productList?.length) return;
 
-  productList.forEach(function (item) {
-    if (item.q < 5) {
-      if (item.q > 0) {
-        infoMsg = infoMsg + item.name + ': 재고 부족 (' + item.q + '개 남음)\n';
-      } else {
-        infoMsg = infoMsg + item.name + ': 품절\n';
-      }
-    }
-  });
+  // 재고 부족 메시지 생성
+  const stockMessages = productList.map(createStockMessage).filter((message) => message !== null);
 
-  stockInfoElement.textContent = infoMsg;
+  // 메시지 업데이트
+  stockInfoElement.textContent = stockMessages.join('\n');
 };
