@@ -11,7 +11,7 @@ import {
 /** 카트 업데이트
  * @param {Element} cartDisplay - 카트 디스플레이
  * @param {Function} calculateTotalDiscount - 할인 계산 함수
- * @param {UIUpdater} uiUpdater - UI 업데이트
+ * @param {Object} uiUpdater - UI 업데이트 객체
  */
 export function useCartUpdater(cartDisplay, calculateTotalDiscount, uiUpdater) {
   /** 공통 카트 업데이트 로직 */

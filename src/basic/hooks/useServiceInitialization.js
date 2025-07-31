@@ -2,7 +2,7 @@ import { updateProductOptions } from '../components/product/ProductSelector';
 import { createCartEventHandler } from '../services/CartEventHandler';
 import { calculateTotalDiscount } from '../services/DiscountCalculator';
 import { createTimerService } from '../services/TimerService';
-import { UIUpdater } from '../services/UIUpdater';
+import { createUIUpdater } from '../services/UIUpdater';
 import { getProductList } from '../state/appState.js';
 import { useCartUpdater } from './useCart.js';
 
@@ -14,16 +14,16 @@ export function useServiceInitialization() {
   }
 
   // UI 업데이터 초기화
-  function createUIUpdater(cartDisplay) {
-    return new UIUpdater(cartDisplay, getProductList());
+  function createUIUpdaterInstance(cartDisplay) {
+    return createUIUpdater(cartDisplay, getProductList());
   }
 
   // 타이머 서비스 초기화
-  function createTimerServiceInstance(productSelector, updatePricesAndCalculate) {
+  function createTimerServiceInstance(productSelector) {
     const productList = getProductList();
     const updateProductOptionsFn = () => updateProductOptions(productSelector, productList);
 
-    return createTimerService(productList, updateProductOptionsFn, updatePricesAndCalculate);
+    return createTimerService(productList, updateProductOptionsFn);
   }
 
   // 카트 이벤트 핸들러 초기화
@@ -39,9 +39,9 @@ export function useServiceInitialization() {
 
   // DOM 의존 서비스 초기화
   function initializeServices(productSelector, cartDisplay, discountCalculator) {
-    const uiUpdater = createUIUpdater(cartDisplay);
-    const { calculateCart, updatePricesAndCalculate } = useCartUpdater(cartDisplay, discountCalculator, uiUpdater);
-    const timerService = createTimerServiceInstance(productSelector, updatePricesAndCalculate);
+    const uiUpdater = createUIUpdaterInstance(cartDisplay);
+    const { calculateCart } = useCartUpdater(cartDisplay, discountCalculator, uiUpdater);
+    const timerService = createTimerServiceInstance(productSelector);
     const cartEventHandler = createCartEventHandlerInstance(cartDisplay, productSelector, timerService, calculateCart);
 
     return { timerService, cartEventHandler, uiUpdater };
