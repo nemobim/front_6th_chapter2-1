@@ -27,6 +27,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
     if (product && product.stock > currentQuantity) {
       cartHook.addToCart(productId);
+      productsHook.decreaseStock(productId, 1); // 실제 재고 차감
       setLastSelectedProductId(productId);
     }
   };
@@ -35,17 +36,37 @@ export function CartProvider({ children }: { children: ReactNode }) {
     const product = productsHook.products.find((p) => p.productId === productId);
     const cartItem = cartHook.cartItems.find((item) => item.productId === productId);
     const currentQuantity = cartItem?.quantity || 0;
+    const quantityDiff = newQuantity - currentQuantity;
 
     if (newQuantity <= 0) {
+      // 수량이 0 이하가 되면 전체 수량만큼 재고 복구
+      productsHook.increaseStock(productId, currentQuantity);
       cartHook.updateQuantity(productId, newQuantity);
       return;
     }
 
-    if (product && newQuantity <= product.stock + currentQuantity) {
-      cartHook.updateQuantity(productId, newQuantity);
+    if (quantityDiff > 0) {
+      // 수량 증가 시 재고 차감
+      if (product && product.stock >= quantityDiff) {
+        productsHook.decreaseStock(productId, quantityDiff);
+        cartHook.updateQuantity(productId, newQuantity);
+      } else {
+        alert('재고가 부족합니다.');
+      }
     } else {
-      alert('재고가 부족합니다.');
+      // 수량 감소 시 재고 복구
+      productsHook.increaseStock(productId, Math.abs(quantityDiff));
+      cartHook.updateQuantity(productId, newQuantity);
     }
+  };
+
+  const removeFromCart = (productId: string) => {
+    const cartItem = cartHook.cartItems.find((item) => item.productId === productId);
+    if (cartItem) {
+      // 제거 시 전체 수량만큼 재고 복구
+      productsHook.increaseStock(productId, cartItem.quantity);
+    }
+    cartHook.removeFromCart(productId);
   };
 
   // 타이머 시작
@@ -59,9 +80,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
   return (
     <CartContext.Provider
       value={{
-        ...cartHook,
+        cartItems: cartHook.cartItems,
         addToCart,
         updateQuantity,
+        removeFromCart,
         ...productsHook,
         lastSelectedProductId,
       }}

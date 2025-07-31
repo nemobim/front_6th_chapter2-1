@@ -39,10 +39,29 @@ export function useProducts() {
     );
   };
 
+  // useProducts.ts에 추가해야 할 기능
+  const decreaseStock = (productId: string, amount: number = 1) => {
+    setProducts((prevProducts) =>
+      prevProducts.map((product) =>
+        product.productId === productId ? { ...product, stock: product.stock - amount } : product
+      )
+    );
+  };
+
+  const increaseStock = (productId: string, amount: number = 1) => {
+    setProducts((prevProducts) =>
+      prevProducts.map((product) =>
+        product.productId === productId ? { ...product, stock: product.stock + amount } : product
+      )
+    );
+  };
+
   return {
     products,
     updateProductStock,
     updateProductSaleStatus,
     updateProductRecommendStatus,
+    decreaseStock,
+    increaseStock,
   };
 }
