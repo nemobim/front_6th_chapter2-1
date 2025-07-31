@@ -11,6 +11,43 @@ const ProductPicker = ({ selectedProductId = '', onProductSelect, onAddToCart }:
   const isOutOfStock = selectedProduct?.stock === 0;
   const isLowStock = selectedProduct && selectedProduct.stock > 0 && selectedProduct.stock <= 5;
 
+  // 상품 옵션 텍스트 생성
+  const createOptionText = (product: any) => {
+    const badges = [];
+
+    if (product.isOnSale) badges.push('⚡SALE');
+    if (product.isRecommended) badges.push('💝추천');
+    const badgeText = badges.length > 0 ? ` ${badges.join(' ')}` : '';
+
+    // 품절 상품
+    if (product.stock === 0) {
+      return `${product.name} - ${product.price}원 (품절)${badgeText}`;
+    }
+
+    // 할인 상품들
+    if (product.isOnSale && product.isRecommended) {
+      return `⚡${product.name} - ${product.originalPrice}원 → ${product.price}원 (25% SUPER SALE!)`;
+    }
+    if (product.isOnSale) {
+      return `⚡${product.name} - ${product.originalPrice}원 → ${product.price}원 (20% SALE!)`;
+    }
+    if (product.isRecommended) {
+      return `${product.name} - ${product.originalPrice}원 → ${product.price}원 (5% 추천할인!)`;
+    }
+
+    // 일반 상품
+    return `${product.name} - ${product.price}원${badgeText}`;
+  };
+
+  // 상품 상태에 따른 스타일 적용
+  const getProductStyle = (product: any) => {
+    if (product.stock === 0) return 'text-gray-400';
+    if (product.isOnSale && product.isRecommended) return 'text-purple-600 font-bold';
+    if (product.isOnSale) return 'text-red-500 font-bold';
+    if (product.isRecommended) return 'text-blue-500 font-bold';
+    return '';
+  };
+
   return (
     <div className="mb-6 pb-6 border-b border-gray-200">
       <select
@@ -20,11 +57,13 @@ const ProductPicker = ({ selectedProductId = '', onProductSelect, onAddToCart }:
       >
         <option value="">Select a product</option>
         {PRODUCTS.map((product) => (
-          <option key={product.id} value={product.id} disabled={product.stock === 0}>
-            {product.name} - ₩{product.price.toLocaleString()}
-            {product.isOnSale && ' ⚡번개세일!'}
-            {product.isRecommended && ' ✨추천상품!'}
-            {product.stock === 0 ? ' (품절)' : product.stock <= 5 ? ` (재고: ${product.stock}개)` : ''}
+          <option
+            key={product.id}
+            value={product.id}
+            disabled={product.stock === 0}
+            className={getProductStyle(product)}
+          >
+            {createOptionText(product)}
           </option>
         ))}
       </select>
