@@ -1,33 +1,38 @@
-const OrderSummary = () => {
+import type { CartItem, Product } from '../../types';
+
+interface OrderSummaryProps {
+  cartItems?: CartItem[];
+  products?: Product[];
+}
+
+const OrderSummary = ({ cartItems = [], products = [] }: OrderSummaryProps) => {
+  const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const totalDiscountPrice = cartItems.reduce((sum, item) => sum + item.discountPrice * item.quantity, 0);
+  const loyaltyPoints = Math.floor(totalDiscountPrice * 0.01);
+
   return (
     <div className="bg-black text-white p-8 flex flex-col">
       <h2 className="text-xs font-medium mb-5 tracking-extra-wide uppercase">Order Summary</h2>
       <div className="flex-1 flex flex-col">
         <div id="summary-details" className="space-y-3">
-          <div className="flex justify-between text-xs tracking-wide text-gray-400">
-            <span>버그 없애는 키보드 x 1</span>
-            <span>₩8,000</span>
-          </div>
+          {cartItems.map((item) => {
+            const product = products.find((p) => p.id === item.productId);
+            if (!product) return null;
 
-          <div className="flex justify-between text-xs tracking-wide text-gray-400">
-            <span>생산성 폭발 마우스 x 1</span>
-            <span>₩15,200</span>
-          </div>
-
-          <div className="flex justify-between text-xs tracking-wide text-gray-400">
-            <span>거북목 탈출 모니터암 x 1</span>
-            <span>₩22,800</span>
-          </div>
-
-          <div className="flex justify-between text-xs tracking-wide text-gray-400">
-            <span>코딩할 때 듣는 Lo-Fi 스피커 x 1</span>
-            <span>₩19,000</span>
-          </div>
+            return (
+              <div key={item.productId} className="flex justify-between text-xs tracking-wide text-gray-400">
+                <span>
+                  {product.name} x {item.quantity}
+                </span>
+                <span>₩{(item.discountPrice * item.quantity).toLocaleString()}</span>
+              </div>
+            );
+          })}
 
           <div className="border-t border-white/10 my-3"></div>
           <div className="flex justify-between text-sm tracking-wide">
             <span>Subtotal</span>
-            <span>₩65,000</span>
+            <span>₩{totalPrice.toLocaleString()}</span>
           </div>
 
           <div className="flex justify-between text-sm tracking-wide text-gray-400">
@@ -40,13 +45,13 @@ const OrderSummary = () => {
           <div id="cart-total" className="pt-5 border-t border-white/10">
             <div className="flex justify-between items-baseline">
               <span className="text-sm uppercase tracking-wider">Total</span>
-              <div className="text-2xl tracking-tight">₩65,000</div>
+              <div className="text-2xl tracking-tight">₩{totalDiscountPrice.toLocaleString()}</div>
             </div>
             <div id="loyalty-points" className="text-xs text-blue-400 mt-2 text-right block">
               <div>
-                적립 포인트: <span className="font-bold">215p</span>
+                적립 포인트: <span className="font-bold">{loyaltyPoints}p</span>
               </div>
-              <div className="text-2xs opacity-70 mt-1">기본: 65p, 키보드+마우스 세트 +50p, 풀세트 구매 +100p</div>
+              <div className="text-2xs opacity-70 mt-1">기본: {loyaltyPoints}p</div>
             </div>
           </div>
           <div id="tuesday-special" className="mt-4 p-3 bg-white/10 rounded-lg hidden">

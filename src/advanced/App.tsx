@@ -69,7 +69,7 @@ const App = () => {
           onQuantityChange={handleQuantityChange}
           onRemoveItem={handleRemoveItem}
         />
-        <OrderSummary />
+        <OrderSummary cartItems={cartItems} products={PRODUCTS} />
       </Layout>
     </>
   );
