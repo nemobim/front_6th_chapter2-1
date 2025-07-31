@@ -1,16 +1,32 @@
-import { PRODUCT_LIST } from '../../lib/products';
+import { useCart } from '../../hooks/useCart';
+import { useProducts } from '../../hooks/useProducts';
 
 const ProductPicker = () => {
+  const { products } = useProducts();
+  const { addToCart } = useCart();
+
+  const handleAddToCart = () => {
+    const select = document.getElementById('product-select') as HTMLSelectElement;
+    const selectedProductId = select.value;
+
+    if (selectedProductId) {
+      addToCart(selectedProductId);
+    }
+  };
+
   return (
     <div className="mb-6 pb-6 border-b border-gray-200">
       <select id="product-select" className="w-full p-3 border border-gray-300 rounded-lg text-base mb-3">
-        {PRODUCT_LIST.map((product) => (
+        {products.map((product) => (
           <option key={product.productId} value={product.productId}>
             {product.name} - {product.price}원
           </option>
         ))}
       </select>
-      <button className="w-full py-3 bg-black text-white text-sm font-medium uppercase tracking-wider hover:bg-gray-800 transition-all">
+      <button
+        onClick={handleAddToCart}
+        className="w-full py-3 bg-black text-white text-sm font-medium uppercase tracking-wider hover:bg-gray-800 transition-all"
+      >
         Add to Cart
       </button>
       <div id="stock-status" className="text-xs text-red-500 mt-3 whitespace-pre-line">
