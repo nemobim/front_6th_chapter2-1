@@ -61,18 +61,21 @@ const ProductPicker = () => {
               className={
                 isOutOfStock
                   ? 'text-gray-400'
-                  : product.isOnSale && product.isRecommended
-                    ? 'text-purple-600 font-bold'
-                    : product.isOnSale
-                      ? 'text-red-500 font-bold'
-                      : product.isRecommended
-                        ? 'text-blue-500 font-bold'
-                        : ''
+                  : product.stock < 5
+                    ? 'text-red-600'
+                    : product.isOnSale && product.isRecommended
+                      ? 'text-purple-600 font-bold'
+                      : product.isOnSale
+                        ? 'text-red-500 font-bold'
+                        : product.isRecommended
+                          ? 'text-blue-500 font-bold'
+                          : ''
               }
             >
               {product.isOnSale && product.isRecommended && '⚡💝'}
               {product.isOnSale && !product.isRecommended && '⚡'}
               {!product.isOnSale && product.isRecommended && '💝'}
+              {product.stock < 5 && product.stock > 0 && '⚠️'}
               {product.name} -
               {product.isOnSale || product.isRecommended ? (
                 <>
@@ -85,7 +88,7 @@ const ProductPicker = () => {
               ) : (
                 `${product.price.toLocaleString()}원`
               )}
-              {isOutOfStock ? ' (품절)' : ''}
+              {isOutOfStock ? ' (품절)' : product.stock < 5 && product.stock > 0 ? ` (재고 ${product.stock}개)` : ''}
             </option>
           );
         })}

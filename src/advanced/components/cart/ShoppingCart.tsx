@@ -33,14 +33,20 @@ const ShoppingCart = () => {
               </div>
               <div>
                 <h3
-                  className={`text-base mb-1 tracking-tight ${cartItem.quantity >= 10 ? 'font-bold' : 'font-normal'}`}
+                  className={`text-base mb-1 tracking-tight ${cartItem.quantity >= 10 ? 'font-bold' : 'font-normal'} ${product.stock < 5 ? 'text-red-600' : ''}`}
                 >
                   {product.isOnSale && product.isRecommended && '⚡💝'}
                   {product.isOnSale && !product.isRecommended && '⚡'}
                   {!product.isOnSale && product.isRecommended && '💝'}
                   {product.name}
+                  {product.stock < 5 && product.stock > 0 && ' ⚠️'}
+                  {product.stock === 0 && ' 🚫'}
                 </h3>
-                <p className="text-xs text-gray-500 mb-0.5 tracking-wide">PRODUCT</p>
+                <p className={`text-xs mb-0.5 tracking-wide ${product.stock < 5 ? 'text-red-500' : 'text-gray-500'}`}>
+                  PRODUCT
+                  {product.stock < 5 && product.stock > 0 && ` • 재고 부족 (${product.stock}개)`}
+                  {product.stock === 0 && ' • 품절'}
+                </p>
                 <p className="text-xs mb-3">
                   {product.isOnSale || product.isRecommended ? (
                     <>
