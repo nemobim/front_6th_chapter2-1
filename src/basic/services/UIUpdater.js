@@ -28,7 +28,7 @@ export class UIUpdater {
         elem.style.fontWeight = quantity >= UI_THRESHOLDS.QUANTITY_THRESHOLD ? 'bold' : 'normal';
       }
 
-      if (item.q < UI_THRESHOLDS.LOW_STOCK_THRESHOLD) {
+      if (item.stock < UI_THRESHOLDS.LOW_STOCK_THRESHOLD) {
         item.style.color = 'red';
       }
     }
@@ -51,9 +51,9 @@ export class UIUpdater {
     let stockMessage = '';
 
     for (const item of this.productList) {
-      if (item.q < UI_THRESHOLDS.LOW_STOCK_THRESHOLD) {
-        if (item.q > 0) {
-          stockMessage += `${item.name}: 재고 부족 (${item.q}개 남음)\n`;
+      if (item.stock < UI_THRESHOLDS.LOW_STOCK_THRESHOLD) {
+        if (item.stock > 0) {
+          stockMessage += `${item.name}: 재고 부족 (${item.stock}개 남음)\n`;
         } else {
           stockMessage += `${item.name}: 품절\n`;
         }

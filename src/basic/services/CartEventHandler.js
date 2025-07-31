@@ -15,7 +15,7 @@ export class CartEventHandler {
   // 상품 찾기
   findProductById(productId) {
     for (let i = 0; i < this.productList.length; i++) {
-      if (this.productList[i].id === productId) {
+      if (this.productList[i].productId === productId) {
         return this.productList[i];
       }
     }
@@ -42,9 +42,9 @@ export class CartEventHandler {
   // 새 아이템 추가 처리
   addNewItemToCart(productToAdd) {
     try {
-      validateProduct(productToAdd, productToAdd.id);
+      validateProduct(productToAdd, productToAdd.productId);
       addItemToCart(this.cartDisplay, productToAdd);
-      productToAdd.q--;
+      productToAdd.stock--;
     } catch (error) {
       console.error('상품 추가 중 오류 발생:', error.message);
       throw new CartError('상품을 카트에 추가할 수 없습니다.', ERROR_TYPES.PRODUCT_NOT_FOUND);
@@ -59,11 +59,11 @@ export class CartEventHandler {
         throw new ProductError('유효한 상품을 선택해주세요.');
       }
 
-      if (productToAdd.q <= 0) {
+      if (productToAdd.stock <= 0) {
         throw new CartError('품절된 상품입니다.', ERROR_TYPES.INSUFFICIENT_STOCK);
       }
 
-      const existingItem = this.findExistingCartItem(productToAdd.id);
+      const existingItem = this.findExistingCartItem(productToAdd.productId);
 
       if (existingItem) {
         this.increaseItemQuantity(existingItem, productToAdd);
@@ -93,7 +93,7 @@ export class CartEventHandler {
       validateQuantity(newQuantity, product, currentQuantity);
 
       quantityElement.textContent = newQuantity;
-      product.q--;
+      product.stock--;
     } catch (error) {
       console.error('수량 증가 중 오류:', error.message);
       alert(error.message);
@@ -166,10 +166,10 @@ export class CartEventHandler {
       if (newQuantity > 0) {
         validateQuantity(newQuantity, product, currentQuantity);
         quantityElement.textContent = newQuantity;
-        product.q -= quantityChange;
+        product.stock -= quantityChange;
       } else if (newQuantity <= 0) {
-        product.q += currentQuantity;
-        removeItemFromCart(product.id);
+        product.stock += currentQuantity;
+        removeItemFromCart(product.productId);
       }
     } catch (error) {
       console.error('수량 변경 중 오류:', error.message);
@@ -186,7 +186,7 @@ export class CartEventHandler {
       }
 
       const quantity = parseInt(quantityElement.textContent);
-      product.q += quantity;
+      product.stock += quantity;
       removeItemFromCart(productId);
     } catch (error) {
       console.error('아이템 삭제 중 오류:', error.message);

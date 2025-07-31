@@ -4,11 +4,11 @@ import { LOW_STOCK_LIMIT } from '../../data/policy';
  * @param {Object} product - 상품 정보
  */
 const createStockMessage = (product) => {
-  if (product.q === 0) {
+  if (product.stock === 0) {
     return `${product.name}: 품절`;
   }
-  if (product.q < LOW_STOCK_LIMIT) {
-    return `${product.name}: 재고 부족 (${product.q}개 남음)`;
+  if (product.stock < LOW_STOCK_LIMIT) {
+    return `${product.name}: 재고 부족 (${product.stock}개 남음)`;
   }
   return null; // 정상 재고는 메시지 없음
 };

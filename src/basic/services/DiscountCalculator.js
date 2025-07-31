@@ -45,12 +45,12 @@ export class DiscountCalculator {
 
   // 카트 아이템에서 상품 정보 추출
   findProductFromCartItem(cartItem, productList) {
-    const product = productList.find((p) => p.id === cartItem.id);
+    const product = productList.find((p) => p.productId === cartItem.id);
     if (!product) return null;
 
     const quantityElement = cartItem.querySelector('.quantity-number');
     const quantity = parseInt(quantityElement.textContent);
-    const itemTotal = product.val * quantity;
+    const itemTotal = product.price * quantity;
 
     return { product, quantity, itemTotal };
   }
@@ -61,7 +61,7 @@ export class DiscountCalculator {
     if (!productData) return { itemCount: 0, subtotal: 0, totalAmount: 0, itemDiscounts: [] };
 
     const { product, quantity, itemTotal } = productData;
-    const discount = this.calculateItemDiscount(product.id, quantity);
+    const discount = this.calculateItemDiscount(product.productId, quantity);
     const discountedTotal = itemTotal * (1 - discount);
 
     const itemDiscounts = discount > 0 ? [{ name: product.name, discount: discount * 100 }] : [];

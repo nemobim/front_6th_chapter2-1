@@ -70,7 +70,7 @@ export const updateOrderSummary = (
 
       const quantityElement = cartItem.querySelector('.quantity-number');
       const quantity = parseInt(quantityElement.textContent);
-      const itemTotal = product.val * quantity;
+      const itemTotal = product.price * quantity;
 
       return createOrderItemTemplate(product, quantity, itemTotal);
     })

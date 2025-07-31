@@ -10,7 +10,7 @@
  */
 export function findProductById(productList, productId) {
   for (let index = 0; index < productList.length; index++) {
-    if (productList[index].id === productId) {
+    if (productList[index].productId === productId) {
       return productList[index];
     }
   }
@@ -33,8 +33,8 @@ export function findProductsByCondition(productList, predicate) {
  * @returns {number} 할인율 (0-1 사이 값)
  */
 export function calculateProductDiscount(product) {
-  if (!product.originalVal || product.originalVal === product.val) {
+  if (!product.originalPrice || product.originalPrice === product.price) {
     return 0;
   }
-  return (product.originalVal - product.val) / product.originalVal;
+  return (product.originalPrice - product.price) / product.originalPrice;
 }

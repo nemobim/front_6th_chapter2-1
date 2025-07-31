@@ -1,7 +1,7 @@
 import { formatPrice } from '../../utils/formatUtils';
 
 const PRODUCT_STATE_CONFIG = {
-  SALE_AND_SUGGEST: {
+  SALE_AND_RECOMMEND: {
     badge: '⚡💝',
     color: 'text-purple-600',
   },
@@ -9,7 +9,7 @@ const PRODUCT_STATE_CONFIG = {
     badge: '⚡',
     color: 'text-red-500',
   },
-  SUGGEST_ONLY: {
+  RECOMMEND_ONLY: {
     badge: '💝',
     color: 'text-blue-500',
   },
@@ -24,9 +24,9 @@ const PRODUCT_STATE_CONFIG = {
  * @param {Object} product
  */
 const getProductState = (product) => {
-  if (product.onSale && product.suggestSale) return PRODUCT_STATE_CONFIG.SALE_AND_SUGGEST;
-  if (product.onSale) return PRODUCT_STATE_CONFIG.SALE_ONLY;
-  if (product.suggestSale) return PRODUCT_STATE_CONFIG.SUGGEST_ONLY;
+  if (product.isOnSale && product.isRecommended) return PRODUCT_STATE_CONFIG.SALE_AND_RECOMMEND;
+  if (product.isOnSale) return PRODUCT_STATE_CONFIG.SALE_ONLY;
+  if (product.isRecommended) return PRODUCT_STATE_CONFIG.RECOMMEND_ONLY;
   return PRODUCT_STATE_CONFIG.DEFAULT;
 };
 
@@ -48,14 +48,14 @@ const formatPriceDisplay = (product) => {
 
   // 할인이나 추천이 없는 경우 일반 가격 표시
   if (state === PRODUCT_STATE_CONFIG.DEFAULT) {
-    return formatPrice(product.val);
+    return formatPrice(product.price);
   }
 
   // 할인/추천 상품의 경우 원가와 할인가 표시
   const originalPrice = /* HTML */ `<span class="line-through text-gray-400"
-    >${formatPrice(product.originalVal)}</span
+    >${formatPrice(product.originalPrice)}</span
   >`;
-  const discountPrice = /* HTML */ `<span class="${state.color}">${formatPrice(product.val)}</span>`;
+  const discountPrice = /* HTML */ `<span class="${state.color}">${formatPrice(product.price)}</span>`;
   return `${originalPrice} ${discountPrice}`;
 };
 
@@ -70,7 +70,7 @@ export const createCartItem = (product) => {
 
   // 카트 아이템
   const cartItem = document.createElement('div');
-  cartItem.id = product.id;
+  cartItem.id = product.productId;
   cartItem.className =
     'grid grid-cols-[80px_1fr_auto] gap-5 py-5 border-b border-gray-100 first:pt-0 last:border-b-0 last:pb-0';
 
@@ -89,7 +89,7 @@ export const createCartItem = (product) => {
       <div class="flex items-center gap-4">
         <button
           class="quantity-change w-6 h-6 border border-black bg-white text-sm flex items-center justify-center transition-all hover:bg-black hover:text-white"
-          data-product-id="${product.id}"
+          data-product-id="${product.productId}"
           data-change="-1"
         >
           −
@@ -97,7 +97,7 @@ export const createCartItem = (product) => {
         <span class="quantity-number text-sm font-normal min-w-[20px] text-center tabular-nums">1</span>
         <button
           class="quantity-change w-6 h-6 border border-black bg-white text-sm flex items-center justify-center transition-all hover:bg-black hover:text-white"
-          data-product-id="${product.id}"
+          data-product-id="${product.productId}"
           data-change="1"
         >
           +
@@ -109,7 +109,7 @@ export const createCartItem = (product) => {
       <div class="text-lg mb-2 tracking-tight tabular-nums">${priceDisplay}</div>
       <a
         class="remove-item text-2xs text-gray-500 uppercase tracking-wider cursor-pointer transition-colors border-b border-transparent hover:text-black hover:border-black"
-        data-product-id="${product.id}"
+        data-product-id="${product.productId}"
         >Remove</a
       >
     </div>

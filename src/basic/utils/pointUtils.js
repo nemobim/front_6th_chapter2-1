@@ -31,7 +31,7 @@ const getProductCombination = (cartItems, productList) => {
     const product = findProductById(productList, cartItem.id);
     if (!product) return;
 
-    switch (product.id) {
+    switch (product.productId) {
       case PRODUCT_IDS.KEYBOARD:
         combination.hasKeyboard = true;
         break;
