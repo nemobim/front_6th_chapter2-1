@@ -7,6 +7,7 @@ interface ShoppingCartProps {
   onAddToCart?: () => void;
   cartItems?: CartItem[];
   products?: Product[];
+  onQuantityChange?: (productId: string, change: number) => void;
 }
 
 const ShoppingCart = ({
@@ -15,6 +16,7 @@ const ShoppingCart = ({
   onAddToCart,
   cartItems = [],
   products = [],
+  onQuantityChange,
 }: ShoppingCartProps) => {
   return (
     <div className="bg-white border border-gray-200 p-8 overflow-y-auto">
@@ -42,16 +44,14 @@ const ShoppingCart = ({
                 <p className="text-xs text-black mb-3">₩{product.price.toLocaleString()}</p>
                 <div className="flex items-center gap-4">
                   <button
-                    data-product-id={item.productId}
-                    data-change="-1"
+                    onClick={() => onQuantityChange?.(item.productId, -1)}
                     className="quantity-change w-6 h-6 border border-black bg-white text-sm flex items-center justify-center transition-all hover:bg-black hover:text-white"
                   >
                     -
                   </button>
                   <span>{item.quantity}</span>
                   <button
-                    data-product-id={item.productId}
-                    data-change="1"
+                    onClick={() => onQuantityChange?.(item.productId, 1)}
                     className="quantity-change w-6 h-6 border border-black bg-white text-sm flex items-center justify-center transition-all hover:bg-black hover:text-white"
                   >
                     +

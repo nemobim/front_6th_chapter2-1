@@ -41,6 +41,16 @@ const App = () => {
     });
   };
 
+  const handleQuantityChange = (productId: string, change: number) => {
+    setCartItems((prev) =>
+      prev
+        .map((item) =>
+          item.productId === productId ? { ...item, quantity: Math.max(0, item.quantity + change) } : item
+        )
+        .filter((item) => item.quantity > 0)
+    );
+  };
+
   return (
     <>
       <Header cartItemCount={totalItemCount} />
@@ -50,6 +60,9 @@ const App = () => {
           selectedProductId={selectedProductId}
           onProductSelect={setSelectedProductId}
           onAddToCart={handleAddToCart}
+          cartItems={cartItems}
+          products={PRODUCTS}
+          onQuantityChange={handleQuantityChange}
         />
         <OrderSummary />
       </Layout>
