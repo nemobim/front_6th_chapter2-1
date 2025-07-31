@@ -1,5 +1,6 @@
 import { TOTAL_STOCK_WARNING } from '../../constants/policy';
 import { PRODUCTS } from '../../lib/products';
+import type { Product } from '../../types';
 
 interface ProductPickerProps {
   selectedProductId?: string;
@@ -8,17 +9,17 @@ interface ProductPickerProps {
 }
 
 const ProductPicker = ({ selectedProductId = '', onProductSelect, onAddToCart }: ProductPickerProps) => {
-  const selectedProduct = PRODUCTS.find((p) => p.id === selectedProductId);
+  const selectedProduct = PRODUCTS.find((p: Product) => p.id === selectedProductId);
   const isOutOfStock = selectedProduct?.stock === 0;
   const isLowStock = selectedProduct && selectedProduct.stock > 0 && selectedProduct.stock <= 5;
 
   // 총 재고 계산
-  const totalStock = PRODUCTS.reduce((total, product) => total + product.stock, 0);
+  const totalStock = PRODUCTS.reduce((total: number, product: Product) => total + product.stock, 0);
   const isLowTotalStock = totalStock < TOTAL_STOCK_WARNING;
 
   // 상품 옵션 텍스트 생성
-  const createOptionText = (product: any) => {
-    const badges = [];
+  const createOptionText = (product: Product): string => {
+    const badges: string[] = [];
 
     if (product.isOnSale) badges.push('⚡SALE');
     if (product.isRecommended) badges.push('💝추천');
@@ -45,7 +46,7 @@ const ProductPicker = ({ selectedProductId = '', onProductSelect, onAddToCart }:
   };
 
   // 상품 상태에 따른 스타일 적용
-  const getProductStyle = (product: any) => {
+  const getProductStyle = (product: Product): string => {
     if (product.stock === 0) return 'text-gray-400';
     if (product.isOnSale && product.isRecommended) return 'text-purple-600 font-bold';
     if (product.isOnSale) return 'text-red-500 font-bold';
@@ -69,7 +70,7 @@ const ProductPicker = ({ selectedProductId = '', onProductSelect, onAddToCart }:
         }`}
       >
         <option value="">Select a product</option>
-        {PRODUCTS.map((product) => (
+        {PRODUCTS.map((product: Product) => (
           <option
             key={product.id}
             value={product.id}
