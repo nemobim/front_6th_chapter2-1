@@ -7,7 +7,7 @@ const DAYS_OF_WEEK = {
 };
 
 /** 화요일 체크 */
-const isTuesday = () => new Date().getDay() === DAYS_OF_WEEK.TUESDAY;
+export const isTuesday = () => new Date().getDay() === DAYS_OF_WEEK.TUESDAY;
 
 /** 기본 포인트 계산
  * @param {number} totalAmount - 총 금액

@@ -1,6 +1,6 @@
 import { updateProductOptions } from '../components/product/ProductSelector';
 import { createCartEventHandler } from '../services/CartEventHandler';
-import { DiscountCalculator } from '../services/DiscountCalculator';
+import { calculateTotalDiscount } from '../services/DiscountCalculator';
 import { TimerService } from '../services/TimerService';
 import { UIUpdater } from '../services/UIUpdater';
 import { getProductList } from '../state/appState.js';
@@ -10,8 +10,7 @@ import { useCartUpdater } from './useCart.js';
 export function useServiceInitialization() {
   // DOM 독립적 핵심 서비스 초기화
   function initializeCoreServices() {
-    const discountCalculator = new DiscountCalculator();
-    return { discountCalculator };
+    return { calculateTotalDiscount };
   }
 
   // UI 업데이터 초기화

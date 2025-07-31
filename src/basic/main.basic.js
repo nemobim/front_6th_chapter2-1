@@ -12,16 +12,16 @@ function initializeApp() {
   initializeAppState();
 
   /** 핵심 서비스 초기화 (DOM 생성 전) */
-  const { discountCalculator } = initializeCoreServices();
+  const { calculateTotalDiscount } = initializeCoreServices();
 
   /** 핵심 컴포넌트 생성 및 DOM 마운트 */
   const { productSelector, cartAddButton, cartDisplay } = useCreateAndMountApp();
 
   /** DOM 의존 서비스 초기화 */
-  const { cartEventHandler, uiUpdater } = initializeServices(productSelector, cartDisplay, discountCalculator);
+  const { cartEventHandler, uiUpdater } = initializeServices(productSelector, cartDisplay, calculateTotalDiscount);
 
   /** 초기 렌더링 수행 */
-  initializeRendering(productSelector, cartDisplay, discountCalculator, uiUpdater);
+  initializeRendering(productSelector, cartDisplay, calculateTotalDiscount, uiUpdater);
 
   /** 이벤트 핸들러 등록 */
   attachEventHandlers(cartEventHandler, cartAddButton);

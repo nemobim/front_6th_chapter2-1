@@ -10,13 +10,13 @@ import {
 
 /** 카트 업데이트
  * @param {Element} cartDisplay - 카트 디스플레이
- * @param {DiscountCalculator} discountCalculator - 할인 계산기
+ * @param {Function} calculateTotalDiscount - 할인 계산 함수
  * @param {UIUpdater} uiUpdater - UI 업데이트
  */
-export function useCartUpdater(cartDisplay, discountCalculator, uiUpdater) {
+export function useCartUpdater(cartDisplay, calculateTotalDiscount, uiUpdater) {
   /** 공통 카트 업데이트 로직 */
   const updateCartState = (shouldUpdatePrices = false) => {
-    if (!discountCalculator || !uiUpdater) return;
+    if (!calculateTotalDiscount || !uiUpdater) return;
 
     const cartItems = getCartItems(cartDisplay);
 
@@ -27,7 +27,7 @@ export function useCartUpdater(cartDisplay, discountCalculator, uiUpdater) {
     }
 
     // 할인 및 총액 계산
-    const calculationResult = discountCalculator.calculateTotalDiscount(cartItems, getProductList());
+    const calculationResult = calculateTotalDiscount(cartItems, getProductList());
 
     // 상태 업데이트
     updateCartItems(cartItems);
