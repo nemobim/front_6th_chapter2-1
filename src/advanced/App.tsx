@@ -11,6 +11,7 @@ import type { CartItem } from './types';
 const App = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [selectedProductId, setSelectedProductId] = useState('');
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
   const totalItemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -40,6 +41,10 @@ const App = () => {
       }
     });
 
+    // 성공 메시지 표시
+    setShowSuccessMessage(true);
+    setTimeout(() => setShowSuccessMessage(false), 3000); // 3초 후 자동 숨김
+
     // 상품 추가 후 선택 상태 초기화
     setSelectedProductId('');
   };
@@ -60,6 +65,14 @@ const App = () => {
 
   return (
     <>
+      {showSuccessMessage && (
+        <div className="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in">
+          <div className="flex items-center gap-2">
+            <span>✅</span>
+            <span>상품이 카트에 추가되었습니다!</span>
+          </div>
+        </div>
+      )}
       <Header cartItemCount={totalItemCount} />
       <GuideToggle />
       <Layout>
