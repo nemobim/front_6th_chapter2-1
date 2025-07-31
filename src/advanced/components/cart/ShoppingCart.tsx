@@ -32,7 +32,9 @@ const ShoppingCart = () => {
                 <div className="absolute top-1/2 left-1/2 w-[60%] h-[60%] bg-white/10 -translate-x-1/2 -translate-y-1/2 rotate-45" />
               </div>
               <div>
-                <h3 className="text-base font-normal mb-1 tracking-tight">
+                <h3
+                  className={`text-base mb-1 tracking-tight ${cartItem.quantity >= 10 ? 'font-bold' : 'font-normal'}`}
+                >
                   {product.isOnSale && product.isRecommended && '⚡💝'}
                   {product.isOnSale && !product.isRecommended && '⚡'}
                   {!product.isOnSale && product.isRecommended && '💝'}
@@ -76,7 +78,9 @@ const ShoppingCart = () => {
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-lg mb-2 tracking-tight tabular-nums">
+                <div
+                  className={`text-lg mb-2 tracking-tight tabular-nums ${cartItem.quantity >= 10 ? 'font-bold' : 'font-normal'}`}
+                >
                   {product.isOnSale || product.isRecommended ? (
                     <>
                       <span className="line-through text-gray-400">
