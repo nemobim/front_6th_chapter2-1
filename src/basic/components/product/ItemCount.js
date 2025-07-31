@@ -7,19 +7,27 @@ export const createItemCount = () => {
   return itemCount;
 };
 
-// 아이템 카운트 업데이트
-export const updateItemCount = (itemCountElement, itemCount, previousCount = null) => {
-  if (itemCountElement) {
-    if (previousCount !== null) {
-      // 이전 카운트와 비교하여 변경 추적
-      const currentCount = parseInt(itemCountElement.textContent.match(/\d+/) || 0);
-      itemCountElement.textContent = '🛍️ ' + itemCount + ' items in cart';
-      if (currentCount !== itemCount) {
-        itemCountElement.setAttribute('data-changed', 'true');
-      }
-    } else {
-      // 단순 업데이트
-      itemCountElement.textContent = '🛍️ ' + itemCount + ' items in cart';
-    }
+/** 아이템 카운트 업데이트
+ * @param {Element} itemCountElement - 아이템 카운트 요소
+ * @param {number} itemCount - 아이템 수량
+ */
+export const updateItemCount = (itemCountElement, itemCount) => {
+  if (!itemCountElement) return;
+
+  const previousCount = getCurrentCount(itemCountElement);
+  itemCountElement.textContent = `🛍️ ${itemCount} items in cart`;
+
+  // 변경 감지
+  if (previousCount !== itemCount) {
+    itemCountElement.setAttribute('data-changed', 'true');
   }
+};
+
+/** 현재 아이템 수량 가져오기
+ * @param {Element} element - 아이템 카운트 요소
+ * @returns {number} 현재 아이템 수량
+ */
+const getCurrentCount = (element) => {
+  const match = element.textContent.match(/\d+/);
+  return match ? parseInt(match[0]) : 0;
 };

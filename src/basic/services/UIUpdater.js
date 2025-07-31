@@ -67,8 +67,7 @@ export class UIUpdater {
   updateItemCountDisplay(itemCount) {
     const itemCountElement = document.getElementById('item-count');
     if (itemCountElement) {
-      const previousCount = parseInt(itemCountElement.textContent.match(/\d+/) || 0);
-      updateItemCount(itemCountElement, itemCount, previousCount);
+      updateItemCount(itemCountElement, itemCount);
     }
   }
 
