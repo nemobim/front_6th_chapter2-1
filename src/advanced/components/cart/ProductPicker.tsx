@@ -1,3 +1,4 @@
+import { TOTAL_STOCK_WARNING } from '../../constants/policy';
 import { PRODUCTS } from '../../lib/products';
 
 interface ProductPickerProps {
@@ -10,6 +11,10 @@ const ProductPicker = ({ selectedProductId = '', onProductSelect, onAddToCart }:
   const selectedProduct = PRODUCTS.find((p) => p.id === selectedProductId);
   const isOutOfStock = selectedProduct?.stock === 0;
   const isLowStock = selectedProduct && selectedProduct.stock > 0 && selectedProduct.stock <= 5;
+
+  // 총 재고 계산
+  const totalStock = PRODUCTS.reduce((total, product) => total + product.stock, 0);
+  const isLowTotalStock = totalStock < TOTAL_STOCK_WARNING;
 
   // 상품 옵션 텍스트 생성
   const createOptionText = (product: any) => {
@@ -50,10 +55,18 @@ const ProductPicker = ({ selectedProductId = '', onProductSelect, onAddToCart }:
 
   return (
     <div className="mb-6 pb-6 border-b border-gray-200">
+      {isLowTotalStock && (
+        <div className="mb-3 p-2 bg-orange-100 border border-orange-300 rounded text-xs text-orange-700">
+          ⚠️ 전체 재고가 부족합니다. (총 {totalStock}개)
+        </div>
+      )}
+
       <select
         value={selectedProductId}
         onChange={(e) => onProductSelect?.(e.target.value)}
-        className="w-full p-3 border border-gray-300 rounded-lg text-base mb-3"
+        className={`w-full p-3 border rounded-lg text-base mb-3 ${
+          isLowTotalStock ? 'border-orange-300' : 'border-gray-300'
+        }`}
       >
         <option value="">Select a product</option>
         {PRODUCTS.map((product) => (
