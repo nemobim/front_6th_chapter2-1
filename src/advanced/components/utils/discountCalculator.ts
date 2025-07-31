@@ -27,15 +27,30 @@ export function calculateDiscount(cartItems: CartItem[], products: Product[]): D
   const discountDetails: Array<{ name: string; discountRate: number }> = [];
   let finalTotal = discountedPriceTotal;
 
-  // 번개세일/추천할인이 이미 적용된 상태에서 추가 할인 계산
-  const lightningDiscountTotal = cartItems.reduce((total, item) => {
+  // 번개세일/추천할인 할인 내역 추가
+  cartItems.forEach((item) => {
     const product = products.find((p) => p.productId === item.productId);
     if (product && (product.isOnSale || product.isRecommended)) {
-      const discountAmount = (product.originalPrice - product.price) * item.quantity;
-      return total + discountAmount;
+      const discountRate = ((product.originalPrice - product.price) / product.originalPrice) * 100;
+
+      if (product.isOnSale && product.isRecommended) {
+        discountDetails.push({
+          name: `⚡💝 ${product.name} 슈퍼세일`,
+          discountRate: Math.round(discountRate),
+        });
+      } else if (product.isOnSale) {
+        discountDetails.push({
+          name: `⚡ ${product.name} 번개세일`,
+          discountRate: Math.round(discountRate),
+        });
+      } else if (product.isRecommended) {
+        discountDetails.push({
+          name: `💝 ${product.name} 추천할인`,
+          discountRate: Math.round(discountRate),
+        });
+      }
     }
-    return total;
-  }, 0);
+  });
 
   // 개별 상품 할인 (10개 이상) - 할인된 가격 기준으로 추가 할인
   let hasItemDiscount = false;
