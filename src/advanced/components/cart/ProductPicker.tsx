@@ -1,7 +1,7 @@
 import { useCartContext } from '../../hooks/CartContext';
 
 const ProductPicker = () => {
-  const { products, addToCart, cartItems } = useCartContext();
+  const { products, addToCart } = useCartContext();
 
   const handleAddToCart = () => {
     const select = document.getElementById('product-select') as HTMLSelectElement;
@@ -10,10 +10,8 @@ const ProductPicker = () => {
     if (!selectedProductId) return;
 
     const product = products.find((p) => p.productId === selectedProductId);
-    const cartItem = cartItems.find((item) => item.productId === selectedProductId);
-    const currentQuantity = cartItem?.quantity || 0;
 
-    if (product && product.stock > currentQuantity) {
+    if (product && product.stock > 0) {
       addToCart(selectedProductId);
     } else {
       alert('재고가 부족합니다.');
@@ -30,11 +28,7 @@ const ProductPicker = () => {
   };
 
   const getTotalStock = () => {
-    return products.reduce((total, product) => {
-      const cartItem = cartItems.find((item) => item.productId === product.productId);
-      const availableStock = product.stock - (cartItem?.quantity || 0);
-      return total + Math.max(0, availableStock);
-    }, 0);
+    return products.reduce((total, product) => total + product.stock, 0);
   };
 
   const totalAvailableStock = getTotalStock();
@@ -49,9 +43,7 @@ const ProductPicker = () => {
         }}
       >
         {products.map((product) => {
-          const cartItem = cartItems.find((item) => item.productId === product.productId);
-          const currentQuantity = cartItem?.quantity || 0;
-          const isOutOfStock = product.stock <= currentQuantity;
+          const isOutOfStock = product.stock === 0;
 
           return (
             <option
