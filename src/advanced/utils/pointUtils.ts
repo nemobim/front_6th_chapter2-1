@@ -1,20 +1,6 @@
+import { POINTS_POLICY } from '../constants/policy';
 import { PRODUCTS } from '../lib/products';
 import type { CartItem, Product } from '../types';
-
-// 포인트 정책 상수
-const POINTS_POLICY = {
-  BASE_RATE: 0.01, // 기본 1%
-  TUESDAY_MULTIPLIER: 2, // 화요일 2배
-  SET_BONUS: {
-    KEYBOARD_MOUSE: 50, // 키보드+마우스 세트
-    FULL_SET: 100, // 풀세트
-  },
-  BULK_PURCHASE_BONUS: {
-    SMALL: { minQuantity: 3, points: 30 },
-    MEDIUM: { minQuantity: 5, points: 60 },
-    LARGE: { minQuantity: 10, points: 150 },
-  },
-};
 
 const PRODUCT_IDS = {
   KEYBOARD: 'p1',
@@ -76,7 +62,7 @@ const calculateAllBonuses = (combination: any, itemCount: number) => {
     bonusDetails.push('풀세트 구매 +100p');
   }
 
-  // 수량 구매 보너스
+  // 수량 구매 보너스 (basic의 정책에 맞게 수정)
   const { SMALL, MEDIUM, LARGE } = POINTS_POLICY.BULK_PURCHASE_BONUS;
 
   if (itemCount >= LARGE.minQuantity) {
