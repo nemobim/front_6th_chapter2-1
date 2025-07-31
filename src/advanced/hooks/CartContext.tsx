@@ -20,51 +20,64 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const productsHook = useProducts();
   const [lastSelectedProductId, setLastSelectedProductId] = useState<string | null>(null);
 
-  const addToCart = (productId: string) => {
+  // 상품과 장바구니 아이템 찾기
+  const findProductAndCartItem = (productId: string) => {
     const product = productsHook.products.find((p) => p.productId === productId);
     const cartItem = cartHook.cartItems.find((item) => item.productId === productId);
     const currentQuantity = cartItem?.quantity || 0;
+    return { product, cartItem, currentQuantity };
+  };
+
+  // 재고 증가
+  const handleStockIncrease = (productId: string, amount: number) => {
+    productsHook.increaseStock(productId, amount);
+  };
+
+  // 재고 감소
+  const handleStockDecrease = (productId: string, amount: number) => {
+    productsHook.decreaseStock(productId, amount);
+  };
+
+  // 장바구니 추가
+  const addToCart = (productId: string) => {
+    const { product, currentQuantity } = findProductAndCartItem(productId);
 
     if (product && product.stock > currentQuantity) {
       cartHook.addToCart(productId);
-      productsHook.decreaseStock(productId, 1); // 실제 재고 차감
+      handleStockDecrease(productId, 1);
       setLastSelectedProductId(productId);
     }
   };
 
+  // 장바구니 수량 변경
   const updateQuantity = (productId: string, newQuantity: number) => {
-    const product = productsHook.products.find((p) => p.productId === productId);
-    const cartItem = cartHook.cartItems.find((item) => item.productId === productId);
-    const currentQuantity = cartItem?.quantity || 0;
+    const { product, currentQuantity } = findProductAndCartItem(productId);
     const quantityDiff = newQuantity - currentQuantity;
 
     if (newQuantity <= 0) {
-      // 수량이 0 이하가 되면 전체 수량만큼 재고 복구
-      productsHook.increaseStock(productId, currentQuantity);
+      handleStockIncrease(productId, currentQuantity);
       cartHook.updateQuantity(productId, newQuantity);
       return;
     }
 
     if (quantityDiff > 0) {
-      // 수량 증가 시 재고 차감
       if (product && product.stock >= quantityDiff) {
-        productsHook.decreaseStock(productId, quantityDiff);
+        handleStockDecrease(productId, quantityDiff);
         cartHook.updateQuantity(productId, newQuantity);
       } else {
         alert('재고가 부족합니다.');
       }
     } else {
-      // 수량 감소 시 재고 복구
-      productsHook.increaseStock(productId, Math.abs(quantityDiff));
+      handleStockIncrease(productId, Math.abs(quantityDiff));
       cartHook.updateQuantity(productId, newQuantity);
     }
   };
 
+  // 장바구니 제거
   const removeFromCart = (productId: string) => {
-    const cartItem = cartHook.cartItems.find((item) => item.productId === productId);
+    const { cartItem } = findProductAndCartItem(productId);
     if (cartItem) {
-      // 제거 시 전체 수량만큼 재고 복구
-      productsHook.increaseStock(productId, cartItem.quantity);
+      handleStockIncrease(productId, cartItem.quantity);
     }
     cartHook.removeFromCart(productId);
   };
