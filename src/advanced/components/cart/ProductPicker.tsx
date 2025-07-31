@@ -9,6 +9,7 @@ interface ProductPickerProps {
 const ProductPicker = ({ selectedProductId = '', onProductSelect, onAddToCart }: ProductPickerProps) => {
   const selectedProduct = PRODUCTS.find((p) => p.id === selectedProductId);
   const isOutOfStock = selectedProduct?.stock === 0;
+  const isLowStock = selectedProduct && selectedProduct.stock > 0 && selectedProduct.stock <= 5;
 
   return (
     <div className="mb-6 pb-6 border-b border-gray-200">
@@ -21,7 +22,7 @@ const ProductPicker = ({ selectedProductId = '', onProductSelect, onAddToCart }:
         {PRODUCTS.map((product) => (
           <option key={product.id} value={product.id} disabled={product.stock === 0}>
             {product.name} - ₩{product.price.toLocaleString()}
-            {product.stock === 0 ? ' (품절)' : ''}
+            {product.stock === 0 ? ' (품절)' : product.stock <= 5 ? ` (재고: ${product.stock}개)` : ''}
           </option>
         ))}
       </select>
@@ -30,10 +31,10 @@ const ProductPicker = ({ selectedProductId = '', onProductSelect, onAddToCart }:
         disabled={!selectedProductId || isOutOfStock}
         className="w-full py-3 bg-black text-white text-sm font-medium uppercase tracking-wider hover:bg-gray-800 transition-all disabled:bg-gray-300 disabled:cursor-not-allowed"
       >
-        Add to Cart
+        {isOutOfStock ? '품절' : 'Add to Cart'}
       </button>
       {isOutOfStock && selectedProduct && <div className="text-xs text-red-500 mt-3">{selectedProduct.name}: 품절</div>}
-      {selectedProduct && selectedProduct.stock > 0 && selectedProduct.stock <= 5 && (
+      {isLowStock && selectedProduct && (
         <div className="text-xs text-orange-500 mt-3">
           {selectedProduct.name}: 재고 {selectedProduct.stock}개 남음
         </div>

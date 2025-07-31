@@ -30,9 +30,20 @@ const App = () => {
     const product = PRODUCTS.find((p) => p.id === selectedProductId);
     if (!product) return;
 
+    // 재고 확인
+    if (product.stock <= 0) {
+      alert('품절된 상품입니다.');
+      return;
+    }
+
     setCartItems((prev) => {
       const existingItem = prev.find((item) => item.productId === selectedProductId);
       if (existingItem) {
+        // 재고 초과 확인
+        if (existingItem.quantity >= product.stock) {
+          alert(`재고가 부족합니다. 최대 ${product.stock}개까지 구매 가능합니다.`);
+          return prev;
+        }
         return prev.map((item) =>
           item.productId === selectedProductId ? { ...item, quantity: item.quantity + 1 } : item
         );
@@ -59,13 +70,25 @@ const App = () => {
   };
 
   const handleQuantityChange = (productId: string, change: number) => {
-    setCartItems((prev) =>
-      prev
-        .map((item) =>
-          item.productId === productId ? { ...item, quantity: Math.max(0, item.quantity + change) } : item
-        )
-        .filter((item) => item.quantity > 0)
-    );
+    const product = PRODUCTS.find((p) => p.id === productId);
+    if (!product) return;
+
+    setCartItems((prev) => {
+      const existingItem = prev.find((item) => item.productId === productId);
+      if (!existingItem) return prev;
+
+      const newQuantity = existingItem.quantity + change;
+
+      // 재고 초과 확인
+      if (newQuantity > product.stock) {
+        alert(`재고가 부족합니다. 최대 ${product.stock}개까지 구매 가능합니다.`);
+        return prev;
+      }
+
+      return prev
+        .map((item) => (item.productId === productId ? { ...item, quantity: Math.max(0, newQuantity) } : item))
+        .filter((item) => item.quantity > 0);
+    });
   };
 
   const handleRemoveItem = (productId: string) => {
