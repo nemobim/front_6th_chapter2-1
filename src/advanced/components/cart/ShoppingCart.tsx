@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import type { CartItem, Product } from '../../types';
+import { calculateItemDiscountRate } from '../../utils/discountUtils';
 import ProductPicker from './ProductPicker';
 
 interface ShoppingCartProps {
@@ -59,6 +60,8 @@ const ShoppingCart = ({
             if (!product) return null;
 
             const isUpdating = updatingItems.has(item.productId);
+            const itemDiscountRate = calculateItemDiscountRate(item.productId, item.quantity);
+            const hasDiscount = itemDiscountRate > 0;
 
             return (
               <div
@@ -74,6 +77,11 @@ const ShoppingCart = ({
                   <h3 className="text-base font-normal mb-1 tracking-tight">{product.name}</h3>
                   <p className="text-xs text-gray-500 mb-0.5 tracking-wide">PRODUCT</p>
                   <p className="text-xs text-black mb-3">₩{product.price.toLocaleString()}</p>
+                  {hasDiscount && (
+                    <div className="text-xs text-green-600 mb-2">
+                      ✨ {Math.round(itemDiscountRate * 100)}% 할인 적용
+                    </div>
+                  )}
                   <div className="flex items-center gap-4">
                     <button
                       onClick={() => handleQuantityChange(item.productId, -1)}
