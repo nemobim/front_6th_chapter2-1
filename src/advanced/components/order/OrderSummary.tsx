@@ -1,17 +1,14 @@
 import { useCartContext } from '../../hooks/CartContext';
 import { calculateDiscount } from '../utils/discountCalculator';
+import { calculatePoints } from '../utils/pointsCalculator';
 
 const OrderSummary = () => {
   const { cartItems, products } = useCartContext();
 
   const discountResult = calculateDiscount(cartItems, products);
+  const pointsResult = calculatePoints(cartItems, products, discountResult.discountedTotal);
   const today = new Date();
   const isTuesday = today.getDay() === 2;
-
-  const calculatePoints = () => {
-    const basePoints = Math.floor(discountResult.discountedTotal / 1000);
-    return isTuesday ? basePoints * 2 : basePoints;
-  };
 
   return (
     <div className="bg-black text-white p-8 flex flex-col">
@@ -80,9 +77,12 @@ const OrderSummary = () => {
               </div>
             </div>
 
-            {cartItems.length > 0 && (
+            {cartItems.length > 0 && pointsResult.totalPoints > 0 && (
               <div className="text-xs text-blue-400 mt-2 text-right">
-                적립 포인트: <span className="font-bold">{calculatePoints()}p</span>
+                <div>
+                  적립 포인트: <span className="font-bold">{pointsResult.totalPoints}p</span>
+                </div>
+                <div className="text-2xs opacity-70 mt-1">{pointsResult.pointsDetails.join(', ')}</div>
               </div>
             )}
           </div>

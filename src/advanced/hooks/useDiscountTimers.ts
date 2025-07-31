@@ -1,9 +1,9 @@
 import { useEffect, useRef } from 'react';
 
-import { PRODUCT_IDS } from '../lib/products';
+import { Product } from '../lib/products';
 
 interface UseDiscountTimersProps {
-  products: any[];
+  products: Product[];
   updateProductSaleStatus: (productId: string, isOnSale: boolean, newPrice?: number) => void;
   updateProductRecommendStatus: (productId: string, isRecommended: boolean, newPrice?: number) => void;
   lastSelectedProductId: string | null;
@@ -15,8 +15,8 @@ export function useDiscountTimers({
   updateProductRecommendStatus,
   lastSelectedProductId,
 }: UseDiscountTimersProps) {
-  const lightningTimerRef = useRef<NodeJS.Timeout>();
-  const recommendTimerRef = useRef<NodeJS.Timeout>();
+  const lightningTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const recommendTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     // 번개세일 타이머 (초기 랜덤 지연 후 30초마다)

@@ -29,9 +29,25 @@ const ProductPicker = () => {
       .join('\n');
   };
 
+  const getTotalStock = () => {
+    return products.reduce((total, product) => {
+      const cartItem = cartItems.find((item) => item.productId === product.productId);
+      const availableStock = product.stock - (cartItem?.quantity || 0);
+      return total + Math.max(0, availableStock);
+    }, 0);
+  };
+
+  const totalAvailableStock = getTotalStock();
+
   return (
     <div className="mb-6 pb-6 border-b border-gray-200">
-      <select id="product-select" className="w-full p-3 border border-gray-300 rounded-lg text-base mb-3">
+      <select
+        id="product-select"
+        className="w-full p-3 border rounded-lg text-base mb-3"
+        style={{
+          borderColor: totalAvailableStock < 50 ? 'orange' : '#d1d5db',
+        }}
+      >
         {products.map((product) => {
           const cartItem = cartItems.find((item) => item.productId === product.productId);
           const currentQuantity = cartItem?.quantity || 0;
