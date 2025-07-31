@@ -1,12 +1,12 @@
 import { useAppInitialization } from './hooks/useAppInitialization.js';
 import { useCreateAndMountApp } from './hooks/useCreateAndMountApp.js';
-import { useRendering } from './hooks/useRendering.js';
+import { useSetupUIAndEvents } from './hooks/useRendering.js';
 import { useServiceInitialization } from './hooks/useServiceInitialization.js';
 
 function initializeApp() {
   const { initializeAppState, subscribeToState } = useAppInitialization();
   const { initializeCoreServices, initializeServices } = useServiceInitialization();
-  const { initializeRendering, attachEventHandlers } = useRendering();
+  const { initializeRendering, attachEventHandlers } = useSetupUIAndEvents();
 
   /** 애플리케이션 상태 초기화 */
   initializeAppState();

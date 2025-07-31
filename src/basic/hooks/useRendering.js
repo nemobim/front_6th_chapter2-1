@@ -2,26 +2,22 @@ import { updateProductOptions } from '../components/product/ProductSelector.js';
 import { getProductList } from '../state/appState.js';
 import { useCartUpdater } from './useCart.js';
 
-/**
- * 렌더링 및 이벤트 핸들러 로직을 관리하는 커스텀 훅 스타일 함수
- */
-export function useRendering() {
-  /**
-   * 초기 UI 상태를 설정
-   */
+/** UI 렌더링 및 이벤트 설정 */
+export function useSetupUIAndEvents() {
   function initializeRendering(productSelector, cartDisplay, discountCalculator, uiUpdater) {
+    // 상품 옵션 업데이트
     updateProductOptions(productSelector, getProductList());
 
-    // useCart의 공통 로직 사용
+    // 초기 카트 계산 및 UI 업데이트
     const { calculateCart } = useCartUpdater(cartDisplay, discountCalculator, uiUpdater);
     calculateCart();
   }
 
-  /**
-   * 이벤트 핸들러를 등록
-   */
+  // 이벤트 핸들러 등록
   function attachEventHandlers(cartEventHandler, addToCartButton) {
-    cartEventHandler.attachEventListeners(addToCartButton);
+    if (cartEventHandler && addToCartButton) {
+      cartEventHandler.attachEventListeners(addToCartButton);
+    }
   }
 
   return { initializeRendering, attachEventHandlers };
