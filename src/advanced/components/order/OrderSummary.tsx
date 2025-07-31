@@ -1,5 +1,6 @@
 import type { CartItem, Product } from '../../types';
 import { isTuesday } from '../../utils/dateUtils';
+import { calculateTotalPoints } from '../../utils/pointUtils';
 
 interface OrderSummaryProps {
   cartItems?: CartItem[];
@@ -9,11 +10,14 @@ interface OrderSummaryProps {
 const OrderSummary = ({ cartItems = [], products = [] }: OrderSummaryProps) => {
   const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const totalDiscountPrice = cartItems.reduce((sum, item) => sum + item.discountPrice * item.quantity, 0);
-  const loyaltyPoints = Math.floor(totalDiscountPrice * 0.01);
+  const itemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   const isTuesdayDiscount = isTuesday();
   const tuesdayDiscountRate = 0.1; // 10% 할인
   const finalPrice = isTuesdayDiscount ? totalDiscountPrice * (1 - tuesdayDiscountRate) : totalDiscountPrice;
+
+  // 포인트 계산
+  const { totalPoints, pointsDetails } = calculateTotalPoints(cartItems, products, finalPrice, itemCount);
 
   return (
     <div className="bg-black text-white p-8 flex flex-col">
@@ -63,9 +67,9 @@ const OrderSummary = ({ cartItems = [], products = [] }: OrderSummaryProps) => {
                 </div>
                 <div id="loyalty-points" className="text-xs text-blue-400 mt-2 text-right block">
                   <div>
-                    적립 포인트: <span className="font-bold">{loyaltyPoints}p</span>
+                    적립 포인트: <span className="font-bold">{totalPoints}p</span>
                   </div>
-                  <div className="text-2xs opacity-70 mt-1">기본: {loyaltyPoints}p</div>
+                  <div className="text-2xs opacity-70 mt-1">{pointsDetails.join(', ')}</div>
                 </div>
               </div>
               {isTuesdayDiscount && (
