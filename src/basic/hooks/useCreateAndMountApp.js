@@ -1,12 +1,12 @@
 import { createCartAddButton } from '../components/cart/CartAddButton';
 import { createCartDisplay } from '../components/cart/CartDisplay';
+import { createUsageInfo } from '../components/guide/UsageInfo';
 import { createHeader } from '../components/layout/Header';
 import { createMainLayout } from '../components/layout/MainLayout';
 import { createProductColumn } from '../components/layout/ProductColumn';
 import { createSummaryColumn } from '../components/layout/SummaryColumn';
 import { createProductSelector } from '../components/product/ProductSelector';
 import { createStockInfo } from '../components/product/StockInfo';
-import { createUsageInfo } from '../components/user/UsageInfo';
 import { getCartState } from '../state/appState';
 
 export function useCreateAndMountApp() {
