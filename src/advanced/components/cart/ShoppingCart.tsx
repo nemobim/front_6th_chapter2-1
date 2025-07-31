@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { PRODUCT_STATE_CONFIG } from '../../constants';
 import type { CartItem, Product } from '../../types';
 import { calculateItemDiscountRate } from '../../utils/discountUtils';
 import ProductPicker from './ProductPicker';
@@ -24,6 +25,38 @@ const ShoppingCart = ({
   onRemoveItem,
 }: ShoppingCartProps) => {
   const [updatingItems, setUpdatingItems] = useState<Set<string>>(new Set());
+
+  // 제품 상태 확인
+  const getProductState = (product: Product) => {
+    if (product.isOnSale && product.isRecommended) return PRODUCT_STATE_CONFIG.SALE_AND_RECOMMEND;
+    if (product.isOnSale) return PRODUCT_STATE_CONFIG.SALE_ONLY;
+    if (product.isRecommended) return PRODUCT_STATE_CONFIG.RECOMMEND_ONLY;
+    return PRODUCT_STATE_CONFIG.DEFAULT;
+  };
+
+  // 상품 상태 배지 생성
+  const createSaleBadge = (product: Product): string => {
+    const state = getProductState(product);
+    return state.badge;
+  };
+
+  // 가격 표시 포맷팅
+  const formatPriceDisplay = (product: Product): JSX.Element => {
+    const state = getProductState(product);
+
+    // 할인이나 추천이 없는 경우 일반 가격 표시
+    if (state === PRODUCT_STATE_CONFIG.DEFAULT) {
+      return <span>₩{product.price.toLocaleString()}</span>;
+    }
+
+    // 할인/추천 상품의 경우 원가와 할인가 표시
+    return (
+      <>
+        <span className="line-through text-gray-400">₩{product.originalPrice.toLocaleString()}</span>{' '}
+        <span className={state.color}>₩{product.price.toLocaleString()}</span>
+      </>
+    );
+  };
 
   const handleQuantityChange = async (productId: string, change: number) => {
     setUpdatingItems((prev) => new Set(prev).add(productId));
@@ -56,12 +89,13 @@ const ShoppingCart = ({
           </div>
         ) : (
           cartItems.map((item) => {
-            const product = products.find((p) => p.id === item.productId);
+            const product = products.find((p: Product) => p.id === item.productId);
             if (!product) return null;
 
             const isUpdating = updatingItems.has(item.productId);
             const itemDiscountRate = calculateItemDiscountRate(item.productId, item.quantity);
             const hasDiscount = itemDiscountRate > 0;
+            const saleBadge = createSaleBadge(product);
 
             return (
               <div
@@ -74,9 +108,12 @@ const ShoppingCart = ({
                   <div className="absolute top-1/2 left-1/2 w-[60%] h-[60%] bg-white/10 -translate-x-1/2 -translate-y-1/2 rotate-45" />
                 </div>
                 <div>
-                  <h3 className="text-base font-normal mb-1 tracking-tight">{product.name}</h3>
+                  <h3 className="text-base font-normal mb-1 tracking-tight">
+                    {saleBadge}
+                    {product.name}
+                  </h3>
                   <p className="text-xs text-gray-500 mb-0.5 tracking-wide">PRODUCT</p>
-                  <p className="text-xs text-black mb-3">₩{product.price.toLocaleString()}</p>
+                  <p className="text-xs text-black mb-3">{formatPriceDisplay(product)}</p>
                   {hasDiscount && (
                     <div className="text-xs text-green-600 mb-2">
                       ✨ {Math.round(itemDiscountRate * 100)}% 할인 적용
@@ -88,10 +125,12 @@ const ShoppingCart = ({
                       disabled={isUpdating}
                       className="quantity-change w-6 h-6 border border-black bg-white text-sm flex items-center justify-center transition-all hover:bg-black hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      -
+                      −
                     </button>
                     <span
-                      className={`transition-all duration-200 ${isUpdating ? 'text-purple-600 font-semibold' : ''}`}
+                      className={`text-sm font-normal min-w-[20px] text-center tabular-nums transition-all duration-200 ${
+                        isUpdating ? 'text-purple-600 font-semibold' : ''
+                      }`}
                     >
                       {item.quantity}
                     </span>
@@ -110,8 +149,7 @@ const ShoppingCart = ({
                       isUpdating ? 'text-purple-600' : ''
                     }`}
                   >
-                    <span className="line-through text-gray-400">₩{(item.price * item.quantity).toLocaleString()}</span>{' '}
-                    <span className="text-purple-600">₩{(item.discountPrice * item.quantity).toLocaleString()}</span>
+                    {formatPriceDisplay(product)}
                   </div>
                   <button
                     onClick={() => onRemoveItem?.(item.productId)}

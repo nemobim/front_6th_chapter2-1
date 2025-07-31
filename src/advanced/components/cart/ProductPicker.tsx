@@ -1,4 +1,9 @@
-import { TOTAL_STOCK_WARNING } from '../../constants/policy';
+import {
+  PRODUCT_OPTION_TEMPLATES,
+  PRODUCT_STATE_CONFIG,
+  PRODUCT_STYLE_CLASSES,
+  TOTAL_STOCK_WARNING,
+} from '../../constants';
 import { PRODUCTS } from '../../lib/products';
 import type { Product } from '../../types';
 
@@ -17,6 +22,14 @@ const ProductPicker = ({ selectedProductId = '', onProductSelect, onAddToCart }:
   const totalStock = PRODUCTS.reduce((total: number, product: Product) => total + product.stock, 0);
   const isLowTotalStock = totalStock < TOTAL_STOCK_WARNING;
 
+  // 제품 상태 확인
+  const getProductState = (product: Product) => {
+    if (product.isOnSale && product.isRecommended) return PRODUCT_STATE_CONFIG.SALE_AND_RECOMMEND;
+    if (product.isOnSale) return PRODUCT_STATE_CONFIG.SALE_ONLY;
+    if (product.isRecommended) return PRODUCT_STATE_CONFIG.RECOMMEND_ONLY;
+    return PRODUCT_STATE_CONFIG.DEFAULT;
+  };
+
   // 상품 옵션 텍스트 생성
   const createOptionText = (product: Product): string => {
     const badges: string[] = [];
@@ -27,31 +40,31 @@ const ProductPicker = ({ selectedProductId = '', onProductSelect, onAddToCart }:
 
     // 품절 상품
     if (product.stock === 0) {
-      return `${product.name} - ${product.price}원 (품절)${badgeText}`;
+      return PRODUCT_OPTION_TEMPLATES.OUT_OF_STOCK(product.name, product.price, badgeText);
     }
 
     // 할인 상품들
     if (product.isOnSale && product.isRecommended) {
-      return `⚡${product.name} - ${product.originalPrice}원 → ${product.price}원 (25% SUPER SALE!)`;
+      return PRODUCT_OPTION_TEMPLATES.SUPER_SALE(product.name, product.originalPrice, product.price);
     }
     if (product.isOnSale) {
-      return `⚡${product.name} - ${product.originalPrice}원 → ${product.price}원 (20% SALE!)`;
+      return PRODUCT_OPTION_TEMPLATES.SALE(product.name, product.originalPrice, product.price);
     }
     if (product.isRecommended) {
-      return `${product.name} - ${product.originalPrice}원 → ${product.price}원 (5% 추천할인!)`;
+      return PRODUCT_OPTION_TEMPLATES.RECOMMENDED(product.name, product.originalPrice, product.price);
     }
 
     // 일반 상품
-    return `${product.name} - ${product.price}원${badgeText}`;
+    return PRODUCT_OPTION_TEMPLATES.DEFAULT(product.name, product.price, badgeText);
   };
 
   // 상품 상태에 따른 스타일 적용
   const getProductStyle = (product: Product): string => {
-    if (product.stock === 0) return 'text-gray-400';
-    if (product.isOnSale && product.isRecommended) return 'text-purple-600 font-bold';
-    if (product.isOnSale) return 'text-red-500 font-bold';
-    if (product.isRecommended) return 'text-blue-500 font-bold';
-    return '';
+    if (product.stock === 0) return PRODUCT_STYLE_CLASSES.OUT_OF_STOCK;
+    if (product.isOnSale && product.isRecommended) return PRODUCT_STYLE_CLASSES.SALE_AND_RECOMMEND;
+    if (product.isOnSale) return PRODUCT_STYLE_CLASSES.SALE_ONLY;
+    if (product.isRecommended) return PRODUCT_STYLE_CLASSES.RECOMMEND_ONLY;
+    return PRODUCT_STYLE_CLASSES.DEFAULT;
   };
 
   return (
