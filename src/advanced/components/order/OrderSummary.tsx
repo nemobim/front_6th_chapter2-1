@@ -1,5 +1,6 @@
 import type { CartItem, Product } from '../../types';
 import { isTuesday } from '../../utils/dateUtils';
+import { calculateBulkDiscountRate } from '../../utils/discountUtils';
 import { calculateTotalPoints } from '../../utils/pointUtils';
 
 interface OrderSummaryProps {
@@ -14,7 +15,14 @@ const OrderSummary = ({ cartItems = [], products = [] }: OrderSummaryProps) => {
 
   const isTuesdayDiscount = isTuesday();
   const tuesdayDiscountRate = 0.1; // 10% 할인
-  const finalPrice = isTuesdayDiscount ? totalDiscountPrice * (1 - tuesdayDiscountRate) : totalDiscountPrice;
+
+  // 대량구매 할인 적용
+  const bulkDiscountRate = calculateBulkDiscountRate(itemCount);
+  const bulkDiscountAmount = bulkDiscountRate > 0 ? totalDiscountPrice * bulkDiscountRate : 0;
+  const priceAfterBulkDiscount = totalDiscountPrice - bulkDiscountAmount;
+
+  // 화요일 할인 적용
+  const finalPrice = isTuesdayDiscount ? priceAfterBulkDiscount * (1 - tuesdayDiscountRate) : priceAfterBulkDiscount;
 
   // 포인트 계산
   const { totalPoints, pointsDetails } = calculateTotalPoints(cartItems, products, finalPrice, itemCount);
@@ -57,6 +65,20 @@ const OrderSummary = ({ cartItems = [], products = [] }: OrderSummaryProps) => {
                 <span>Shipping</span>
                 <span>Free</span>
               </div>
+
+              {bulkDiscountRate > 0 && (
+                <div className="flex justify-between text-sm tracking-wide text-green-400">
+                  <span>대량구매 할인 ({Math.round(bulkDiscountRate * 100)}%)</span>
+                  <span>-₩{bulkDiscountAmount.toLocaleString()}</span>
+                </div>
+              )}
+
+              {isTuesdayDiscount && (
+                <div className="flex justify-between text-sm tracking-wide text-green-400">
+                  <span>화요일 특별 할인 (10%)</span>
+                  <span>-₩{(priceAfterBulkDiscount * tuesdayDiscountRate).toLocaleString()}</span>
+                </div>
+              )}
             </div>
             <div className="mt-auto">
               <div id="discount-info" className="mb-4"></div>
