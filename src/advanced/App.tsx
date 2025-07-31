@@ -39,6 +39,9 @@ const App = () => {
         ];
       }
     });
+
+    // 상품 추가 후 선택 상태 초기화
+    setSelectedProductId('');
   };
 
   const handleQuantityChange = (productId: string, change: number) => {
