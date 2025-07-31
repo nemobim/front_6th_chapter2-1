@@ -1,5 +1,5 @@
 import { updateProductOptions } from '../components/product/ProductSelector';
-import { CartEventHandler } from '../services/CartEventHandler';
+import { createCartEventHandler } from '../services/CartEventHandler';
 import { DiscountCalculator } from '../services/DiscountCalculator';
 import { TimerService } from '../services/TimerService';
 import { UIUpdater } from '../services/UIUpdater';
@@ -29,8 +29,14 @@ export function useServiceInitialization() {
   }
 
   // 카트 이벤트 핸들러 초기화
-  function createCartEventHandler(cartDisplay, productSelector, timerService, calculateCart) {
-    return new CartEventHandler(getProductList(), cartDisplay, productSelector, timerService, calculateCart);
+  function createCartEventHandlerInstance(cartDisplay, productSelector, timerService, calculateCart) {
+    return createCartEventHandler({
+      productList: getProductList(),
+      cartDisplay,
+      productSelector,
+      timerService,
+      onCartUpdate: calculateCart,
+    });
   }
 
   // DOM 의존 서비스 초기화
@@ -38,7 +44,7 @@ export function useServiceInitialization() {
     const uiUpdater = createUIUpdater(cartDisplay);
     const { calculateCart, updatePricesAndCalculate } = useCartUpdater(cartDisplay, discountCalculator, uiUpdater);
     const timerService = createTimerService(productSelector, updatePricesAndCalculate);
-    const cartEventHandler = createCartEventHandler(cartDisplay, productSelector, timerService, calculateCart);
+    const cartEventHandler = createCartEventHandlerInstance(cartDisplay, productSelector, timerService, calculateCart);
 
     return { timerService, cartEventHandler, uiUpdater };
   }

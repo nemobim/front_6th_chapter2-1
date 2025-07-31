@@ -1,5 +1,5 @@
 import { getCartItems } from '../components/cart/CartDisplay.js';
-import { CartPriceUpdater } from '../services/CartPriceUpdater.js';
+import { createCartPriceUpdater } from '../services/CartPriceUpdater.js';
 import {
   getProductList,
   updateCartDiscount,
@@ -22,8 +22,8 @@ export function useCartUpdater(cartDisplay, discountCalculator, uiUpdater) {
 
     // 필요시 가격 업데이트
     if (shouldUpdatePrices) {
-      const priceUpdater = new CartPriceUpdater(getProductList());
-      priceUpdater.updateCartItemPrices(cartItems);
+      const { updatePriceList } = createCartPriceUpdater(getProductList());
+      updatePriceList(cartItems);
     }
 
     // 할인 및 총액 계산

@@ -16,7 +16,7 @@ export function useSetupUIAndEvents() {
   // 이벤트 핸들러 등록
   function attachEventHandlers(cartEventHandler, addToCartButton) {
     if (cartEventHandler && addToCartButton) {
-      cartEventHandler.attachEventListeners(addToCartButton);
+      cartEventHandler.attachCartEvents(addToCartButton);
     }
   }
 
