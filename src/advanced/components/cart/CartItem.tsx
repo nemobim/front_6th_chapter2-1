@@ -1,11 +1,4 @@
-import { CartItem as CartItemType, Product } from '../../lib/products';
-
-interface CartItemProps {
-  cartItem: CartItemType;
-  product: Product;
-  onQuantityChange: (productId: string, change: number) => void;
-  onRemove: (productId: string) => void;
-}
+import { CartItemProps } from '../../types';
 
 const CartItem = ({ cartItem, product, onQuantityChange, onRemove }: CartItemProps) => {
   const getProductIcon = () => {

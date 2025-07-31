@@ -1,14 +1,6 @@
-/* eslint-disable no-unused-vars */
 import { useEffect, useRef } from 'react';
 
-import { Product } from '../lib/products';
-
-export interface UseDiscountTimersProps {
-  products: Product[];
-  updateProductSaleStatus: (productId: string, isOnSale: boolean, newPrice?: number) => void;
-  updateProductRecommendStatus: (productId: string, isRecommended: boolean, newPrice?: number) => void;
-  lastSelectedProductId: string | null;
-}
+import { UseDiscountTimersProps } from '../types';
 
 export function useDiscountTimers({
   products,

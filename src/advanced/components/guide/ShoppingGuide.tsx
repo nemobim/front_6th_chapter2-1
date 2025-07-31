@@ -1,6 +1,4 @@
-interface ShoppingGuideProps {
-  onClose: () => void;
-}
+import { ShoppingGuideProps } from '../../types';
 
 const ShoppingGuide = ({ onClose }: ShoppingGuideProps) => {
   const handleOverlayClick = (e: React.MouseEvent) => {

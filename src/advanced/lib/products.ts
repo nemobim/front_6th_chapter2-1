@@ -1,35 +1,16 @@
-/** 상품 정보 */
-export interface Product {
-  productId: string;
-  name: string;
-  price: number;
-  originalPrice: number;
-  stock: number;
-  isOnSale: boolean;
-  isRecommended: boolean;
-}
+import { CartItem, DiscountInfo, Product } from '../types';
 
-/** 장바구니 */
-export interface CartItem {
-  productId: string;
-  quantity: number;
-}
-
-/** 할인 정보 */
-export interface DiscountInfo {
-  name: string;
-  discountRate: number;
-  savedAmount: number;
-}
+// 기존 타입 정의 제거하고 export만 유지
+export type { CartItem, DiscountInfo, Product };
 
 /**상품 ID */
 export const PRODUCT_IDS = {
-  KEYBOARD: 'p1',
-  MOUSE: 'p2',
-  MONITOR_ARM: 'p3',
-  POUCH: 'p4',
-  SPEAKER: 'p5',
-};
+  KEYBOARD: 'keyboard',
+  MOUSE: 'mouse',
+  MONITOR_ARM: 'monitor-arm',
+  POUCH: 'pouch',
+  SPEAKER: 'speaker',
+} as const;
 
 /**상품 목록 */
 export const PRODUCT_LIST: Product[] = [
