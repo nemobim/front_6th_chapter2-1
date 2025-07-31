@@ -32,9 +32,33 @@ const ShoppingCart = () => {
                 <div className="absolute top-1/2 left-1/2 w-[60%] h-[60%] bg-white/10 -translate-x-1/2 -translate-y-1/2 rotate-45" />
               </div>
               <div>
-                <h3 className="text-base font-normal mb-1 tracking-tight">{product.name}</h3>
+                <h3 className="text-base font-normal mb-1 tracking-tight">
+                  {product.isOnSale && product.isRecommended && '⚡💝'}
+                  {product.isOnSale && !product.isRecommended && '⚡'}
+                  {!product.isOnSale && product.isRecommended && '💝'}
+                  {product.name}
+                </h3>
                 <p className="text-xs text-gray-500 mb-0.5 tracking-wide">PRODUCT</p>
-                <p className="text-xs text-black mb-3">₩{product.price.toLocaleString()}</p>
+                <p className="text-xs mb-3">
+                  {product.isOnSale || product.isRecommended ? (
+                    <>
+                      <span className="line-through text-gray-400">₩{product.originalPrice.toLocaleString()}</span>{' '}
+                      <span
+                        className={
+                          product.isOnSale && product.isRecommended
+                            ? 'text-purple-600'
+                            : product.isOnSale
+                              ? 'text-red-500'
+                              : 'text-blue-500'
+                        }
+                      >
+                        ₩{product.price.toLocaleString()}
+                      </span>
+                    </>
+                  ) : (
+                    <span className="text-black">₩{product.price.toLocaleString()}</span>
+                  )}
+                </p>
                 <div className="flex items-center gap-4">
                   <button
                     onClick={() => handleQuantityChange(cartItem.productId, -1)}
@@ -42,7 +66,7 @@ const ShoppingCart = () => {
                   >
                     -
                   </button>
-                  <span>{cartItem.quantity}</span>
+                  <span className="text-sm font-normal min-w-[20px] text-center tabular-nums">{cartItem.quantity}</span>
                   <button
                     onClick={() => handleQuantityChange(cartItem.productId, 1)}
                     className="quantity-change w-6 h-6 border border-black bg-white text-sm flex items-center justify-center transition-all hover:bg-black hover:text-white"
@@ -53,7 +77,26 @@ const ShoppingCart = () => {
               </div>
               <div className="text-right">
                 <div className="text-lg mb-2 tracking-tight tabular-nums">
-                  ₩{(product.price * cartItem.quantity).toLocaleString()}
+                  {product.isOnSale || product.isRecommended ? (
+                    <>
+                      <span className="line-through text-gray-400">
+                        ₩{(product.originalPrice * cartItem.quantity).toLocaleString()}
+                      </span>{' '}
+                      <span
+                        className={
+                          product.isOnSale && product.isRecommended
+                            ? 'text-purple-600'
+                            : product.isOnSale
+                              ? 'text-red-500'
+                              : 'text-blue-500'
+                        }
+                      >
+                        ₩{(product.price * cartItem.quantity).toLocaleString()}
+                      </span>
+                    </>
+                  ) : (
+                    `₩${(product.price * cartItem.quantity).toLocaleString()}`
+                  )}
                 </div>
                 <a
                   onClick={() => handleRemove(cartItem.productId)}
