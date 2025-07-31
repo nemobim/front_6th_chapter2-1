@@ -6,41 +6,39 @@ import { UIUpdater } from '../services/UIUpdater';
 import { getProductList } from '../state/appState.js';
 import { useCartUpdater } from './useCart.js';
 
-/**
- * 서비스 초기화 로직을 관리하는 커스텀 훅 스타일 함수
- */
+/** 서비스 초기화 */
 export function useServiceInitialization() {
-  /**
-   * 핵심 서비스들을 초기화
-   * DOM 생성 전에 호출되어야 함
-   */
+  // DOM 독립적 핵심 서비스 초기화
   function initializeCoreServices() {
     const discountCalculator = new DiscountCalculator();
     return { discountCalculator };
   }
 
-  /**
-   * DOM 의존 서비스들을 초기화
-   * DOM 컴포넌트 생성 후에 호출되어야 함
-   */
-  function initializeServices(productSelector, cartDisplay, discountCalculator) {
-    const uiUpdater = new UIUpdater(cartDisplay, getProductList());
+  // UI 업데이터 초기화
+  function createUIUpdater(cartDisplay) {
+    return new UIUpdater(cartDisplay, getProductList());
+  }
 
-    const { calculateCart, updatePricesAndCalculate } = useCartUpdater(cartDisplay, discountCalculator, uiUpdater);
-
-    const timerService = new TimerService(
+  // 타이머 서비스 초기화
+  function createTimerService(productSelector, updatePricesAndCalculate) {
+    return new TimerService(
       getProductList(),
       () => updateProductOptions(productSelector, getProductList()),
       updatePricesAndCalculate
     );
+  }
 
-    const cartEventHandler = new CartEventHandler(
-      getProductList(),
-      cartDisplay,
-      productSelector,
-      timerService,
-      calculateCart
-    );
+  // 카트 이벤트 핸들러 초기화
+  function createCartEventHandler(cartDisplay, productSelector, timerService, calculateCart) {
+    return new CartEventHandler(getProductList(), cartDisplay, productSelector, timerService, calculateCart);
+  }
+
+  // DOM 의존 서비스 초기화
+  function initializeServices(productSelector, cartDisplay, discountCalculator) {
+    const uiUpdater = createUIUpdater(cartDisplay);
+    const { calculateCart, updatePricesAndCalculate } = useCartUpdater(cartDisplay, discountCalculator, uiUpdater);
+    const timerService = createTimerService(productSelector, updatePricesAndCalculate);
+    const cartEventHandler = createCartEventHandler(cartDisplay, productSelector, timerService, calculateCart);
 
     return { timerService, cartEventHandler, uiUpdater };
   }

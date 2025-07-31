@@ -1,7 +1,7 @@
 import { useAppInitialization } from './hooks/useAppInitialization.js';
 import { useCreateAndMountApp } from './hooks/useCreateAndMountApp.js';
-import { useSetupUIAndEvents } from './hooks/useRendering.js';
 import { useServiceInitialization } from './hooks/useServiceInitialization.js';
+import { useSetupUIAndEvents } from './hooks/useSetupUIAndEvents.js';
 
 function initializeApp() {
   const { initializeAppState, subscribeToState } = useAppInitialization();
