@@ -1,10 +1,8 @@
-import { useCart } from '../../hooks/useCart';
-import { useProducts } from '../../hooks/useProducts';
+import { useCartContext } from '../../hooks/CartContext';
 import ProductPicker from './ProductPicker';
 
 const ShoppingCart = () => {
-  const { cartItems, updateQuantity, removeFromCart } = useCart();
-  const { products } = useProducts();
+  const { cartItems, updateQuantity, removeFromCart, products } = useCartContext();
 
   const handleQuantityChange = (productId: string, change: number) => {
     const currentItem = cartItems.find((item) => item.productId === productId);
