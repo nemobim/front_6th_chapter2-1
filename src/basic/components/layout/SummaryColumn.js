@@ -6,18 +6,48 @@ import { createRewardPoints } from '../order/RewardPoints.js';
 export const createSummaryColumn = () => {
   const summaryColumn = document.createElement('div');
   summaryColumn.className = 'bg-black text-white p-8 flex flex-col';
+
+  // 헤더
   summaryColumn.innerHTML = /* HTML */ `
     <h2 class="text-xs font-medium mb-5 tracking-extra-wide uppercase">Order Summary</h2>
-    <div class="flex-1 flex flex-col">
-      <div class="mt-auto">
-        <div id="tuesday-special" class="mt-4 p-3 bg-white/10 rounded-lg hidden">
-          <div class="flex items-center gap-2">
-            <span class="text-2xs"></span>
-            <span class="text-xs uppercase tracking-wide">Tuesday Special 10% Applied</span>
-          </div>
-        </div>
-      </div>
+    <div class="flex-1 flex flex-col"></div>
+  `;
+
+  // 메인 컨텐츠 영역
+  const mainContent = summaryColumn.querySelector('.flex-1');
+
+  // 주문 상세 내역 추가
+  const orderSummary = createOrderSummary();
+  mainContent.appendChild(orderSummary);
+
+  // 하단 영역 (할인, 총계, 특가)
+  const bottomSection = document.createElement('div');
+  bottomSection.className = 'mt-auto';
+
+  const discountInfo = createDiscountInfo();
+  const cartTotal = createCartTotal();
+  const rewardPoints = createRewardPoints();
+
+  // 화요일 특가 영역
+  const tuesdaySpecial = document.createElement('div');
+  tuesdaySpecial.id = 'tuesday-special';
+  tuesdaySpecial.className = 'mt-4 p-3 bg-white/10 rounded-lg hidden';
+  tuesdaySpecial.innerHTML = /* HTML */ `
+    <div class="flex items-center gap-2">
+      <span class="text-2xs"></span>
+      <span class="text-xs uppercase tracking-wide">Tuesday Special 10% Applied</span>
     </div>
+  `;
+
+  // 하단 섹션 조립
+  cartTotal.appendChild(rewardPoints);
+  bottomSection.appendChild(discountInfo);
+  bottomSection.appendChild(cartTotal);
+  bottomSection.appendChild(tuesdaySpecial);
+  mainContent.appendChild(bottomSection);
+
+  // 푸터 (버튼, 안내문)
+  summaryColumn.innerHTML += /* HTML */ `
     <button
       class="w-full py-4 bg-white text-black text-sm font-normal uppercase tracking-super-wide cursor-pointer mt-6 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/30"
     >
@@ -29,40 +59,5 @@ export const createSummaryColumn = () => {
     </p>
   `;
 
-  // OrderSummary 컴포넌트 생성 및 추가
-  const orderSummary = createOrderSummary();
-  const flexContainer = summaryColumn.querySelector('.flex-1.flex.flex-col');
-  flexContainer.insertBefore(orderSummary, flexContainer.querySelector('.mt-auto'));
-
-  // DiscountInfo 컴포넌트 생성 및 추가
-  const discountInfo = createDiscountInfo();
-  const mtAuto = summaryColumn.querySelector('.mt-auto');
-  mtAuto.insertBefore(discountInfo, mtAuto.querySelector('#tuesday-special'));
-
-  // CartTotal 컴포넌트 생성 및 추가
-  const cartTotal = createCartTotal();
-  mtAuto.insertBefore(cartTotal, mtAuto.querySelector('#tuesday-special'));
-
-  // RewardPoints 컴포넌트 생성 및 추가
-  const rewardPoints = createRewardPoints();
-  cartTotal.appendChild(rewardPoints);
-
   return summaryColumn;
-};
-
-export const createProductColumn = ({ productSelector, cartAddButton, stockStatusElement, cartDisplay }) => {
-  const productColumn = document.createElement('div');
-  productColumn.className = 'bg-white border border-gray-200 p-8 overflow-y-auto';
-
-  const selectorContainer = document.createElement('div');
-  selectorContainer.className = 'space-y-2';
-  selectorContainer.appendChild(productSelector);
-
-  selectorContainer.appendChild(cartAddButton);
-
-  productColumn.appendChild(selectorContainer);
-  productColumn.appendChild(stockStatusElement);
-  productColumn.appendChild(cartDisplay);
-
-  return productColumn;
 };

@@ -26,6 +26,7 @@ export const createCartTotal = () => {
 export const updateCartTotal = (cartTotalElement, totalAmount) => {
   const totalDiv = cartTotalElement.querySelector('.text-2xl');
   if (totalDiv) {
+    // 소수점 버림
     const roundedAmount = Math.round(totalAmount);
     totalDiv.textContent = formatPrice(roundedAmount);
   }

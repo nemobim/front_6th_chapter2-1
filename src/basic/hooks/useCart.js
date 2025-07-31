@@ -51,8 +51,11 @@ export function useCartPriceUpdate(cartDisplay, discountCalculator, uiUpdater) {
   function handleUpdatePrices() {
     const cartItems = getCartItems(cartDisplay);
 
+    // CartPriceUpdater 인스턴스 생성
+    const priceUpdater = new CartPriceUpdater(getProductList());
+
     // 모든 카트 아이템의 가격을 현재 세일 반영하여 업데이트
-    CartPriceUpdater.updateCartItemPrices(cartItems);
+    priceUpdater.updateCartItemPrices(cartItems);
 
     // 업데이트된 가격으로 총액 재계산
     updateCartState(cartDisplay, discountCalculator, uiUpdater);
