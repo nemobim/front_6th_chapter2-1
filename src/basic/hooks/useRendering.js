@@ -1,6 +1,6 @@
 import { updateProductOptions } from '../components/product/ProductSelector.js';
 import { getProductList } from '../state/appState.js';
-import { useCartCalculation } from './useCart.js';
+import { useCartUpdater } from './useCart.js';
 
 /**
  * 렌더링 및 이벤트 핸들러 로직을 관리하는 커스텀 훅 스타일 함수
@@ -13,8 +13,8 @@ export function useRendering() {
     updateProductOptions(productSelector, getProductList());
 
     // useCart의 공통 로직 사용
-    const { handleCalculateCart } = useCartCalculation(cartDisplay, discountCalculator, uiUpdater);
-    handleCalculateCart();
+    const { calculateCart } = useCartUpdater(cartDisplay, discountCalculator, uiUpdater);
+    calculateCart();
   }
 
   /**

@@ -9,10 +9,10 @@ function initializeApp() {
   const { initializeCoreServices, initializeServices } = useServiceInitialization();
   const { initializeRendering, attachEventHandlers } = useRendering();
 
-  // 애플리케이션 상태 초기화
+  /** 애플리케이션 상태 초기화 */
   initializeAppState();
 
-  // 핵심 서비스 초기화 (DOM 생성 전)
+  /** 핵심 서비스 초기화 (DOM 생성 전) */
   const { discountCalculator } = initializeCoreServices();
 
   // 3. 핵심 컴포넌트 생성

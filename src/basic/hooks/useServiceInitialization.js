@@ -4,7 +4,7 @@ import { DiscountCalculator } from '../services/DiscountCalculator';
 import { TimerService } from '../services/TimerService';
 import { UIUpdater } from '../services/UIUpdater';
 import { getProductList } from '../state/appState.js';
-import { useCartCalculation, useCartPriceUpdate } from './useCart.js';
+import { useCartUpdater } from './useCart.js';
 
 /**
  * 서비스 초기화 로직을 관리하는 커스텀 훅 스타일 함수
@@ -26,13 +26,12 @@ export function useServiceInitialization() {
   function initializeServices(productSelector, cartDisplay, discountCalculator) {
     const uiUpdater = new UIUpdater(cartDisplay, getProductList());
 
-    const { handleCalculateCart } = useCartCalculation(cartDisplay, discountCalculator, uiUpdater);
-    const { handleUpdatePrices } = useCartPriceUpdate(cartDisplay, discountCalculator, uiUpdater);
+    const { calculateCart, updatePricesAndCalculate } = useCartUpdater(cartDisplay, discountCalculator, uiUpdater);
 
     const timerService = new TimerService(
       getProductList(),
       () => updateProductOptions(productSelector, getProductList()),
-      handleUpdatePrices
+      updatePricesAndCalculate
     );
 
     const cartEventHandler = new CartEventHandler(
@@ -40,7 +39,7 @@ export function useServiceInitialization() {
       cartDisplay,
       productSelector,
       timerService,
-      handleCalculateCart
+      calculateCart
     );
 
     return { timerService, cartEventHandler, uiUpdater };
