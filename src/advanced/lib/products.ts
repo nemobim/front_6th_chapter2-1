@@ -1,3 +1,27 @@
+/** 상품 정보 */
+export interface Product {
+  productId: string;
+  name: string;
+  price: number;
+  originalPrice: number;
+  stock: number;
+  isOnSale: boolean;
+  isRecommended: boolean;
+}
+
+/** 장바구니 */
+export interface CartItem {
+  productId: string;
+  quantity: number;
+}
+
+/** 할인 정보 */
+export interface DiscountInfo {
+  name: string;
+  discountRate: number;
+  savedAmount: number;
+}
+
 /**상품 ID */
 export const PRODUCT_IDS = {
   KEYBOARD: 'p1',
@@ -8,7 +32,7 @@ export const PRODUCT_IDS = {
 };
 
 /**상품 목록 */
-export const PRODUCT_LIST = [
+export const PRODUCT_LIST: Product[] = [
   {
     productId: PRODUCT_IDS.KEYBOARD,
     name: '버그 없애는 키보드',

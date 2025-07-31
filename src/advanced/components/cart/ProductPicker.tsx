@@ -1,11 +1,11 @@
-import { PRODUCTS } from '../../lib/products';
+import { PRODUCT_LIST } from '../../lib/products';
 
 const ProductPicker = () => {
   return (
     <div className="mb-6 pb-6 border-b border-gray-200">
       <select id="product-select" className="w-full p-3 border border-gray-300 rounded-lg text-base mb-3">
-        {PRODUCTS.map((product) => (
-          <option key={product.id} value={product.id}>
+        {PRODUCT_LIST.map((product) => (
+          <option key={product.productId} value={product.productId}>
             {product.name} - {product.price}원
           </option>
         ))}
