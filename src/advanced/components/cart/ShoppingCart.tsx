@@ -3,10 +3,19 @@ import { useProducts } from '../../hooks/useProducts';
 import ProductPicker from './ProductPicker';
 
 const ShoppingCart = () => {
-  const { cartItems } = useCart();
+  const { cartItems, updateQuantity, removeFromCart } = useCart();
   const { products } = useProducts();
 
-  console.log(cartItems, products);
+  const handleQuantityChange = (productId: string, change: number) => {
+    const currentItem = cartItems.find((item) => item.productId === productId);
+    if (currentItem) {
+      updateQuantity(productId, currentItem.quantity + change);
+    }
+  };
+
+  const handleRemove = (productId: string) => {
+    removeFromCart(productId);
+  };
 
   return (
     <div className="bg-white border border-gray-200 p-8 overflow-y-auto">
@@ -29,11 +38,17 @@ const ShoppingCart = () => {
                 <p className="text-xs text-gray-500 mb-0.5 tracking-wide">PRODUCT</p>
                 <p className="text-xs text-black mb-3">₩{product.price.toLocaleString()}</p>
                 <div className="flex items-center gap-4">
-                  <button className="quantity-change w-6 h-6 border border-black bg-white text-sm flex items-center justify-center transition-all hover:bg-black hover:text-white">
+                  <button
+                    onClick={() => handleQuantityChange(cartItem.productId, -1)}
+                    className="quantity-change w-6 h-6 border border-black bg-white text-sm flex items-center justify-center transition-all hover:bg-black hover:text-white"
+                  >
                     -
                   </button>
                   <span>{cartItem.quantity}</span>
-                  <button className="quantity-change w-6 h-6 border border-black bg-white text-sm flex items-center justify-center transition-all hover:bg-black hover:text-white">
+                  <button
+                    onClick={() => handleQuantityChange(cartItem.productId, 1)}
+                    className="quantity-change w-6 h-6 border border-black bg-white text-sm flex items-center justify-center transition-all hover:bg-black hover:text-white"
+                  >
                     +
                   </button>
                 </div>
@@ -42,7 +57,10 @@ const ShoppingCart = () => {
                 <div className="text-lg mb-2 tracking-tight tabular-nums">
                   ₩{(product.price * cartItem.quantity).toLocaleString()}
                 </div>
-                <a className="remove-item text-2xs text-gray-500 uppercase tracking-wider cursor-pointer transition-colors border-b border-transparent hover:text-black hover:border-black">
+                <a
+                  onClick={() => handleRemove(cartItem.productId)}
+                  className="remove-item text-2xs text-gray-500 uppercase tracking-wider cursor-pointer transition-colors border-b border-transparent hover:text-black hover:border-black"
+                >
                   Remove
                 </a>
               </div>
