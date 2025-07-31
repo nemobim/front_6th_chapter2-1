@@ -22,6 +22,8 @@ const ProductPicker = ({ selectedProductId = '', onProductSelect, onAddToCart }:
         {PRODUCTS.map((product) => (
           <option key={product.id} value={product.id} disabled={product.stock === 0}>
             {product.name} - ₩{product.price.toLocaleString()}
+            {product.isOnSale && ' ⚡번개세일!'}
+            {product.isRecommended && ' ✨추천상품!'}
             {product.stock === 0 ? ' (품절)' : product.stock <= 5 ? ` (재고: ${product.stock}개)` : ''}
           </option>
         ))}
@@ -38,6 +40,12 @@ const ProductPicker = ({ selectedProductId = '', onProductSelect, onAddToCart }:
         <div className="text-xs text-orange-500 mt-3">
           {selectedProduct.name}: 재고 {selectedProduct.stock}개 남음
         </div>
+      )}
+      {selectedProduct?.isOnSale && (
+        <div className="text-xs text-purple-500 mt-3">⚡ {selectedProduct.name}: 번개세일 20% 할인!</div>
+      )}
+      {selectedProduct?.isRecommended && (
+        <div className="text-xs text-blue-500 mt-3">✨ {selectedProduct.name}: 추천상품 5% 할인!</div>
       )}
     </div>
   );

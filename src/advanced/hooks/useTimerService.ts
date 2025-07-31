@@ -24,8 +24,14 @@ export const useTimerService = () => {
   const findRecommendationProduct = () => {
     if (!lastSelectedProductId.current) return null;
 
+    // 선택된 상품과 다른 상품 중에서 추천
     for (const product of PRODUCTS) {
-      if (product.id !== lastSelectedProductId.current && product.stock > 0 && !product.isRecommended) {
+      if (
+        product.id !== lastSelectedProductId.current &&
+        product.stock > 0 &&
+        !product.isRecommended &&
+        !product.isOnSale
+      ) {
         return product;
       }
     }
